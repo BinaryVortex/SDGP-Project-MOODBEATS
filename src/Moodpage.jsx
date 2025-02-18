@@ -36,3 +36,46 @@ export default function MoodSelectionScreen() {
     </View>
   );
 }
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#111",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    title: {
+      color: "white",
+      fontSize: 18,
+      fontWeight: "bold",
+      marginBottom: 20,
+    },
+    optionButton: {
+      backgroundColor: "#222",
+      padding: 20,
+      borderRadius: 10,
+      alignItems: "center",
+      marginVertical: 10,
+    },
+    optionText: {
+      color: "white",
+      marginTop: 10,
+    },
+    orText: {
+      color: "white",
+      marginVertical: 10,
+      fontSize: 16,
+    },
+    emojiText: {
+      fontSize: 24,
+    },
+    bottomNav: {
+      position: "absolute",
+      bottom: 20,
+      flexDirection: "row",
+      width: "100%",
+      justifyContent: "space-around",
+      paddingVertical: 10,
+      backgroundColor: "#222",
+    },
+  });
+  
