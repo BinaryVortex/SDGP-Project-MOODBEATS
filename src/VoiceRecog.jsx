@@ -122,3 +122,75 @@ const MoodRecognition = () => {
     </SafeAreaView>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  header: {
+    padding: 20,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  content: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  recordingIndicator: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  recordButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#007AFF',
+    padding: 20,
+    borderRadius: 30,
+    marginBottom: 30,
+  },
+  recordButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    marginLeft: 10,
+  },
+  resultContainer: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  moodText: {
+    fontSize: 18,
+    color: '#666',
+    marginBottom: 10,
+  },
+  moodResult: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  confidenceText: {
+    fontSize: 16,
+    color: '#666',
+  },
+});
+
+export default MoodRecognition;
