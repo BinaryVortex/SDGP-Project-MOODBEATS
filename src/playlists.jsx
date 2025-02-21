@@ -1,50 +1,160 @@
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  SafeAreaView,
+  Dimensions,
+  StatusBar,
+  Platform,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-<div class="playlist-container">
-  <header class="playlist-header">
-    <div class="cover-art">
-    <img src="album-cover.jpg" alt="Playlist Cover" />    
-    </div>
-    <div class="playlist-info">
-      <h1>Late Night Vibes</h1>
-      <p class="creator">Created by DJ Moonlight</p>
-      <p class="details">1 hr 23 min • 8 songs</p>
-      <div class="primary-controls">
-        <button class="play-button">Play</button>
-        <button class="shuffle-button">Shuffle</button>
-        <button class="repeat-button">Repeat</button>
-      </div>
-    </div>
-  </header>
+const { width } = Dimensions.get('window');
 
-  <div class="track-list">
-    <div class="track-item">
-      <span class="track-number">1</span>
-      <div class="track-info">
-        <span class="track-title">Midnight Dreams</span>
-        <span class="track-artist">Luna Eclipse</span>
-      </div>
-      <span class="track-plays">2.3M</span>
-      <span class="track-duration">3:45</span>
-      <button class="like-button">Like</button>
-      <button class="more-button">More</button>
-    </div>
+const MusicPlaylistApp = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTrack, setCurrentTrack] = useState(0);
+  const [likedTracks, setLikedTracks] = useState(new Set());
 
-  </div>
+  const playlist = {
+    title: "Summer Hits 2025",
+    creator: "Music Waves",
+    followers: "2.3M followers",
+    coverImage: "https://via.placeholder.com/400",
+    tracks: [
+      { id: 1, title: "Sunshine Dance", artist: "Beach Waves", duration: "3:24", plays: "1.2M" },
+      { id: 2, title: "Tropical Dreams", artist: "Island Vibes", duration: "4:15", plays: "892K" },
+      { id: 3, title: "Summer Nights", artist: "Sunset Crew", duration: "3:45", plays: "2.1M" },
+      { id: 4, title: "Ocean Breeze", artist: "Coastal", duration: "3:56", plays: "1.5M" },
+      { id: 5, title: "Beach Party", artist: "Sandy Toes", duration: "4:02", plays: "956K" },
+    ]
+  };
 
+  const togglePlay = () => setIsPlaying(!isPlaying);
 
-  <div class="playback-controls">
-    <div class="now-playing">
-      <img src="current-track.jpg" alt="Now Playing"/>
-      <div class="track-info">
-        <span class="track-title">Midnight Dreams</span>
-        <span class="track-artist">Luna Eclipse</span>
-      </div>
-    </div>
-    <div class="player-controls">
-      <button class="prev-button">Previous</button>
-      <button class="play-button">Play</button>
-      <button class="next-button">Next</button>
-    </div>
-    <div class="additional-controls"></div>
-  </div>
-</div>
+  const toggleLike = (id) => {
+    setLikedTracks(prev => {
+      const newLiked = new Set(prev);
+      if (newLiked.has(id)) {
+        newLiked.delete(id);
+      } else {
+        newLiked.add(id);
+      }
+      return newLiked;
+    });
+  };
+
+  const TrackItem = ({ track, index }) => (
+    <TouchableOpacity
+      style={[
+        styles.trackItem,
+        currentTrack === index && styles.currentTrack
+      ]}
+      onPress={() => setCurrentTrack(index)}
+    >
+      <Text style={styles.trackNumber}>{index + 1}</Text>
+      <View style={styles.trackInfo}>
+        <Text style={styles.trackTitle}>{track.title}</Text>
+        <Text style={styles.trackArtist}>{track.artist}</Text>
+      </View>
+      <Text style={styles.trackPlays}>{track.plays}</Text>
+      <TouchableOpacity onPress={() => toggleLike(track.id)}>
+        <Ionicons
+          name={likedTracks.has(track.id) ? "heart" : "heart-outline"}
+          size={20}
+          color={likedTracks.has(track.id) ? "#ff3b30" : "#8e8e93"}
+        />
+      </TouchableOpacity>
+    </TouchableOpacity>
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
+      <ScrollView style={styles.scrollView}>
+        {/* Header Section */}
+        <LinearGradient
+          colors={['#4c669f', '#3b5998', '#192f6a']}
+          style={styles.header}
+        >
+          <Image
+            source={{ uri: playlist.coverImage }}
+            style={styles.coverImage}
+          />
+          <View style={styles.playlistInfo}>
+            <Text style={styles.playlistTitle}>{playlist.title}</Text>
+            <Text style={styles.playlistCreator}>{playlist.creator}</Text>
+            <Text style={styles.playlistFollowers}>{playlist.followers}</Text>
+          </View>
+        </LinearGradient>
+
+        {/* Controls */}
+        <View style={styles.controls}>
+          <TouchableOpacity
+            style={styles.playButton}
+            onPress={togglePlay}
+          >
+            <Ionicons
+              name={isPlaying ? "pause" : "play"}
+              size={30}
+              color="#ffffff"
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.shuffleButton}>
+            <Ionicons name="shuffle" size={24} color="#8e8e93" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Track List */}
+        <View style={styles.trackList}>
+          {playlist.tracks.map((track, index) => (
+            <TrackItem
+              key={track.id}
+              track={track}
+              index={index}
+            />
+          ))}
+        </View>
+      </ScrollView>
+
+      {/* Playback Bar */}
+      <View style={styles.playbackBar}>
+        <Image
+          source={{ uri: playlist.coverImage }}
+          style={styles.miniCover}
+        />
+        <View style={styles.nowPlaying}>
+          <Text style={styles.nowPlayingTitle}>
+            {playlist.tracks[currentTrack].title}
+          </Text>
+          <Text style={styles.nowPlayingArtist}>
+            {playlist.tracks[currentTrack].artist}
+          </Text>
+        </View>
+        <View style={styles.playbackControls}>
+          <TouchableOpacity>
+            <Ionicons name="play-skip-back" size={24} color="#000000" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.miniPlayButton}
+            onPress={togglePlay}
+          >
+            <Ionicons
+              name={isPlaying ? "pause" : "play"}
+              size={24}
+              color="#000000"
+            />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Ionicons name="play-skip-forward" size={24} color="#000000" />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+};
