@@ -158,3 +158,140 @@ const MusicPlaylistApp = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  header: {
+    padding: 20,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 20 : 20,
+  },
+  coverImage: {
+    width: width * 0.5,
+    height: width * 0.5,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  playlistInfo: {
+    marginBottom: 20,
+  },
+  playlistTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 8,
+  },
+  playlistCreator: {
+    fontSize: 16,
+    color: '#ffffff',
+    opacity: 0.9,
+    marginBottom: 4,
+  },
+  playlistFollowers: {
+    fontSize: 14,
+    color: '#ffffff',
+    opacity: 0.8,
+  },
+  controls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eeeeee',
+  },
+  playButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#1db954',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 20,
+  },
+  shuffleButton: {
+    padding: 10,
+  },
+  trackList: {
+    padding: 20,
+  },
+  trackItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eeeeee',
+  },
+  currentTrack: {
+    backgroundColor: '#f7f7f7',
+  },
+  trackNumber: {
+    width: 30,
+    fontSize: 16,
+    color: '#8e8e93',
+  },
+  trackInfo: {
+    flex: 1,
+    marginRight: 20,
+  },
+  trackTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#000000',
+    marginBottom: 4,
+  },
+  trackArtist: {
+    fontSize: 14,
+    color: '#8e8e93',
+  },
+  trackPlays: {
+    fontSize: 14,
+    color: '#8e8e93',
+    marginRight: 20,
+  },
+  playbackBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#eeeeee',
+    backgroundColor: '#ffffff',
+  },
+  miniCover: {
+    width: 40,
+    height: 40,
+    borderRadius: 5,
+    marginRight: 10,
+  },
+  nowPlaying: {
+    flex: 1,
+  },
+  nowPlayingTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#000000',
+  },
+  nowPlayingArtist: {
+    fontSize: 12,
+    color: '#8e8e93',
+  },
+  playbackControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+  },
+  miniPlayButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#eeeeee',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+export default MusicPlaylistApp;
