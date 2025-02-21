@@ -149,3 +149,167 @@ const LoginScreen = ({ navigation }) => {
   );
 };
 
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    gradient: {
+      flex: 1,
+    },
+    keyboardAvoid: {
+      flex: 1,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      padding: 20,
+      paddingTop: 40,
+    },
+    logoContainer: {
+      alignItems: 'center',
+      marginBottom: 40,
+    },
+    logoCircle: {
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+    logoText: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#ffffff',
+    },
+    welcomeText: {
+      fontSize: 28,
+      fontWeight: 'bold',
+      color: '#ffffff',
+      marginBottom: 8,
+    },
+    subtitleText: {
+      fontSize: 16,
+      color: '#9ca3af',
+    },
+    formContainer: {
+      width: '100%',
+    },
+    inputContainer: {
+      marginBottom: 20,
+    },
+    label: {
+      fontSize: 14,
+      color: '#d1d5db',
+      marginBottom: 8,
+    },
+    input: {
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      borderRadius: 12,
+      padding: 16,
+      color: '#ffffff',
+      fontSize: 16,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    optionsRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 24,
+    },
+    rememberMe: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    checkbox: {
+      width: 20,
+      height: 20,
+      borderRadius: 4,
+      borderWidth: 2,
+      borderColor: '#7c3aed',
+      marginRight: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    checkboxChecked: {
+      backgroundColor: '#7c3aed',
+    },
+    checkmark: {
+      color: '#ffffff',
+      fontSize: 12,
+    },
+    rememberText: {
+      color: '#d1d5db',
+      fontSize: 14,
+    },
+    forgotPassword: {
+      color: '#7c3aed',
+      fontSize: 14,
+    },
+    loginButton: {
+      width: '100%',
+      height: 56,
+      borderRadius: 12,
+      overflow: 'hidden',
+      marginBottom: 24,
+    },
+    loginGradient: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    loginText: {
+      color: '#ffffff',
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    dividerContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 24,
+    },
+    divider: {
+      flex: 1,
+      height: 1,
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    dividerText: {
+      color: '#9ca3af',
+      paddingHorizontal: 16,
+      fontSize: 14,
+    },
+    socialButtons: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginBottom: 24,
+    },
+    socialButton: {
+      flex: 1,
+      height: 48,
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      borderRadius: 12,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginHorizontal: 6,
+    },
+    socialButtonText: {
+      color: '#ffffff',
+      fontSize: 14,
+    },
+    signUpContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    signUpText: {
+      color: '#9ca3af',
+      fontSize: 14,
+    },
+    signUpLink: {
+      color: '#7c3aed',
+      fontSize: 14,
+      fontWeight: 'bold',
+    },
+  });
+  
+  export default LoginScreen;
