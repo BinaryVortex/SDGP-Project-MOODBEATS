@@ -104,3 +104,113 @@ const SignInScreen = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    gradient: {
+      flex: 1,
+    },
+    content: {
+      flex: 1,
+      padding: 20,
+      justifyContent: 'center',
+    },
+    logoContainer: {
+      alignItems: 'center',
+      marginBottom: 50,
+    },
+    logo: {
+      width: 100,
+      height: 100,
+      marginBottom: 10,
+    },
+    appName: {
+      fontSize: 32,
+      fontWeight: 'bold',
+      color: '#ffffff',
+      letterSpacing: 2,
+    },
+    tagline: {
+      fontSize: 16,
+      color: '#cccccc',
+      marginTop: 5,
+    },
+    formContainer: {
+      width: '100%',
+      marginBottom: 30,
+    },
+    input: {
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      borderRadius: 10,
+      padding: 15,
+      marginBottom: 15,
+      color: '#ffffff',
+      fontSize: 16,
+    },
+    signInButton: {
+      width: '100%',
+      height: 50,
+      borderRadius: 10,
+      overflow: 'hidden',
+      marginTop: 10,
+    },
+    buttonGradient: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    buttonText: {
+      color: '#ffffff',
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+    forgotPassword: {
+      alignItems: 'center',
+      marginTop: 15,
+    },
+    forgotPasswordText: {
+      color: '#cccccc',
+      fontSize: 14,
+    },
+    socialContainer: {
+      marginTop: 20,
+    },
+    orText: {
+      color: '#cccccc',
+      textAlign: 'center',
+      marginBottom: 20,
+    },
+    socialButtons: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+    },
+    socialButton: {
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      padding: 15,
+      borderRadius: 10,
+      width: '45%',
+      alignItems: 'center',
+    },
+    socialButtonText: {
+      color: '#ffffff',
+      fontSize: 16,
+    },
+    signUpContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginTop: 30,
+    },
+    signUpText: {
+      color: '#cccccc',
+      fontSize: 14,
+    },
+    signUpLink: {
+      color: '#7c3aed',
+      fontSize: 14,
+      fontWeight: 'bold',
+    },
+  });
+  
+  export default SignInScreen;
