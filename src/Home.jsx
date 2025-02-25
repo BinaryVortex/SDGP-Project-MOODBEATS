@@ -93,7 +93,13 @@ const NavItem = ({ icon, label }) => (
 );
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: 40, backgroundColor: "#000" },
+  
+  container: { 
+    flex: 1, 
+    paddingTop: 40, 
+    backgroundColor: "#000"
+   },
+
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16 },
   title: { fontSize: 24, fontWeight: 'bold', color: '#fff' },
   searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#333', borderRadius: 20, paddingHorizontal: 10, width: 150 },
