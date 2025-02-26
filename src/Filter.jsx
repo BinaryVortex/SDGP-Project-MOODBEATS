@@ -111,20 +111,96 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end', 
     padding: 10 
   },
+
+  filterButton: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    backgroundColor: '#FF8000', 
+    padding: 8, 
+    borderRadius: 20 
+  },
+
+  filterText: { 
+    color: 'white', 
+    marginRight: 5 
+  },
+
+  filterMenu: { 
+    position: 'absolute', 
+    right: 20, 
+    top: 100, 
+    backgroundColor: '#333', 
+    borderRadius: 10, 
+    padding: 10 
+  },
+
+  filterOption: { 
+    padding: 5 
+  },
+
+  filterOptionText: { 
+    color: 'white' 
+  },
+
+  content: { 
+    flex: 1, 
+    padding: 20 
+  },
+
+  sectionHeader: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    marginBottom: 10 
+  },
+
+  sectionTitle: { 
+    color: 'white', 
+    fontSize: 16, 
+    fontWeight: 'bold', 
+    marginLeft: 5 
+  },
+
+  trackItem: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    marginBottom: 10, 
+    padding: 10, 
+    borderRadius: 10, 
+    backgroundColor: 'rgba(255,255,255,0.1)' 
+  },
+
+  trackImage: { 
+    width: 40, 
+    height: 40, 
+    borderRadius: 5, 
+    marginRight: 10 
+  },
+
+  trackDetails: { 
+    flex: 1 
+  },
+
+  trackTitle: { 
+    color: 'white', 
+    fontSize: 14, 
+    fontWeight: 'bold' 
+  },
+
+  trackSubtitle: { 
+    color: 'gray', 
+    fontSize: 12 
+  },
+
+  trackActions: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    gap: 10 
+  },
+
+  playButton: { 
+    backgroundColor: '#FF8000', 
+    padding: 10, 
+    borderRadius: 20 
+  },
   
-  filterButton: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FF8000', padding: 8, borderRadius: 20 },
-  filterText: { color: 'white', marginRight: 5 },
-  filterMenu: { position: 'absolute', right: 20, top: 100, backgroundColor: '#333', borderRadius: 10, padding: 10 },
-  filterOption: { padding: 5 },
-  filterOptionText: { color: 'white' },
-  content: { flex: 1, padding: 20 },
-  sectionHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
-  sectionTitle: { color: 'white', fontSize: 16, fontWeight: 'bold', marginLeft: 5 },
-  trackItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 10, padding: 10, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.1)' },
-  trackImage: { width: 40, height: 40, borderRadius: 5, marginRight: 10 },
-  trackDetails: { flex: 1 },
-  trackTitle: { color: 'white', fontSize: 14, fontWeight: 'bold' },
-  trackSubtitle: { color: 'gray', fontSize: 12 },
-  trackActions: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  playButton: { backgroundColor: '#FF8000', padding: 10, borderRadius: 20 },
 });
