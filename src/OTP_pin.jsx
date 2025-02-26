@@ -146,14 +146,59 @@ const styles = StyleSheet.create({
   otpActive: { 
     borderColor: '#0ef' 
   },
+
+  otpText: { 
+    fontSize: 20, 
+    color: '#fff' 
+  },
+
+  submitButton: { 
+    width: '100%', 
+    padding: 15, 
+    borderRadius: 10, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    marginBottom: 20 
+  },
+
+  activeButton: { 
+    backgroundColor: '#0ef' 
+  },
+
+  disabledButton: { 
+    backgroundColor: '#333' 
+  },
+
+  submitText: { 
+    fontSize: 16, 
+    color: '#fff', 
+    fontWeight: 'bold' 
+  },
+
+  numberPad: { 
+    width: '80%', 
+    flexDirection: 'row', 
+    flexWrap: 'wrap', 
+    justifyContent: 'space-between' 
+  },
+
+  numberButton: { 
+    width: '30%', 
+    aspectRatio: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: '#222', 
+    borderRadius: 10, 
+    marginBottom: 10 
+  },
   
-  otpText: { fontSize: 20, color: '#fff' },
-  submitButton: { width: '100%', padding: 15, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
-  activeButton: { backgroundColor: '#0ef' },
-  disabledButton: { backgroundColor: '#333' },
-  submitText: { fontSize: 16, color: '#fff', fontWeight: 'bold' },
-  numberPad: { width: '80%', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  numberButton: { width: '30%', aspectRatio: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#222', borderRadius: 10, marginBottom: 10 },
-  pressedButton: { backgroundColor: '#0ef' },
-  numberText: { fontSize: 24, color: '#fff' }
+  pressedButton: { 
+    backgroundColor: '#0ef' 
+  },
+
+  numberText: { 
+    fontSize: 24, 
+    color: '#fff' 
+  }
+  
 });
