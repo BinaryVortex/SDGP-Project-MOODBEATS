@@ -95,14 +95,58 @@ export default function OTPVerification() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  header: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-  backButton: { padding: 10 },
-  title: { fontSize: 18, fontWeight: 'bold', color: '#fff' },
-  description: { textAlign: 'center', color: '#bbb', marginBottom: 20, fontSize: 14 },
-  otpContainer: { flexDirection: 'row', justifyContent: 'center', gap: 10, marginBottom: 30 },
-  otpBox: { width: 50, height: 50, borderRadius: 10, backgroundColor: '#222', justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#333' },
-  otpActive: { borderColor: '#0ef' },
+  container: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    padding: 20 
+  },
+
+  header: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    marginBottom: 20 
+  },
+
+  backButton: { 
+    padding: 10 
+  },
+  
+  title: { 
+    fontSize: 18, 
+    fontWeight: 'bold', 
+    color: '#fff' 
+  },
+
+  description: { 
+    textAlign: 'center', 
+    color: '#bbb', 
+    marginBottom: 20, 
+    fontSize: 14 
+  },
+
+  otpContainer: { 
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+    gap: 10, 
+    marginBottom: 30 
+  },
+
+  otpBox: { 
+    width: 50, 
+    height: 50, 
+    borderRadius: 10, 
+    backgroundColor: '#222', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    borderWidth: 2, 
+    borderColor: '#333' 
+  },
+
+  otpActive: { 
+    borderColor: '#0ef' 
+  },
+  
   otpText: { fontSize: 20, color: '#fff' },
   submitButton: { width: '100%', padding: 15, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
   activeButton: { backgroundColor: '#0ef' },

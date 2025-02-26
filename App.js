@@ -6,7 +6,7 @@ import SignInProfile from './src/Sign-in_profile';
 
 export default function App() {
   return (
-    <HomePage/>
+    <OTPVerification/>
   );
 }
 
