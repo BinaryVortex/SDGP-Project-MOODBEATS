@@ -4,7 +4,7 @@ import MoodSelectionScreen from './src/Moodpage';
 
 export default function App() {
   return (
-    <MoodSelectionScreen/>
+    <LoginScreen/>
   );
 }
 

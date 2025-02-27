@@ -5,13 +5,13 @@ import { Feather } from '@expo/vector-icons';
 import {  TextInput, FlatList, ScrollView } from 'react-native';
 
 export default function MoodSelectionScreen() {
-  const NavItem = ({ icon, label }) => (
-    <TouchableOpacity style={styles.navItem}>
-      <Feather name={icon} size={20} color="#bbb" />
-      <Text style={styles.navLabel}>{label}</Text>
-    </TouchableOpacity>
-  );
-  
+  const NavItem = ({ icon, label, color }) => (
+  <TouchableOpacity style={styles.navItem}>
+    <Feather name={icon} size={20} color={color || "#bbb"} />
+    <Text style={[styles.navLabel, { color: color || "#bbb" }]}>{label}</Text>
+  </TouchableOpacity>
+);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -29,18 +29,26 @@ export default function MoodSelectionScreen() {
         <Text style={styles.optionText}>Face Detection</Text>
       </TouchableOpacity>
       
-      <Text style={styles.orText}>Or</Text>
+
+      <View style={{ alignItems: "center", justifyContent: "center" }}>
+  <Text style={styles.orText}>Or</Text>
+  </View>
+
 
       <TouchableOpacity style={styles.optionButton}>
         <FontAwesome name="microphone" size={50} color="white" />
         <Text style={styles.optionText}>Voice Detection</Text>
       </TouchableOpacity>
 
-      <Text style={styles.orText}>Or</Text>
+      
+      <View style={{ alignItems: "center", justifyContent: "center" }}>
+  <Text style={styles.orText}>Or</Text>
+  </View>
+
       
       <TouchableOpacity style={styles.optionButton}>
         <Text style={styles.emojiText}>😊 😢 😐 😡 😴</Text>
-        <Text style={styles.optionText}>Current Mood</Text>
+        <Text style={styles.optionText}>Current Mood </Text>
       </TouchableOpacity>
 
       <View style={styles.bottomNav}>
@@ -60,9 +68,9 @@ export default function MoodSelectionScreen() {
       </View>
 
       <View style={styles.navbar}>
-        <NavItem icon="home" label="Home" />
-        <NavItem icon="heart" label="Mood" />
-        <NavItem icon="music" label="Playlist" />
+        <NavItem icon="home" label="Home" color="orange" />
+        <NavItem icon="heart" label="Mood" color="orange"/>
+        <NavItem icon="music" label="Playlist" color="orange"/>   
       </View>
     </View>
     
@@ -144,6 +152,7 @@ const styles = StyleSheet.create({
       color: "white",
       marginVertical: 10,
       fontSize: 16,
+      textAlign: "center",
     },
     emojiText: {
       fontSize: 24,
@@ -156,6 +165,9 @@ const styles = StyleSheet.create({
       justifyContent: "space-around",
       paddingVertical: 10,
       backgroundColor: "#222",
+    },
+    optionsContainer:{
+      marginTop: 50,
     },
   });
   
