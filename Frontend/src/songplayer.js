@@ -99,3 +99,101 @@ const MusicPlayerPreview = () => {
 };
 
 
+// Styles
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#1a1a1a',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  header: {
+    width: '90%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  headerText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  albumArt: {
+    width: 250,
+    height: 250,
+    backgroundColor: '#4287f5',
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  albumText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  songTitle: {
+    color: 'white',
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  artist: {
+    color: 'gray',
+    fontSize: 16,
+    marginTop: 5,
+  },
+  songInfo: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  progressContainer: {
+    width: '90%',
+    marginBottom: 20,
+  },
+  progressBar: {
+    height: 6,
+    backgroundColor: '#555',
+    borderRadius: 3,
+  },
+  progressFill: {
+    height: 6,
+    backgroundColor: '#ff5733',
+    borderRadius: 3,
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 5,
+  },
+  timeText: {
+    color: 'gray',
+    fontSize: 12,
+  },
+  controls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '70%',
+    justifyContent: 'space-between',
+    marginBottom: 30,
+  },
+  playButton: {
+    width: 75,
+    height: 75,
+    backgroundColor: '#ff5733',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  bottomControls: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '50%',
+  },
+});
+
