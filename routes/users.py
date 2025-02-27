@@ -1,13 +1,36 @@
-from fastapi import APIRouter, HTTPException
-from models import User
-from services.auth import hash_password, verify_password
+# users.py
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 
-# Create a router for user-related endpoints
+from ..services import auth
+from ..models import UserCreate, UserResponse, UserInDB
+
 router = APIRouter()
 
-# Example endpoint: User registration
-@router.post("/register")
-async def register_user(user: User):
-    hashed_pw = hash_password(user.password)  # Hash user password
-    # Add user to database (dummy example)
-    return {"message": "User registered", "hashed_password": hashed_pw}
+@router.post("/register", response_model=UserResponse)
+async def register(user: UserCreate):
+    try:
+        return await auth.create_user(user)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/token")
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = await auth.authenticate_user(form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password"
+        )
+    access_token = auth.create_access_token(data={"sub": user.email})
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@router.get("/me", response_model=UserResponse)
+async def get_current_user(current_user: UserInDB = Depends(auth.get_current_user)):
+    return UserResponse(
+        id=current_user.id,
+        email=current_user.email,
+        username=current_user.username,
+        full_name=current_user.full_name,
+        created_at=current_user.created_at
+    )
