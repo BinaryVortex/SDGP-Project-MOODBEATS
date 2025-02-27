@@ -126,13 +126,21 @@ const LoginScreen = ({ navigation }) => {
               </View>
 
               <View style={styles.socialButtons}>
-                <TouchableOpacity style={styles.socialButton}>
-                  <Text style={styles.socialButtonText}>Google</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.socialButton}>
-                  <Text style={styles.socialButtonText}>Apple</Text>
-                </TouchableOpacity>
-              </View>
+              {/* Google Login */}
+              <TouchableOpacity style={styles.socialButton}>
+                <Text style={styles.socialButtonText}>Google</Text>
+              </TouchableOpacity>
+
+              {/* Facebook Login */}
+              <TouchableOpacity style={styles.socialButton}>
+                <Text style={styles.socialButtonText}>Facebook</Text>
+              </TouchableOpacity>
+
+              {/* Instagram Login */}
+              <TouchableOpacity style={styles.socialButton}>
+                <Text style={styles.socialButtonText}>Instagram</Text>
+              </TouchableOpacity>
+            </View>
 
               {/* Sign Up Link */}
               <View style={styles.signUpContainer}>

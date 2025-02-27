@@ -34,10 +34,10 @@ const SignInScreen = () => {
         >
           {/* Logo and App Name */}
           <View style={styles.logoContainer}>
-            <Image
+            {/* <Image
               source={require('./assets/logo.png')} // Add your logo image
               style={styles.logo}
-            />
+            /> */}
             <Text style={styles.appName}>MOODBEATS</Text>
             <Text style={styles.tagline}>Your AI Music Companion</Text>
           </View>

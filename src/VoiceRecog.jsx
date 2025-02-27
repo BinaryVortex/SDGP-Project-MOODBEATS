@@ -7,22 +7,19 @@ import {
   Animated,
   SafeAreaView,
 } from 'react-native';
-import { Camera } from 'lucide-react';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const MoodRecognition = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [detectedMood, setDetectedMood] = useState(null);
   const [confidence, setConfidence] = useState(0);
-  
-  // Animation value for the recording indicator
+
   const pulseAnim = new Animated.Value(1);
 
-  // Simulate mood detection with random moods
   const moods = ['Happy', 'Sad', 'Angry', 'Neutral', 'Excited'];
-  
+
   useEffect(() => {
     if (isRecording) {
-      // Pulse animation for recording indicator
       Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, {
@@ -38,10 +35,9 @@ const MoodRecognition = () => {
         ])
       ).start();
 
-      // Simulate mood detection after 3 seconds
       const timer = setTimeout(() => {
         const randomMood = moods[Math.floor(Math.random() * moods.length)];
-        const randomConfidence = Math.floor(Math.random() * 30) + 70; // 70-99%
+        const randomConfidence = Math.floor(Math.random() * 30) + 70;
         setDetectedMood(randomMood);
         setConfidence(randomConfidence);
         setIsRecording(false);
@@ -96,7 +92,7 @@ const MoodRecognition = () => {
           onPress={handleStartRecording}
           disabled={isRecording}
         >
-          <Camera size={32} color={isRecording ? '#666' : '#fff'} />
+          <Icon name="camera" size={32} color={isRecording ? '#666' : '#fff'} />
           <Text style={styles.recordButtonText}>
             {isRecording ? 'Recording...' : 'Start Recording'}
           </Text>
@@ -122,6 +118,7 @@ const MoodRecognition = () => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
