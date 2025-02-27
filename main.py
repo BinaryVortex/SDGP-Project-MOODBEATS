@@ -1,26 +1,32 @@
-# Import FastAPI to create the application
+# main.py
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
 
-# Import routers from routes to include different functionalities
-from routes.users import router as users_router
-from routes.playlists import router as playlists_router
-from routes.music import router as music_router
-from routes.voice_emotion import router as voice_emotion_router
-from routes.facial_emotion import router as facial_emotion_router
-from routes.recommendation import router as recommendation_router
+from .routes import users, playlists, music, voice_emotion, facial_emotion, recommendation
 
-# Create a FastAPI app instance
-app = FastAPI()
+app = FastAPI(title="MoodBeats API")
 
-# Include routers to organize routes
-app.include_router(users_router, prefix="/users", tags=["Users"])
-app.include_router(playlists_router, prefix="/playlists", tags=["Playlists"])
-app.include_router(music_router, prefix="/music", tags=["Music"])
-app.include_router(voice_emotion_router, prefix="/voice-emotion", tags=["Voice Emotion"])
-app.include_router(facial_emotion_router, prefix="/facial-emotion", tags=["Facial Emotion"])
-app.include_router(recommendation_router, prefix="/recommendation", tags=["Recommendation"])
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Root endpoint to verify server health
+# Include routers
+app.include_router(users.router, prefix="/users", tags=["Users"])
+app.include_router(playlists.router, prefix="/playlists", tags=["Playlists"])
+app.include_router(music.router, prefix="/music", tags=["Music"])
+app.include_router(voice_emotion.router, prefix="/voice-emotion", tags=["Voice Emotion"])
+app.include_router(facial_emotion.router, prefix="/facial-emotion", tags=["Facial Emotion"])
+app.include_router(recommendation.router, prefix="/recommendations", tags=["Recommendations"])
+
 @app.get("/")
-def read_root():
-    return {"message": "Welcome to MoodBeats Backend"}
+async def root():
+    return {"message": "Welcome to MoodBeats API"}
+
+if __name__ == "__main__":
+    uvicorn.run("moodbeats-backend.main:app", host="0.0.0.0", port=8000, reload=True)
