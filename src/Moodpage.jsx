@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function MoodSelectionScreen() {
+  const [scrollY, setScrollY] = useState(0);
+
   const NavItem = ({ icon, label, color }) => (
     <TouchableOpacity style={styles.navItem}>
       <Feather name={icon} size={20} color={color || "#bbb"} />
@@ -12,14 +14,26 @@ export default function MoodSelectionScreen() {
     </TouchableOpacity>
   );
 
+  const handleScroll = (event) => {
+    setScrollY(event.nativeEvent.contentOffset.y);
+  };
+
+  // Calculate the background color dynamically based on scroll position
+  const interpolateColor = () => {
+    const scrollProgress = Math.min(scrollY / 500, 1); // Normalize to range 0-1
+    const red = 59 + (237 - 59) * scrollProgress;
+    const blue = 133 + (237 - 133) * scrollProgress;
+    return `rgb(${Math.round(red)}, ${Math.round(133)}, ${Math.round(blue)})`;
+  };
+
   return (
     <LinearGradient
-      colors={['black', 'rgb(59, 133, 237)']} // Black on top, Blue on bottom
+      colors={['black', interpolateColor()]} // Use dynamic color interpolation
       start={{ x: 0, y: 0 }} // Gradient from Top
       end={{ x: 0, y: 1 }}   // to Bottom
       style={styles.container}
     >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView contentContainerStyle={styles.scrollContainer} onScroll={handleScroll} scrollEventThrottle={16}>
         <View style={styles.header}>
           <Text style={styles.title}>MOODBEATS</Text>
           <View style={styles.searchContainer}>
@@ -99,15 +113,15 @@ const styles = StyleSheet.create({
     flex: 1
   },
   optionButton: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.0)", // Transparent background
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
     marginVertical: 10,
     width: "80%",
     alignSelf: 'center',
-    borderWidth: 2,
-    borderColor: "rgb(59, 133, 237)", // Blue border
+    borderWidth: 2,         // Add white border with low opacity
+    borderColor: "rgba(255, 255, 255, 0.3)", // White border with low opacity
   },
   optionText: {
     color: "white",
