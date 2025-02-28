@@ -103,6 +103,88 @@ const MusicPlayer = () => {
   );
 };
 
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#121212',
+    padding: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  progressContainer: {
+    marginBottom: 20,
+  },
+  progressBarBackground: {
+    height: 4,
+    backgroundColor: '#4d4d4d',
+    borderRadius: 2,
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: '#f87537',
+    borderRadius: 2,
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  timeText: {
+    color: 'white',
+    fontSize: 12,
+  },
+  controls: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  playButton: {
+    backgroundColor: '#f87537',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  secondaryControls: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#333',
+    marginVertical: 20,
+  },
+  lyricsContainer: {
+    flex: 1,
+  },
+  lyricsHeader: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  lyricsContent: {
+    backgroundColor: '#2a2a2a',
+    padding: 16,
+    borderRadius: 8,
+  },
+  lyric: {
+    color: 'white',
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  lyricHighlighted: {
+    color: '#f87537',
+    fontSize: 16,
+    lineHeight: 24,
+  },
+});
 
 export default MusicPlayer;
