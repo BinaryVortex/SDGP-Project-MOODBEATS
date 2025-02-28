@@ -1,13 +1,13 @@
-# Music.py
+# music.py
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from typing import List
-from ..database import db
-from ..models import Music, MusicCreate, UserInDB
-from ..services.auth import get_current_user
+from datetime import datetime
+from database import db
+from models import Music, MusicCreate, UserInDB
+from services.auth import get_current_user
 from bson import ObjectId
 import os
 import shutil
-from datetime import datetime
 
 router = APIRouter()
 
