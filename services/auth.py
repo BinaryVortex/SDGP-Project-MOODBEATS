@@ -7,9 +7,9 @@ from bson import ObjectId
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
-from ..models import UserCreate, UserInDB, UserResponse
-from ..database import db
-from ..config import settings
+from models import UserCreate, UserInDB, UserResponse
+from database import db
+from config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/token")
