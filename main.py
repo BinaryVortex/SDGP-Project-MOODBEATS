@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-from .routes import users, playlists, music, voice_emotion, facial_emotion, recommendation
+from routes import users, playlists, music, voice_emotion, facial_emotion, recommendation
 
 app = FastAPI(title="MoodBeats API")
 
@@ -29,4 +29,4 @@ async def root():
     return {"message": "Welcome to MoodBeats API"}
 
 if __name__ == "__main__":
-    uvicorn.run("moodbeats-backend.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
