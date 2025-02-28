@@ -33,4 +33,4 @@ async def detect_facial_emotion(image: UploadFile = File(...)):
     finally:
         # Clean up the temp file
         if os.path.exists(temp_file):
-            os.remove(temp_file)
+            os.remove(temp_file) 
