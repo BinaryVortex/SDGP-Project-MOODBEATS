@@ -2,9 +2,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List, Optional
 
-from ..database import db
-from ..models import Music, UserInDB
-from ..services.auth import get_current_user
+from database import db
+from models import Music, UserInDB
+from services.auth import get_current_user
 
 router = APIRouter()
 
