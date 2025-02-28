@@ -35,7 +35,7 @@ export default function OTPVerification() {
   };
 
   return (
-    <LinearGradient colors={["#1a1a2e", "#16213e"]} style={styles.container}>
+    <LinearGradient colors={["#000", "#0ef"]} style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton}>
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
 
   description: { 
     textAlign: 'center', 
-    color: '#bbb', 
+    color: '#fff', 
     marginBottom: 20, 
     fontSize: 14 
   },
@@ -136,11 +136,11 @@ const styles = StyleSheet.create({
     width: 50, 
     height: 50, 
     borderRadius: 10, 
-    backgroundColor: '#222', 
+    backgroundColor: '#000', 
     justifyContent: 'center', 
     alignItems: 'center', 
     borderWidth: 2, 
-    borderColor: '#333' 
+    borderColor: '#000' 
   },
 
   otpActive: { 
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   },
 
   disabledButton: { 
-    backgroundColor: '#333' 
+    backgroundColor: '#000' 
   },
 
   submitText: { 
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1, 
     justifyContent: 'center', 
     alignItems: 'center', 
-    backgroundColor: '#222', 
+    backgroundColor: '#000', 
     borderRadius: 10, 
     marginBottom: 10 
   },
