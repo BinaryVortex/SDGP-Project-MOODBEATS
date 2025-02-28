@@ -1,26 +1,14 @@
 # playlists.py
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List
-
-from ..database import db
-from ..models import Playlist, PlaylistCreate, UserInDB
-from ..services.auth import get_current_user
-from bson import ObjectId
+from models import Playlist, UserInDB  # Adjust if your models are in a different location
+from services.auth import get_current_user # Adjust if your auth function is in a different location
+from database import db 
+from fastapi import APIRouter
+from typing import List
+from models import Playlist 
 
 router = APIRouter()
-
-@router.post("/", response_model=Playlist)
-async def create_playlist(
-    playlist: PlaylistCreate, 
-    current_user: UserInDB = Depends(get_current_user)
-):
-    playlist_dict = playlist.dict()
-    playlist_dict["id"] = str(ObjectId())
-    playlist_dict["user_id"] = current_user.id
-    playlist_dict["songs"] = []
-    
-    await db.playlists.insert_one(playlist_dict)
-    return Playlist(**playlist_dict)
 
 @router.get("/", response_model=List[Playlist])
 async def get_user_playlists(current_user: UserInDB = Depends(get_current_user)):
