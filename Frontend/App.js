@@ -1,10 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import songplayer from '..src/songplayer';
+import SongPlayer from '../src/songplayer'; 
 
 export default function App() {
   return (
-    <songplayer/>
+    <View style={styles.container}>
+      <SongPlayer />
+      <StatusBar style="auto" />
+    </View>
   );
 }
 
@@ -16,4 +19,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
