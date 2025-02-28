@@ -66,5 +66,25 @@ export default function EmotionDetectionApp() {
   );
 }
 
-
-;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
+  camera: {
+    flex: 1,
+  },
+  emotionContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    padding: 20,
+    alignItems: 'center',
+  },
+  emotionText: {
+    color: 'white',
+    fontSize: 20,
+  },
+});
