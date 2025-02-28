@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     color: '#42a5f5', 
     marginLeft: 5 
   }
-  
+
 });
 
 export default LoginScreenPreview;

@@ -10,14 +10,14 @@ const artists = [
 
 export default function HomePage() {
   return (
-    <LinearGradient colors={["#1a1a2e", "#16213e"]} style={styles.container}>
+    <LinearGradient colors={["#000", "#3b85ed"]} style={styles.container}>
       
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>MOODBEATS</Text>
           <View style={styles.searchContainer}>
-            <Feather name="search" size={16} color="#999" style={styles.searchIcon} />
-            <TextInput placeholder="Search" placeholderTextColor="#aaa" style={styles.searchInput} />
+            <Feather name="search" size={16} color="#fff" style={styles.searchIcon} />
+            <TextInput placeholder="Search" placeholderTextColor="#fff" style={styles.searchInput} />
           </View>
         </View>
 
@@ -105,7 +105,7 @@ const ArtistItem = ({ name }) => (
 
 const NavItem = ({ icon, label }) => (
   <TouchableOpacity style={styles.navItem}>
-    <Feather name={icon} size={20} color="#bbb" />
+    <Feather name={icon} size={20} color="#fff" />
     <Text style={styles.navLabel}>{label}</Text>
   </TouchableOpacity>
 );
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   
   musicTitle: { 
     marginTop: 5, 
-    color: '#ccc', 
+    color: '#fff', 
     fontSize: 12, 
     paddingTop: 98, 
     marginLeft: 8 
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
 
   artistName: { 
     marginTop: 5, 
-    color: '#ccc', 
+    color: '#fff', 
     fontSize: 12, 
     textAlign: 'center' 
   },
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
 
   navLabel: { 
     fontSize: 10, 
-    color: '#bbb', 
+    color: '#fff', 
     marginTop: 7 
   }
   
