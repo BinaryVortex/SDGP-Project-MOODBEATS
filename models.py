@@ -3,7 +3,7 @@ from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 from datetime import datetime
 
-# User models
+# User models 
 class UserBase(BaseModel):
     email: EmailStr
     username: str
