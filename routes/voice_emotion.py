@@ -11,7 +11,7 @@ async def detect_voice_emotion(audio: UploadFile = File(...)):
     os.makedirs("temp", exist_ok=True)
     
     # Save uploaded file temporarily
-    temp_file = f"temp/{audio.filename}"-
+    temp_file = f"temp/{audio.filename}"
     with open(temp_file, "wb") as buffer:
         shutil.copyfileobj(audio.file, buffer)
     
