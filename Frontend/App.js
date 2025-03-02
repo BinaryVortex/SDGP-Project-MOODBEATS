@@ -1,21 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import SongPlayer from '../src/songplayer'; 
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import SongPlayer from './src/songplayer';  // Correct path to your SongPlayer component
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <SongPlayer />
-      <StatusBar style="auto" />
-    </View>
+    <SongPlayer/>
+  
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
+;
