@@ -7,21 +7,22 @@ const ProfileSetup = () => {
 
   return (
     <ImageBackground
-      source={require('../assets/icon.png')}
+      source={require('../assets/Back02.jpg')}
       style={styles.container}
     >
+    
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton}>
           <ChevronLeft size={24} color="white" />
         </TouchableOpacity>
-        <Text style={styles.title}><Music2 size={24} color="orange" /> MOODBEAST</Text>
+        <Text style={styles.title}><Music2 size={20} color="orange" /> MOODBEAST</Text>
       </View>
 
       {/* Profile Picture */}
       <View style={styles.profileContainer}>
         <View style={styles.profilePicture}>
-          <Camera size={32} color="#fff" />
+          <Camera size={35} color="#fff" />
         </View>
         <TouchableOpacity style={styles.cameraButton}>
           <Camera size={16} color="white" />
@@ -56,13 +57,14 @@ const ProfileSetup = () => {
         </TouchableOpacity>
       </View>
     </ImageBackground>
+    
   );
 };
 
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    padding: 30, 
+    padding: 20, 
     backgroundColor: '#000' 
 },
 
@@ -73,26 +75,26 @@ const styles = StyleSheet.create({
 },
 
   backButton: { 
-    padding: 10 
+    padding: 10
 },
 
   title: { 
     fontSize: 20, 
     fontWeight: 'bold', 
     color: 'white', 
-    marginLeft: 20 
+    marginLeft: 0 
 },
 
   profileContainer: { 
     alignItems: 'center', 
-    marginBottom: 30 
+    marginBottom: 30
 },
 
   profilePicture: { 
-    width: 100, 
-    height: 100, 
+    width: 150, 
+    height: 150, 
     borderRadius: 50, 
-    backgroundColor: '#333', 
+    backgroundColor: '#000', 
     justifyContent: 'center', 
     alignItems: 'center' 
 },
@@ -100,33 +102,33 @@ const styles = StyleSheet.create({
   cameraButton: { 
     position: 'absolute', 
     bottom: 0, 
-    right: 10, 
+    right: 75, 
     backgroundColor: 'orange', 
-    padding: 6, 
+    padding: 10, 
     borderRadius: 20 
 },
 
   iconSpin: { 
     position: 'absolute', 
     top: 0, 
-    right: 10, 
+    right: 100, 
     transform: [{ rotate: '360deg' }] 
 },
 
   form: { 
-    marginBottom: 20 
+    marginBottom: 55 
 },
 
   input: { 
     backgroundColor: '#222', 
     padding: 15, 
-    borderRadius: 10, 
+    borderRadius: 20, 
     color: 'white', 
-    marginBottom: 10 
+    marginBottom: 25
 },
 
   inputFocused: { 
-    borderColor: 'orange', 
+    borderColor: '#0ef', 
     borderWidth: 2 
 },
 
