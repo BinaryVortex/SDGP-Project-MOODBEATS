@@ -57,17 +57,19 @@ export default function HomePage() {
             keyExtractor={(item) => item}
             showsHorizontalScrollIndicator={false}
           />
+          
         </Section>
 
         {/* Trending */}
         <Section title="Trending">
           <FlatList
             horizontal
-            data={Array(10).fill(0)}
+            data={Array(5).fill(0)}
             renderItem={({ index }) => <MusicItem title={`Track ${index + 1}`} />}
             keyExtractor={(item, index) => index.toString()}
             showsHorizontalScrollIndicator={false}
           />
+          
         </Section>
       </ScrollView>
 

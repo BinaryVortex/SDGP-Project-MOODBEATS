@@ -35,11 +35,11 @@ export default function OTPVerification() {
   };
 
   return (
-    <LinearGradient colors={["#000", "#0ef"]} style={styles.container}>
+    <LinearGradient colors={["#3b85ed", "#000"]} style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton}>
-          <Feather name="chevron-left" size={24} color="#ccc" />
+          <Feather name="chevron-left" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.title}>Enter Your OTP</Text>
       </View>
@@ -99,23 +99,26 @@ const styles = StyleSheet.create({
     flex: 1, 
     justifyContent: 'center', 
     alignItems: 'center', 
-    padding: 20 
+    padding: 20,
   },
 
   header: { 
     flexDirection: 'row', 
     alignItems: 'center', 
-    marginBottom: 20 
+    marginBottom: 30,
+    marginTop: 30,
   },
 
   backButton: { 
-    padding: 10 
+    padding: 10,
+    marginRight: 10,
   },
   
   title: { 
     fontSize: 18, 
     fontWeight: 'bold', 
-    color: '#fff' 
+    color: '#fff',
+    marginRight: 45,
   },
 
   description: { 
@@ -129,7 +132,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     justifyContent: 'center', 
     gap: 10, 
-    marginBottom: 30 
+    marginBottom: 40 
   },
 
   otpBox: { 
@@ -144,7 +147,7 @@ const styles = StyleSheet.create({
   },
 
   otpActive: { 
-    borderColor: '#0ef' 
+    borderColor: '#fffaf0' 
   },
 
   otpText: { 
@@ -158,11 +161,11 @@ const styles = StyleSheet.create({
     borderRadius: 10, 
     justifyContent: 'center', 
     alignItems: 'center', 
-    marginBottom: 20 
+    marginBottom: 30
   },
 
   activeButton: { 
-    backgroundColor: '#0ef' 
+    backgroundColor: '#87cefa' 
   },
 
   disabledButton: { 
@@ -189,7 +192,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     backgroundColor: '#000', 
     borderRadius: 10, 
-    marginBottom: 10 
+    marginBottom: 20 
   },
   
   pressedButton: { 
