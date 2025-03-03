@@ -162,7 +162,7 @@ const MusicPlaylistApp = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'transparent', // Make the container transparent
   },
   scrollView: {
     flex: 1,
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderTopWidth: 1,
     borderTopColor: '#eeeeee',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'transparent', // Make the playback bar background transparent
   },
   miniCover: {
     width: 40,
