@@ -34,7 +34,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={['#1a1a1a', '#4a1259', '#1a1a1a']}
+        colors={['#1a1a1a', '#355cdf', '#1a1a1a']}
         style={styles.gradient}
       >
         <KeyboardAvoidingView
@@ -54,7 +54,7 @@ const LoginScreen = ({ navigation }) => {
                 <Text style={styles.logoText}>MB</Text>
               </LinearGradient>
               <Text style={styles.welcomeText}>Welcome Back!</Text>
-              <Text style={styles.subtitleText}>Login to continue your musical journey</Text>
+              <Text style={styles.subtitleText}>Sign in to stay in tune with your music</Text>
             </View>
 
             {/* Login Form */}
@@ -107,7 +107,7 @@ const LoginScreen = ({ navigation }) => {
                 disabled={isLoading}
               >
                 <LinearGradient
-                  colors={['#7c3aed', '#4f46e5']}
+                  colors={['#7c3aed', '#355cdf']}
                   style={styles.loginGradient}
                 >
                   {isLoading ? (
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
       fontSize: 14,
     },
     forgotPassword: {
-      color: '#7c3aed',
+      color: '#ffffff',
       fontSize: 14,
     },
     loginButton: {
