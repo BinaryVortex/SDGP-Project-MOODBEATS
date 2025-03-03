@@ -1,13 +1,11 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import SongPlayer from './src/songplayer';  // Correct path to your SongPlayer component
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import LyricsPlayer from './src/LyricsPlayer'; // Adjust the path based on your file structure
 
 export default function App() {
   return (
-    <SongPlayer/>
-  
+    <SafeAreaProvider>
+      <LyricsPlayer />
+    </SafeAreaProvider>
   );
 }
-
-
-;

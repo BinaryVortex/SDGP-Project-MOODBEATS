@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -31,6 +31,26 @@ const MusicPlayerPreview = () => {
     setIsFavorite(!isFavorite);
   };
 
+  // Update progress every second when playing
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isPlaying && currentTime < totalTime) {
+        setCurrentTime((prevTime) => prevTime + 1);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isPlaying, currentTime, totalTime]);
+
+  // Animate the progress bar width
+  useEffect(() => {
+    Animated.timing(progressAnim, {
+      toValue: (currentTime / totalTime) * 100,
+      duration: 500,
+      useNativeDriver: false,
+    }).start();
+  }, [currentTime]);
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -62,7 +82,7 @@ const MusicPlayerPreview = () => {
           <Animated.View
             style={[
               styles.progressFill,
-              { width: (currentTime / totalTime) * 100 + "%" },
+              { width: progressAnim.interpolate({ inputRange: [0, 100], outputRange: ['0%', '100%'] }) },
             ]}
           />
         </View>
@@ -97,7 +117,6 @@ const MusicPlayerPreview = () => {
     </View>
   );
 };
-
 
 // Styles
 const styles = StyleSheet.create({
@@ -196,4 +215,3 @@ const styles = StyleSheet.create({
     width: '50%',
   },
 });
-
