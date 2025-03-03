@@ -11,11 +11,12 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.4",
     "expo": "~52.0.37",
-    "expo-camera": "^16.0.17",
+    "expo-camera": "~16.0.17",
     "expo-face-detector": "^13.0.2",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
-    "react-native": "0.76.7"
+    "react-native": "0.76.7",
+    "react-native-vision-camera": "^4.6.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

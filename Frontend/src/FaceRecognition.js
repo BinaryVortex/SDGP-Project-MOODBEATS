@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   StatusBar,
   ActivityIndicator,
-  Image,
   ScrollView,
 } from 'react-native';
 import { Camera } from 'expo-camera';
@@ -20,6 +19,7 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [detectedMood, setDetectedMood] = useState(null);
   const [selectedMood, setSelectedMood] = useState(null);
+  const [type, setType] = useState(null);
   const cameraRef = useRef(null);
 
   const moodOptions = [
@@ -32,8 +32,18 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
 
   useEffect(() => {
     (async () => {
+      // Request camera permissions
       const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === 'granted');
+      
+      // Safely set camera type
+      if (Camera && Camera.Constants && Camera.Constants.Type) {
+        setType(Camera.Constants.Type.front);
+      } else {
+        // Fallback if Camera.Constants.Type is not available
+        console.log("Camera.Constants.Type is undefined, using fallback");
+        setType(1); // 1 is typically front camera in many implementations
+      }
     })();
   }, []);
 
@@ -249,15 +259,38 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
     );
   }
 
-  // Render camera screen
-  if (step === 'camera') {
+  // Check if camera type is defined before showing camera screen
+  if (step === 'camera' && type === null) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#FF6600" />
+        <Text style={styles.loadingText}>Initializing camera...</Text>
+      </View>
+    );
+  }
+
+  // Render camera screen - THE PROBLEMATIC PART
+  if (step === 'camera' && type !== null) {
+    // Make sure Camera is a valid React component before rendering
+    if (!Camera) {
+      return (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Camera component is not available</Text>
+          <TouchableOpacity style={styles.errorButton} onPress={handleBack}>
+            <Text style={styles.errorButtonText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    
     return (
       <View style={styles.cameraContainer}>
         <StatusBar barStyle="light-content" backgroundColor="#000" />
+        {/* Only render Camera if it's a valid component */}
         <Camera
           ref={cameraRef}
           style={styles.camera}
-          type={Camera.Constants.Type.front}
+          type={type}
           onFacesDetected={handleFaceDetected}
           faceDetectorSettings={{
             mode: FaceDetector.FaceDetectorMode.fast,
@@ -284,7 +317,7 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
     );
   }
 
-  // Render scanning screen (matches Image 2)
+  // Render scanning screen
   if (step === 'scanning') {
     return (
       <SafeAreaView style={styles.scanningContainer}>
@@ -302,7 +335,7 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
     );
   }
 
-  // Render success screen (matches Image 1)
+  // Render success screen (default return)
   return (
     <SafeAreaView style={styles.successContainer}>
       <StatusBar barStyle="light-content" backgroundColor="#1a1a1a" />
@@ -539,7 +572,7 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
   
-  // Scanning screen styles (Image 2)
+  // Scanning screen styles
   scanningContainer: {
     flex: 1,
     backgroundColor: '#1a1a1a',
@@ -573,7 +606,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   
-  // Success screen styles (Image 1)
+  // Success screen styles
   successContainer: {
     flex: 1,
     backgroundColor: '#1a1a1a',
