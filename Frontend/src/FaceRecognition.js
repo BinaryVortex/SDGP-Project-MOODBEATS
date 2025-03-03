@@ -8,6 +8,7 @@ import {
   StatusBar,
   ActivityIndicator,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as FaceDetector from 'expo-face-detector';
@@ -20,6 +21,8 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
   const [detectedMood, setDetectedMood] = useState(null);
   const [selectedMood, setSelectedMood] = useState(null);
   const [type, setType] = useState(null);
+  const [facesDetected, setFacesDetected] = useState(0);
+  const [cameraReady, setCameraReady] = useState(false);
   const cameraRef = useRef(null);
 
   const moodOptions = [
@@ -32,51 +35,84 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
 
   useEffect(() => {
     (async () => {
-      // Request camera permissions
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
-      
-      // Safely set camera type
-      if (Camera && Camera.Constants && Camera.Constants.Type) {
-        setType(Camera.Constants.Type.front);
-      } else {
-        // Fallback if Camera.Constants.Type is not available
-        console.log("Camera.Constants.Type is undefined, using fallback");
-        setType(1); // 1 is typically front camera in many implementations
+      try {
+        // Request camera permissions
+        const { status } = await Camera.requestCameraPermissionsAsync();
+        setHasPermission(status === 'granted');
+        
+        // Set camera type safely
+        if (Camera.Constants && Camera.Constants.Type) {
+          setType(Camera.Constants.Type.front);
+        } else {
+          console.log("Camera.Constants.Type is undefined, using fallback");
+          setType(1); // Fallback for front camera
+        }
+      } catch (error) {
+        console.error("Error initializing camera:", error);
+        Alert.alert(
+          "Camera Error",
+          "Unable to initialize camera. Please restart the app.",
+          [{ text: "OK" }]
+        );
       }
     })();
   }, []);
 
+  // Enhanced face detection function with more accurate mood analysis
   const handleFaceDetected = ({ faces }) => {
+    // Update faces detected count for UI feedback
+    setFacesDetected(faces.length);
+    
     if (faces.length > 0 && step === 'scanning' && !isProcessing) {
       setIsProcessing(true);
       
-      // After detecting a face, simulate processing
+      // Collect facial expression data for better analysis
+      const faceData = faces[0];
+      
+      // After detecting a face, analyze expressions
       setTimeout(() => {
-        // Analyze face and determine mood based on facial expressions
-        const smileValue = faces[0].smilingProbability || 0;
-        const rightEyeOpen = faces[0].rightEyeOpenProbability || 0;
-        const leftEyeOpen = faces[0].leftEyeOpenProbability || 0;
-        
-        // Simplified mood detection algorithm
-        let mood;
-        if (smileValue > 0.7) {
-          mood = 'happy';
-        } else if (smileValue > 0.4) {
-          mood = 'content';
-        } else if (rightEyeOpen < 0.3 && leftEyeOpen < 0.3) {
-          mood = 'relaxed';
-        } else if (faces[0].faceID && faces[0].faceID.includes('frown')) {
-          mood = 'angry';
-        } else {
-          mood = 'neutral';
+        try {
+          // Enhanced mood detection algorithm
+          const smileValue = faceData.smilingProbability || 0;
+          const rightEyeOpen = faceData.rightEyeOpenProbability || 0;
+          const leftEyeOpen = faceData.leftEyeOpenProbability || 0;
+          
+          // More nuanced mood detection
+          let mood;
+          if (smileValue > 0.7) {
+            mood = 'happy';
+          } else if (smileValue > 0.4) {
+            mood = 'content';
+          } else if (rightEyeOpen < 0.3 && leftEyeOpen < 0.3) {
+            mood = 'relaxed';
+          } else if (faceData.faceID && faceData.faceID.includes('frown')) {
+            mood = 'angry';
+          } else if (smileValue < 0.2) {
+            mood = 'sad';
+          } else {
+            mood = 'neutral';
+          }
+          
+          // Set detected mood and move to success screen
+          setDetectedMood(mood);
+          setStep('success');
+        } catch (error) {
+          console.error("Error analyzing face:", error);
+          Alert.alert(
+            "Analysis Error",
+            "Unable to analyze facial expressions. Please try again.",
+            [{ text: "Try Again", onPress: () => setStep('camera') }]
+          );
+        } finally {
+          setIsProcessing(false);
         }
-        
-        setDetectedMood(mood);
-        setStep('success');
-        setIsProcessing(false);
-      }, 3000);
+      }, 2000); // Shortened the processing time for better UX
     }
+  };
+
+  const handleCameraReady = () => {
+    console.log("Camera is ready");
+    setCameraReady(true);
   };
 
   const startFaceRecognition = () => {
@@ -84,7 +120,26 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
   };
 
   const startScanning = () => {
-    setStep('scanning');
+    if (cameraReady) {
+      setStep('scanning');
+      // Auto-start face detection after a short delay
+      setTimeout(() => {
+        if (facesDetected === 0) {
+          // Provide feedback if no face is detected after a while
+          Alert.alert(
+            "No Face Detected",
+            "Please ensure your face is clearly visible in the frame",
+            [{ text: "OK" }]
+          );
+        }
+      }, 5000);
+    } else {
+      Alert.alert(
+        "Camera Not Ready",
+        "Please wait for the camera to initialize",
+        [{ text: "OK" }]
+      );
+    }
   };
 
   const startManualMoodSelection = () => {
@@ -128,6 +183,7 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>Camera permission is required for face recognition</Text>
+        <Text style={styles.errorSubtext}>Please enable camera access in your device settings</Text>
         <TouchableOpacity style={styles.errorButton} onPress={handleBack}>
           <Text style={styles.errorButtonText}>Go Back</Text>
         </TouchableOpacity>
@@ -269,73 +325,108 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
     );
   }
 
-  // Render camera screen - THE PROBLEMATIC PART
+  // Render camera screen - IMPROVED VERSION
   if (step === 'camera' && type !== null) {
-    // Make sure Camera is a valid React component before rendering
-    if (!Camera) {
+    // Improved error handling for Camera component
+    try {
+      return (
+        <View style={styles.cameraContainer}>
+          <StatusBar barStyle="light-content" backgroundColor="#000" />
+          <Camera
+            ref={cameraRef}
+            style={styles.camera}
+            type={type}
+            onCameraReady={handleCameraReady}
+            onFacesDetected={handleFaceDetected}
+            faceDetectorSettings={{
+              mode: FaceDetector.FaceDetectorMode.fast,
+              detectLandmarks: FaceDetector.FaceDetectorLandmarks.all,
+              runClassifications: FaceDetector.FaceDetectorClassifications.all,
+              minDetectionInterval: 100,
+              tracking: true,
+            }}
+          />
+          <View style={styles.cameraOverlay}>
+            <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+              <Ionicons name="arrow-back" size={28} color="#fff" />
+            </TouchableOpacity>
+            
+            <View style={styles.cameraInstructions}>
+              <Text style={styles.instructionText}>
+                {cameraReady 
+                  ? 'Position your face in the frame' 
+                  : 'Camera initializing...'}
+              </Text>
+              {facesDetected > 0 && (
+                <Text style={styles.faceDetectedText}>Face detected!</Text>
+              )}
+            </View>
+            
+            <TouchableOpacity 
+              style={[
+                styles.captureButton, 
+                !cameraReady && styles.captureButtonDisabled
+              ]} 
+              onPress={startScanning}
+            >
+              <View style={styles.captureButtonInner} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    } catch (error) {
+      console.error("Error rendering camera:", error);
       return (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Camera component is not available</Text>
+          <Text style={styles.errorText}>Unable to access camera</Text>
+          <Text style={styles.errorSubtext}>{error.message}</Text>
           <TouchableOpacity style={styles.errorButton} onPress={handleBack}>
             <Text style={styles.errorButtonText}>Go Back</Text>
           </TouchableOpacity>
         </View>
       );
     }
-    
-    return (
-      <View style={styles.cameraContainer}>
-        <StatusBar barStyle="light-content" backgroundColor="#000" />
-        {/* Only render Camera if it's a valid component */}
-        <Camera
-          ref={cameraRef}
-          style={styles.camera}
-          type={type}
-          onFacesDetected={handleFaceDetected}
-          faceDetectorSettings={{
-            mode: FaceDetector.FaceDetectorMode.fast,
-            detectLandmarks: FaceDetector.FaceDetectorLandmarks.all,
-            runClassifications: FaceDetector.FaceDetectorClassifications.all,
-            minDetectionInterval: 100,
-            tracking: true,
-          }}
-        />
-        <View style={styles.cameraOverlay}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-            <Ionicons name="arrow-back" size={28} color="#fff" />
-          </TouchableOpacity>
-          
-          <View style={styles.cameraInstructions}>
-            <Text style={styles.instructionText}>Position your face in the frame</Text>
-          </View>
-          
-          <TouchableOpacity style={styles.captureButton} onPress={startScanning}>
-            <View style={styles.captureButtonInner} />
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
   }
 
-  // Render scanning screen
+  // Render scanning screen with improved feedback
   if (step === 'scanning') {
     return (
       <SafeAreaView style={styles.scanningContainer}>
         <StatusBar barStyle="light-content" backgroundColor="#1a1a1a" />
         <View style={styles.scanningContent}>
           <View style={styles.scanningIconContainer}>
+            <View style={styles.scanningPulse} />
             <View style={styles.scanningIcon}>
               <Text style={styles.faceRecognitionIcon}>{'﹅﹅\n ◡'}</Text>
             </View>
           </View>
           <Text style={styles.scanningText}>Scanning your face</Text>
-          <Text style={styles.scanningSubtext}>Please stay still for a moment</Text>
+          <Text style={styles.scanningSubtext}>
+            {facesDetected > 0 
+              ? 'Analyzing your facial expressions...' 
+              : 'Please stay still for a moment'}
+          </Text>
+          
+          {/* Added loading indicator */}
+          <ActivityIndicator 
+            size="large" 
+            color="#FF6600" 
+            style={styles.scanningIndicator} 
+          />
+          
+          {/* Cancel button */}
+          <TouchableOpacity 
+            style={styles.cancelScanButton} 
+            onPress={() => setStep('camera')}
+          >
+            <Text style={styles.cancelScanText}>Cancel</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
   }
 
-  // Render success screen (default return)
+  // Render success screen with enhanced mood detection results
   return (
     <SafeAreaView style={styles.successContainer}>
       <StatusBar barStyle="light-content" backgroundColor="#1a1a1a" />
@@ -353,11 +444,26 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
             <Text style={styles.moodResultTitle}>Detected Mood:</Text>
             <Text style={styles.moodResultEmoji}>{getMoodEmoji(detectedMood)}</Text>
             <Text style={styles.moodResultText}>{detectedMood}</Text>
+            <Text style={styles.moodDescription}>
+              {detectedMood === 'happy' && "You seem happy! Let's play some upbeat music."}
+              {detectedMood === 'sad' && "You seem a bit down. How about some uplifting tunes?"}
+              {detectedMood === 'relaxed' && "You look relaxed. We'll find some chill music for you."}
+              {detectedMood === 'angry' && "You seem tense. Let's play something to help you unwind."}
+              {detectedMood === 'content' && "You look content. We'll find something pleasant for you."}
+            </Text>
           </View>
         )}
         
         <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
           <Text style={styles.continueButtonText}>View Recommended Playlist</Text>
+        </TouchableOpacity>
+        
+        {/* Try again option */}
+        <TouchableOpacity 
+          style={styles.tryAgainButton} 
+          onPress={() => setStep('camera')}
+        >
+          <Text style={styles.tryAgainText}>Try Again</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -509,6 +615,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
+    marginBottom: 10,
+  },
+  faceDetectedText: {
+    color: '#4dff4d',
+    fontSize: 16,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
   },
   captureButton: {
     alignSelf: 'center',
@@ -519,6 +634,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 30,
+  },
+  captureButtonDisabled: {
+    backgroundColor: 'rgba(100, 100, 100, 0.3)',
   },
   captureButtonInner: {
     width: 60,
@@ -585,6 +703,7 @@ const styles = StyleSheet.create({
   },
   scanningIconContainer: {
     marginBottom: 32,
+    position: 'relative',
   },
   scanningIcon: {
     width: 80,
@@ -593,6 +712,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 2,
+  },
+  scanningPulse: {
+    position: 'absolute',
+    width: 100,
+    height: 100,
+    borderRadius: 25,
+    backgroundColor: 'rgba(77, 255, 77, 0.2)',
+    top: -10,
+    left: -10,
+    right: -10,
+    bottom: -10,
+    zIndex: 1,
   },
   scanningText: {
     fontSize: 24,
@@ -604,6 +736,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
     opacity: 0.8,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  scanningIndicator: {
+    marginTop: 20,
+    marginBottom: 30,
+  },
+  cancelScanButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#FF6600',
+  },
+  cancelScanText: {
+    color: '#FF6600',
+    fontSize: 16,
   },
   
   // Success screen styles
@@ -662,17 +811,34 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'white',
     textTransform: 'capitalize',
+    marginBottom: 10,
+  },
+  moodDescription: {
+    fontSize: 14,
+    color: 'white',
+    opacity: 0.8,
+    textAlign: 'center',
+    maxWidth: 300,
   },
   continueButton: {
     backgroundColor: '#FF6600',
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 8,
+    marginBottom: 16,
   },
   continueButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  tryAgainButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+  },
+  tryAgainText: {
+    color: '#FF6600',
+    fontSize: 16,
   },
   
   // Error and loading styles
@@ -686,6 +852,13 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'white',
     fontSize: 18,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  errorSubtext: {
+    color: 'white',
+    opacity: 0.8,
+    fontSize: 14,
     marginBottom: 20,
     textAlign: 'center',
   },

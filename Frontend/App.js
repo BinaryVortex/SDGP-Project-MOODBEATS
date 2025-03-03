@@ -1,28 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import FaceRecognition from './src/FaceRecognition';
 
+// Placeholder for Playlist screen
+const PlaylistScreen = ({ route }) => {
+  const { mood } = route.params || {};
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Playlist for mood: {mood}</Text>
+    </View>
+  );
+};
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    
-    <FaceRecognition 
-  onMoodDetected={(mood) => {
-    console.log(`Detected mood: ${mood}`);
-    // Handle the detected mood
-    
-    
-  }}
-  
-/>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="FaceRecognition" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="FaceRecognition" component={FaceRecognition} />
+        <Stack.Screen name="Playlist" component={PlaylistScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
