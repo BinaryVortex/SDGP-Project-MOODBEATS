@@ -474,14 +474,14 @@ const styles = StyleSheet.create({
   // Container and common styles
   container: {
     flex: 1,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#000000',
   },
   
   // Header and navigation styles
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FF6600',
+    backgroundColor: '#3b85ed',
     padding: 15,
     paddingTop: StatusBar.currentHeight + 15,
   },
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
   },
   navBar: {
     flexDirection: 'row',
-    backgroundColor: '#FF6600',
+    backgroundColor: '#3b85ed',
     paddingBottom: 10,
   },
   navItem: {
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 20,
-    backgroundColor: 'black',
+    backgroundColor: '#202936',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
@@ -562,15 +562,18 @@ const styles = StyleSheet.create({
     fontSize: 24,
     lineHeight: 28,
     textAlign: 'center',
+  
   },
   optionText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     marginBottom: 30,
+    textAlign: 'center',
+    fontWeight: 'bold'
   },
   orText: {
     color: 'white',
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     marginVertical: 15,
   },
@@ -579,7 +582,7 @@ const styles = StyleSheet.create({
   },
   emojisContainer: {
     flexDirection: 'row',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   emoji: {
     fontSize: 24,
@@ -611,7 +614,7 @@ const styles = StyleSheet.create({
   instructionText: {
     color: 'white',
     fontSize: 16,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
