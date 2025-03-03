@@ -34,7 +34,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={['#1a1a1a', '#355cdf', '#1a1a1a']}
+        colors={['#1a1a1a', '#3b85ed', '#1a1a1a']}
         style={styles.gradient}
       >
         <KeyboardAvoidingView
@@ -64,7 +64,7 @@ const LoginScreen = ({ navigation }) => {
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your username or email"
-                  placeholderTextColor="#9ca3af"
+                  placeholderTextColor="#000"
                   value={username}
                   onChangeText={setUsername}
                   autoCapitalize="none"
@@ -77,7 +77,7 @@ const LoginScreen = ({ navigation }) => {
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your password"
-                  placeholderTextColor="#9ca3af"
+                  placeholderTextColor="#000"
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     },
     welcomeText: {
       fontSize: 28,
-      fontWeight: 'bold',
+      fontWeight: 'bolder',
       color: '#ffffff',
       marginBottom: 8,
     },
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     },
     label: {
       fontSize: 14,
-      color: '#d1d5db',
+      color: '#ffff',
       marginBottom: 8,
     },
     input: {
@@ -290,6 +290,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'space-between',
       marginBottom: 24,
+
     },
     socialButton: {
       flex: 1,
