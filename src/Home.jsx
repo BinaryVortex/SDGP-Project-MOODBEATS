@@ -52,11 +52,28 @@ export default function HomePage() {
         <Section title="Quick Pick">
           <FlatList
               horizontal
-              data={Array(3).fill(0)}
+              data={Array(4).fill(0)}
               renderItem={({ index }) => <MusicItem title={`Track ${index + 1}`} />}
               keyExtractor={(item, index) => index.toString()}
               showsHorizontalScrollIndicator={false}
            />
+
+          <FlatList
+              horizontal
+              data={Array(4).fill(0)}
+              renderItem={({ index }) => <MusicItem title={`Track ${index + 1}`} />}
+              keyExtractor={(item, index) => index.toString()}
+              showsHorizontalScrollIndicator={false}
+           />
+
+          <FlatList
+              horizontal
+              data={Array(4).fill(0)}
+              renderItem={({ index }) => <MusicItem title={`Track ${index + 1}`} />}
+              keyExtractor={(item, index) => index.toString()}
+              showsHorizontalScrollIndicator={false}
+           />
+           
         </Section>
 
         {/* Artists */}
