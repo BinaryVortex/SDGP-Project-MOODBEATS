@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-
+from routes.voice_emotion import router as voice_emotion_router
 from routes import users, playlists, music, voice_emotion, facial_emotion, recommendation
 
 app = FastAPI(title="MoodBeats API")
@@ -17,6 +17,7 @@ app.add_middleware(
 )
 
 # Include routers
+app.include_router(voice_emotion_router)
 app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(playlists.router, prefix="/playlists", tags=["Playlists"])
 app.include_router(music.router, prefix="/music", tags=["Music"])
