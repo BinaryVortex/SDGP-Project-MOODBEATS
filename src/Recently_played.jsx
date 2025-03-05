@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Image, TouchableOpacity, FlatList, StyleSheet, ScrollView } from 'react-native';
 // import { LinearGradient } from 'expo-linear-gradient';
 import { Home, Music, Smile, Heart, Clock, MoreVertical, Play, Pause } from 'lucide-react-native';
 import { Feather } from '@expo/vector-icons';
@@ -10,6 +10,21 @@ const tracks = [
   { id: 3, title: 'Daylight', artist: 'David Kushner', img: 'https://via.placeholder.com/40', duration: '4:05', liked: true },
   { id: 4, title: 'Circles', artist: 'Post Malone', img: 'https://via.placeholder.com/40', duration: '3:35', liked: false },
   { id: 5, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 6, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 7, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 8, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 9, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 10, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 11, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 12, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 13, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 14, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 15, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 16, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 17, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 18, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 19, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 20, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
 ];
 
 const PlayButton = ({ isPlaying, onPress }) => (
@@ -25,16 +40,23 @@ export default function MoodBeatsPreview() {
     <View style={styles.container}>
       {/* Header */}
       {/* <LinearGradient colors={['#6a11cb', '#2575fc']} style={styles.header}> */}
-        <Text style={styles.logo}>🎵 MOODBEATS</Text>
-        <TextInput placeholder="Search songs, artists, or moods..." placeholderTextColor="white" style={styles.searchInput} />
-      {/* </LinearGradient> */}
-
+        {/* Header */}
+                <View style={styles.header}>
+                  <Text style={styles.title}>MOODBEATS</Text>
+                  <View style={styles.searchContainer}>
+                    <Feather name="search" size={16} color="#fff" style={styles.searchIcon} />
+                    <TextInput placeholder="Search" placeholderTextColor="#fff" style={styles.searchInput} />
+                  </View>
+                </View>
       {/* Recently Played */}
       <View style={styles.content}>
         <View style={styles.sectionHeader}>
           <Clock size={16} color="#FF007F" />
           <Text style={styles.sectionTitle}>Recently Played</Text>
+          
         </View>
+
+        <ScrollView contentContainerStyle={{ paddingBottom: 30 }} showsVerticalScrollIndicator={false}>
         <FlatList
           data={tracks}
           keyExtractor={(item) => item.id.toString()}
@@ -57,6 +79,7 @@ export default function MoodBeatsPreview() {
             </View>
           )}
         />
+        </ScrollView>
       </View>
 
       {/* Bottom Navigation */}
@@ -80,7 +103,8 @@ const NavItem = ({ icon, label }) => (
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: '#111' 
+    backgroundColor: '#111', 
+    paddingTop: 45,
   },
 
   header: { 
@@ -104,13 +128,46 @@ const styles = StyleSheet.create({
 
   content: { 
     flex: 1, 
-    padding: 20 
+    padding: 10 ,
+    marginTop: -45,
   },
 
   sectionHeader: { 
     flexDirection: 'row', 
     alignItems: 'center', 
     marginBottom: 10 
+  },
+  header: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    padding: 16, 
+    marginBottom: 35, 
+  },
+
+  title: { 
+    fontSize: 24, 
+    fontWeight: 'bold', 
+    color: '#fff' 
+  },
+
+  searchContainer: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    backgroundColor: '#333', 
+    borderRadius: 20, 
+    paddingHorizontal: 10, 
+    width: 150 
+  },
+  
+  searchIcon: { 
+    marginRight: 6,
+   },
+
+  searchInput: {
+    color: '#fff', 
+    fontSize: 14, 
+    flex: 1 
   },
 
   sectionTitle: { 

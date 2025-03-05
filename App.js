@@ -11,7 +11,7 @@ import Search from './src/Search_bar';
 
 export default function App() {
   return (
-    <Search/>
+    <Recentlyplayed/>
   );
 }
 
