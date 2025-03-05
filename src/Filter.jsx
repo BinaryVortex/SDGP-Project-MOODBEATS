@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import { Home, Music, Smile, Clock, MoreVertical, Play, Pause, Filter } from 'lucide-react-native';
 
 const tracks = [
@@ -20,17 +19,17 @@ const PlayButton = ({ isPlaying, onPress }) => (
   </TouchableOpacity>
 );
 
-export default function MoodBeatsPreview() {
+export default function FilterPre() {
   const [playingTrack, setPlayingTrack] = useState(null);
   const [showFilter, setShowFilter] = useState(false);
 
   return (
     <View style={styles.container}>
       {/* Header */}
-      <LinearGradient colors={['#FF8000', '#FF5500']} style={styles.header}>
+      {/* <LinearGradient colors={['#FF8000', '#FF5500']} style={styles.header}> */}
         <Text style={styles.logo}>🎵 MOODBEATS</Text>
         <TextInput placeholder="Search" placeholderTextColor="black" style={styles.searchInput} />
-      </LinearGradient>
+      {/* </LinearGradient> */}
 
       {/* Filter Button */}
       <View style={styles.filterContainer}>

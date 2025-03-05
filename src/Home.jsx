@@ -238,10 +238,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#444' 
   },
 
-  
-
-  
-  
   musicTitle: { 
     marginTop: 5, 
     color: '#fff', 

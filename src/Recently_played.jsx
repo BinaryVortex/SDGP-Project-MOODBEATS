@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+// import { LinearGradient } from 'expo-linear-gradient';
 import { Home, Music, Smile, Heart, Clock, MoreVertical, Play, Pause } from 'lucide-react-native';
+import { Feather } from '@expo/vector-icons';
 
 const tracks = [
   { id: 1, title: 'Sprinter', artist: 'Central Cee x Dave', img: 'https://via.placeholder.com/40', duration: '3:42', liked: true },
@@ -23,10 +24,10 @@ export default function MoodBeatsPreview() {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <LinearGradient colors={['#6a11cb', '#2575fc']} style={styles.header}>
+      {/* <LinearGradient colors={['#6a11cb', '#2575fc']} style={styles.header}> */}
         <Text style={styles.logo}>🎵 MOODBEATS</Text>
         <TextInput placeholder="Search songs, artists, or moods..." placeholderTextColor="white" style={styles.searchInput} />
-      </LinearGradient>
+      {/* </LinearGradient> */}
 
       {/* Recently Played */}
       <View style={styles.content}>
@@ -59,23 +60,22 @@ export default function MoodBeatsPreview() {
       </View>
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navButton}>
-          <Home size={24} color="#FF007F" />
-          <Text style={styles.navTextActive}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Smile size={24} color="gray" />
-          <Text style={styles.navText}>Mood</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Music size={24} color="gray" />
-          <Text style={styles.navText}>Playlist</Text>
-        </TouchableOpacity>
+      <View style={styles.navbar}>
+        <NavItem icon="home" label="Home" />
+        <NavItem icon="heart" label="Mood" />
+       <NavItem icon="music" label="Playlist" />
+        <NavItem icon="user" label="Profile"/>
       </View>
     </View>
   );
 }
+
+const NavItem = ({ icon, label }) => (
+  <TouchableOpacity style={styles.navItem}>
+    <Feather name={icon} size={20} color="#fff" />
+    <Text style={styles.navLabel}>{label}</Text>
+  </TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
   container: { 
@@ -163,27 +163,24 @@ const styles = StyleSheet.create({
     borderRadius: 20 
   },
 
-  bottomNav: { 
+  navbar: { 
     flexDirection: 'row', 
     justifyContent: 'space-around', 
-    backgroundColor: '#222', 
-    paddingVertical: 15 
+    paddingVertical: 10, 
+    backgroundColor: '#111', 
+    position: 'absolute', 
+    bottom: 0, 
+    width: '100%' 
   },
 
-  navButton: { 
+  navItem: { 
     alignItems: 'center' 
   },
 
-  navTextActive: { 
-    color: '#FF007F', 
-    fontSize: 12, 
+  navLabel: { 
+    fontSize: 10, 
+    color: '#fff', 
     marginTop: 5 
-  },
-
-  navText: { 
-    color: 'gray', 
-    fontSize: 12, 
-    marginTop: 5 
-  },
+  }
 
 });
