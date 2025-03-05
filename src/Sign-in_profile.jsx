@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, ScrollView, Image } from 'react-native';
 import { ChevronLeft, Camera, Music2, Disc3 } from 'lucide-react-native';
 
 const ProfileSetup = () => {
@@ -18,11 +18,14 @@ const ProfileSetup = () => {
         </TouchableOpacity>
         <Text style={styles.title}><Music2 size={20} color="orange" /> MOODBEAST</Text>
       </View>
-
+      <ScrollView contentContainerStyle={{ paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
       {/* Profile Picture */}
       <View style={styles.profileContainer}>
         <View style={styles.profilePicture}>
-          <Camera size={35} color="#fff" />
+        <Image source={require("../assets/Profile_photo.png")} size={70} style={{width: 60, height: 60}}/>
+
+        
+          {/* <Camera size={35} color="#fff" /> */}
         </View>
         <TouchableOpacity style={styles.cameraButton}>
           <Camera size={16} color="white" />
@@ -56,6 +59,8 @@ const ProfileSetup = () => {
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
       </View>
+      </ScrollView>
+
     </ImageBackground>
     
   );

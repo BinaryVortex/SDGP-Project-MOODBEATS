@@ -52,7 +52,7 @@ export default function HomePage() {
         <Section title="Quick Pick">
           <FlatList
               horizontal
-              data={Array(1).fill(0)}
+              data={Array(4).fill(0)}
               renderItem={({ index }) => <MusicItemNew title={`Track ${index + 1}`} />}
               keyExtractor={(item, index) => index.toString()}
               showsHorizontalScrollIndicator={false}
@@ -61,14 +61,14 @@ export default function HomePage() {
 
           <FlatList
               horizontal
-              data={Array(1).fill(0)}
+              data={Array(4).fill(0)}
               renderItem={({ index }) => <MusicItemNew title={`Track ${index + 1}`} />}
               keyExtractor={(item, index) => index.toString()}
               showsHorizontalScrollIndicator={false}
             
            /><FlatList
            horizontal
-           data={Array(1).fill(0)}
+           data={Array(4).fill(0)}
            renderItem={({ index }) => <MusicItemNew title={`Track ${index + 1}`} />}
            keyExtractor={(item, index) => index.toString()}
            showsHorizontalScrollIndicator={false}
