@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 
 const artists = [
   "The Weeknd", "Travis Scott", "Central Cee", 
@@ -52,27 +52,28 @@ export default function HomePage() {
         <Section title="Quick Pick">
           <FlatList
               horizontal
-              data={Array(4).fill(0)}
-              renderItem={({ index }) => <MusicItem title={`Track ${index + 1}`} />}
+              data={Array(1).fill(0)}
+              renderItem={({ index }) => <MusicItemNew title={`Track ${index + 1}`} />}
               keyExtractor={(item, index) => index.toString()}
               showsHorizontalScrollIndicator={false}
+            
            />
 
           <FlatList
               horizontal
-              data={Array(4).fill(0)}
-              renderItem={({ index }) => <MusicItem title={`Track ${index + 1}`} />}
+              data={Array(1).fill(0)}
+              renderItem={({ index }) => <MusicItemNew title={`Track ${index + 1}`} />}
               keyExtractor={(item, index) => index.toString()}
               showsHorizontalScrollIndicator={false}
-           />
-
-          <FlatList
-              horizontal
-              data={Array(4).fill(0)}
-              renderItem={({ index }) => <MusicItem title={`Track ${index + 1}`} />}
-              keyExtractor={(item, index) => index.toString()}
-              showsHorizontalScrollIndicator={false}
-           />
+            
+           /><FlatList
+           horizontal
+           data={Array(1).fill(0)}
+           renderItem={({ index }) => <MusicItemNew title={`Track ${index + 1}`} />}
+           keyExtractor={(item, index) => index.toString()}
+           showsHorizontalScrollIndicator={false}
+         
+        />
            
         </Section>
 
@@ -113,13 +114,24 @@ export default function HomePage() {
 
 const Section = ({ title, children }) => (
   <View style={styles.section}>
-    <Text style={styles.sectionTitle}>{title}</Text>
+    <View style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      <Ionicons name="chevron-forward" size={20} color="white" />
+    </View>
     {children}
   </View>
 );
 
 const MusicItem = ({ title }) => (
-  <TouchableOpacity style={styles.musicItem}>
+  <TouchableOpacity style={styles.musicItem} >
+    <View style={styles.musicImage}>
+      <Text style={styles.musicTitle}>{title}</Text>
+    </View>
+  </TouchableOpacity>
+);
+
+const MusicItemNew = ({ title }) => (
+  <TouchableOpacity style={styles.musicItem2} >
     <View style={styles.musicImage}>
       <Text style={styles.musicTitle}>{title}</Text>
     </View>
@@ -196,7 +208,15 @@ const styles = StyleSheet.create({
   musicItem: { 
     marginRight: 4, 
     alignItems: 'center', 
-    marginBottom: 4 
+    marginBottom: 4, 
+  },
+
+  musicItem2: { 
+    width: 395,
+    backgroundColor: '#444' ,
+    height: 50, 
+    borderRadius: 10, 
+    marginBottom: 25
   },
 
   musicImage: { 
