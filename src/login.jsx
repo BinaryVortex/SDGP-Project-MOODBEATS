@@ -34,7 +34,9 @@ const LoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={['#1a1a1a', '#3b85ed', '#1a1a1a']}
+        colors={['black', '#3b85ed']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
         style={styles.gradient}
       >
         <KeyboardAvoidingView
@@ -47,12 +49,9 @@ const LoginScreen = ({ navigation }) => {
           >
             {/* Logo and Welcome Text */}
             <View style={styles.logoContainer}>
-              <LinearGradient
-                colors={['#7c3aed', '#4f46e5']}
-                style={styles.logoCircle}
-              >
+              <View style={styles.logoCircle}>
                 <Text style={styles.logoText}>MB</Text>
-              </LinearGradient>
+              </View>
               <Text style={styles.welcomeText}>Welcome Back!</Text>
               <Text style={styles.subtitleText}>Sign in to stay in tune with your music</Text>
             </View>
@@ -64,7 +63,7 @@ const LoginScreen = ({ navigation }) => {
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your username or email"
-                  placeholderTextColor="#000"
+                  placeholderTextColor="rgba(255,255,255,0.5)"
                   value={username}
                   onChangeText={setUsername}
                   autoCapitalize="none"
@@ -77,7 +76,7 @@ const LoginScreen = ({ navigation }) => {
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your password"
-                  placeholderTextColor="#000"
+                  placeholderTextColor="rgba(255,255,255,0.5)"
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry
@@ -107,7 +106,7 @@ const LoginScreen = ({ navigation }) => {
                 disabled={isLoading}
               >
                 <LinearGradient
-                  colors={['#7c3aed', '#355cdf']}
+                  colors={['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.1)']}
                   style={styles.loginGradient}
                 >
                   {isLoading ? (
@@ -126,21 +125,21 @@ const LoginScreen = ({ navigation }) => {
               </View>
 
               <View style={styles.socialButtons}>
-              {/* Google Login */}
-              <TouchableOpacity style={styles.socialButton}>
-                <Text style={styles.socialButtonText}>Google</Text>
-              </TouchableOpacity>
+                {/* Google Login */}
+                <TouchableOpacity style={styles.socialButton}>
+                  <Text style={styles.socialButtonText}>Google</Text>
+                </TouchableOpacity>
 
-              {/* Facebook Login */}
-              <TouchableOpacity style={styles.socialButton}>
-                <Text style={styles.socialButtonText}>Facebook</Text>
-              </TouchableOpacity>
+                {/* Facebook Login */}
+                <TouchableOpacity style={styles.socialButton}>
+                  <Text style={styles.socialButtonText}>Facebook</Text>
+                </TouchableOpacity>
 
-              {/* Instagram Login */}
-              <TouchableOpacity style={styles.socialButton}>
-                <Text style={styles.socialButtonText}>Instagram</Text>
-              </TouchableOpacity>
-            </View>
+                {/* Instagram Login */}
+                <TouchableOpacity style={styles.socialButton}>
+                  <Text style={styles.socialButtonText}>Instagram</Text>
+                </TouchableOpacity>
+              </View>
 
               {/* Sign Up Link */}
               <View style={styles.signUpContainer}>
@@ -158,167 +157,174 @@ const LoginScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    gradient: {
-      flex: 1,
-    },
-    keyboardAvoid: {
-      flex: 1,
-    },
-    scrollContent: {
-      flexGrow: 1,
-      padding: 20,
-      paddingTop: 40,
-    },
-    logoContainer: {
-      alignItems: 'center',
-      marginBottom: 40,
-    },
-    logoCircle: {
-      width: 80,
-      height: 80,
-      borderRadius: 40,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: 20,
-    },
-    logoText: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      color: '#ffffff',
-    },
-    welcomeText: {
-      fontSize: 28,
-      fontWeight: 'bolder',
-      color: '#ffffff',
-      marginBottom: 8,
-    },
-    subtitleText: {
-      fontSize: 16,
-      color: '#9ca3af',
-    },
-    formContainer: {
-      width: '100%',
-    },
-    inputContainer: {
-      marginBottom: 20,
-    },
-    label: {
-      fontSize: 14,
-      color: '#ffff',
-      marginBottom: 8,
-    },
-    input: {
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-      borderRadius: 12,
-      padding: 16,
-      color: '#ffffff',
-      fontSize: 16,
-      borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.1)',
-    },
-    optionsRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 24,
-    },
-    rememberMe: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    checkbox: {
-      width: 20,
-      height: 20,
-      borderRadius: 4,
-      borderWidth: 2,
-      borderColor: '#7c3aed',
-      marginRight: 8,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    checkboxChecked: {
-      backgroundColor: '#7c3aed',
-    },
-    checkmark: {
-      color: '#ffffff',
-      fontSize: 12,
-    },
-    rememberText: {
-      color: '#d1d5db',
-      fontSize: 14,
-    },
-    forgotPassword: {
-      color: '#ffffff',
-      fontSize: 14,
-    },
-    loginButton: {
-      width: '100%',
-      height: 56,
-      borderRadius: 12,
-      overflow: 'hidden',
-      marginBottom: 24,
-    },
-    loginGradient: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    loginText: {
-      color: '#ffffff',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    dividerContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 24,
-    },
-    divider: {
-      flex: 1,
-      height: 1,
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    },
-    dividerText: {
-      color: '#9ca3af',
-      paddingHorizontal: 16,
-      fontSize: 14,
-    },
-    socialButtons: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      marginBottom: 24,
+  container: {
+    flex: 1,
+  },
+  gradient: {
+    flex: 1,
+  },
+  keyboardAvoid: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    padding: 20,
+    paddingTop: 40,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  logoCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  logoText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
+  welcomeText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 8,
+  },
+  subtitleText: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.7)',
+  },
+  formContainer: {
+    width: '100%',
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 14,
+    color: '#ffffff',
+    marginBottom: 8,
+  },
+  input: {
+    backgroundColor: 'rgba(0, 0, 0, 0.0)',
+    borderRadius: 10,
+    padding: 16,
+    color: '#ffffff',
+    fontSize: 16,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  optionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  rememberMe: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: 'lightblue',
+    marginRight: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkboxChecked: {
+    backgroundColor: 'lightblue',
+  },
+  checkmark: {
+    color: 'black',
+    fontSize: 12,
+  },
+  rememberText: {
+    color: '#ffffff',
+    fontSize: 14,
+  },
+  forgotPassword: {
+    color: 'lightblue',
+    fontSize: 14,
+  },
+  loginButton: {
+    width: '100%',
+    height: 56,
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginBottom: 24,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  loginGradient: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loginText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  dividerText: {
+    color: 'rgba(255,255,255,0.7)',
+    paddingHorizontal: 16,
+    fontSize: 14,
+  },
+  socialButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  socialButton: {
+    flex: 1,
+    height: 48,
+    backgroundColor: 'rgba(0, 0, 0, 0.0)',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 6,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    
+  },
+  socialButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+  },
+  signUpContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  signUpText: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 14,
+  },
+  signUpLink: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+});
 
-    },
-    socialButton: {
-      flex: 1,
-      height: 48,
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-      borderRadius: 12,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginHorizontal: 6,
-    },
-    socialButtonText: {
-      color: '#ffffff',
-      fontSize: 14,
-    },
-    signUpContainer: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    signUpText: {
-      color: '#9ca3af',
-      fontSize: 14,
-    },
-    signUpLink: {
-      color: '#7c3aed',
-      fontSize: 14,
-      fontWeight: 'bold',
-    },
-  });
-  
-  export default LoginScreen;
+export default LoginScreen;

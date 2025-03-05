@@ -94,12 +94,11 @@ const MoodRecognition = () => {
             <TextInput placeholder="Search" placeholderTextColor="#aaa" style={styles.searchInput} />
           </View>
         </View>
-      <View style={styles.headerSpacer}>{/* Black spacer added */}</View>
-      <View style={styles.header2}>
-        <Text style={styles.title2}>Voice Mood Recognition</Text>
-      </View>
+      
 
       <View style={styles.content}>
+        
+      <Text style={styles.title2}>Voice Mood Recognition</Text>
         <Animated.View
           style={[
             styles.recordingIndicator,
@@ -180,7 +179,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    marginBottom: 35,
     marginTop: 50,
     backgroundColor: 'black',
   },
@@ -217,7 +215,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    padding: 5,
     backgroundColor: '#3b85ed', // Blue middle section
   },
   recordingIndicator: {

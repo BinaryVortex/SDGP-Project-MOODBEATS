@@ -1,10 +1,12 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Animated } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function MoodSelectionScreen() {
+  const [scrollY] = useState(new Animated.Value(0));
+
   const NavItem = ({ icon, label, color }) => (
     <TouchableOpacity style={styles.navItem}>
       <Feather name={icon} size={20} color={color || "#bbb"} />
@@ -14,12 +16,19 @@ export default function MoodSelectionScreen() {
 
   return (
     <LinearGradient
-      colors={['black', '#3b85ed']} // Static gradient
-      start={{ x: 0, y: 0 }} // Gradient from Top
-      end={{ x: 0, y: 1 }}   // to Bottom
+      colors={['black', '#3b85ed']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
       style={styles.container}
     >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <Animated.ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+      >
         <View style={styles.header}>
           <Text style={styles.title}>MOODBEATS</Text>
           <View style={styles.searchContainer}>
@@ -48,9 +57,8 @@ export default function MoodSelectionScreen() {
           <Text style={styles.emojiText}>😊 😢 😐 😡 😴</Text>
           <Text style={styles.optionText}>Current Mood</Text>
         </TouchableOpacity>
-      </ScrollView>
+      </Animated.ScrollView>
 
-      {/* Navigation Bar */}
       <View style={styles.navbar}>
         <NavItem icon="home" label="Home" color="white" />
         <NavItem icon="heart" label="Mood" color="white" />
@@ -66,7 +74,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     paddingTop: 40,
-    paddingBottom: 100, // Ensure space for navbar
+    paddingBottom: 100,
   },
   header: {
     flexDirection: 'row',
@@ -99,15 +107,15 @@ const styles = StyleSheet.create({
     flex: 1
   },
   optionButton: {
-    backgroundColor: "rgba(0, 0, 0, 0.0)", // Transparent background
+    backgroundColor: "rgba(0, 0, 0, 0.0)",
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
     marginVertical: 10,
     width: "80%",
     alignSelf: 'center',
-    borderWidth: 2,         // Add white border with low opacity
-    borderColor: "rgba(255, 255, 255, 0.3)", // White border with low opacity
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.3)",
   },
   optionText: {
     color: "white",
