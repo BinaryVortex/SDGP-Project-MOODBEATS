@@ -8,7 +8,7 @@ import Filter from './src/Filter';
 
 export default function App() {
   return (
-    <SignInProfile/>
+    <HomePage/>
   );
 }
 

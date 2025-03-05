@@ -21,7 +21,7 @@ export default function HomePage() {
           </View>
         </View>
 
-        <ScrollView contentContainerStyle={{ paddingBottom: 80 }} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={{ paddingBottom: 30 }} showsVerticalScrollIndicator={false}>
 
         {/* Recently Played */}
         <Section title="Recently Played">
@@ -59,6 +59,8 @@ export default function HomePage() {
             
            />
 
+           <View style={{height: 10}}></View>
+
           <FlatList
               horizontal
               data={Array(4).fill(0)}
@@ -66,7 +68,11 @@ export default function HomePage() {
               keyExtractor={(item, index) => index.toString()}
               showsHorizontalScrollIndicator={false}
             
-           /><FlatList
+           />
+           
+           <View style={{height: 10}}></View>
+
+           <FlatList
            horizontal
            data={Array(4).fill(0)}
            renderItem={({ index }) => <MusicItemNew title={`Track ${index + 1}`} />}
@@ -107,6 +113,7 @@ export default function HomePage() {
         <NavItem icon="home" label="Home" />
         <NavItem icon="heart" label="Mood" />
         <NavItem icon="music" label="Playlist" />
+        <NavItem icon="user" label="Profile"/>
       </View>
     </LinearGradient>
   );
@@ -132,7 +139,7 @@ const MusicItem = ({ title }) => (
 
 const MusicItemNew = ({ title }) => (
   <TouchableOpacity style={styles.musicItem2} >
-    <View style={styles.musicImage}>
+    <View style={styles.musicImage2}>
       <Text style={styles.musicTitle}>{title}</Text>
     </View>
   </TouchableOpacity>
@@ -212,11 +219,11 @@ const styles = StyleSheet.create({
   },
 
   musicItem2: { 
-    width: 395,
+    width: 392,
     backgroundColor: '#444' ,
-    height: 50, 
+    height: 1, 
     borderRadius: 10, 
-    marginBottom: 25
+    marginBottom: 100
   },
 
   musicImage: { 
@@ -224,7 +231,16 @@ const styles = StyleSheet.create({
     height: 126, 
     borderRadius: 10, 
     backgroundColor: '#444' 
+  },musicImage2: { 
+    width: 1000, 
+    height: 126, 
+    borderRadius: 10, 
+    backgroundColor: '#444' 
   },
+
+  
+
+  
   
   musicTitle: { 
     marginTop: 5, 
@@ -270,7 +286,7 @@ const styles = StyleSheet.create({
   navLabel: { 
     fontSize: 10, 
     color: '#fff', 
-    marginTop: 7 
+    marginTop: 5 
   }
   
 });
