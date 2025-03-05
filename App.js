@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import MoodSelectionScreen from './src/Moodpage';
 import LoginScreen from './src/login';
 import MusicPlaylistApp from './src/playlists';
-import SignInScreen from './src/signin';
+import SignInScreen from './src/signup';
 import MoodRecognition from './src/VoiceRecog';
 
 export default function App() {
