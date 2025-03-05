@@ -7,6 +7,7 @@ import {
   Animated,
   SafeAreaView,
 } from 'react-native';
+import { BlurView } from '@react-native-community/blur';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const MoodRecognition = () => {
@@ -72,6 +73,8 @@ const MoodRecognition = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <BlurView style={styles.blurBackground} blurType="dark" blurAmount={10} />
+
       <View style={styles.header}>
         <Text style={styles.title}>Voice Mood Recognition</Text>
       </View>
@@ -92,10 +95,12 @@ const MoodRecognition = () => {
           onPress={handleStartRecording}
           disabled={isRecording}
         >
-          <Icon name="camera" size={32} color={isRecording ? '#666' : '#fff'} />
-          <Text style={styles.recordButtonText}>
-            {isRecording ? 'Recording...' : 'Start Recording'}
-          </Text>
+          <View style={styles.blurContainer}>
+            <Icon name="microphone" size={32} color={isRecording ? '#666' : '#fff'} />
+            <Text style={styles.recordButtonText}>
+              {isRecording ? 'Recording...' : 'Start Recording'}
+            </Text>
+          </View>
         </TouchableOpacity>
 
         {detectedMood && (
@@ -122,18 +127,21 @@ const MoodRecognition = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#000',
+  },
+  blurBackground: {
+    ...StyleSheet.absoluteFillObject,
   },
   header: {
     padding: 20,
-    backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
+    textAlign: 'center',
   },
   content: {
     flex: 1,
@@ -150,10 +158,17 @@ const styles = StyleSheet.create({
   recordButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#007AFF',
     padding: 20,
     borderRadius: 30,
     marginBottom: 30,
+  },
+  blurContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   recordButtonText: {
     color: '#fff',
@@ -162,7 +177,7 @@ const styles = StyleSheet.create({
   },
   resultContainer: {
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     padding: 20,
     borderRadius: 15,
     shadowColor: '#000',
@@ -176,7 +191,7 @@ const styles = StyleSheet.create({
   },
   moodText: {
     fontSize: 18,
-    color: '#666',
+    color: '#fff',
     marginBottom: 10,
   },
   moodResult: {
@@ -186,7 +201,7 @@ const styles = StyleSheet.create({
   },
   confidenceText: {
     fontSize: 16,
-    color: '#666',
+    color: '#fff',
   },
 });
 

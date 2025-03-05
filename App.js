@@ -8,7 +8,7 @@ import MoodRecognition from './src/VoiceRecog';
 
 export default function App() {
   return (
-    <MoodRecognition/>
+    <MusicPlaylistApp/>
   );
 }
 

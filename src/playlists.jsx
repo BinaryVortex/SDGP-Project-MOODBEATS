@@ -10,8 +10,10 @@ import {
   Dimensions,
   StatusBar,
   Platform,
+  TextInput,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Feather } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const { width } = Dimensions.get('window');
@@ -20,6 +22,7 @@ const MusicPlaylistApp = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(0);
   const [likedTracks, setLikedTracks] = useState(new Set());
+  
 
   const playlist = {
     title: "Summer Hits 2025",
@@ -73,6 +76,13 @@ const MusicPlaylistApp = () => {
     </TouchableOpacity>
   );
 
+  const NavItem = ({ icon, label, color }) => (
+      <TouchableOpacity style={styles.navItem}>
+        <Feather name={icon} size={20} color={color || "#bbb"} />
+        <Text style={[styles.navLabel, { color: color || "#bbb" }]}>{label}</Text>
+      </TouchableOpacity>
+    );
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -80,12 +90,17 @@ const MusicPlaylistApp = () => {
         {/* Header Section */}
         <LinearGradient
           colors={['#4c669f', '#3b5998', '#192f6a']}
-          style={styles.header}
+          style={styles.header2}
         >
+          <View style={styles.searchContainer}>
+                      <Feather name="search" size={16} color="#999" style={styles.searchIcon} />
+                      <TextInput placeholder="Search" placeholderTextColor="#aaa" style={styles.searchInput} />
+                    </View>
           <Image
             source={{ uri: playlist.coverImage }}
             style={styles.coverImage}
           />
+        
           <View style={styles.playlistInfo}>
             <Text style={styles.playlistTitle}>{playlist.title}</Text>
             <Text style={styles.playlistCreator}>{playlist.creator}</Text>
@@ -155,6 +170,12 @@ const MusicPlaylistApp = () => {
           </TouchableOpacity>
         </View>
       </View>
+
+      <View style={styles.navbar}>
+              <NavItem icon="home" label="Home" color="white" />
+              <NavItem icon="heart" label="Mood" color="white" />
+              <NavItem icon="music" label="Playlists" color="white" />
+            </View>
     </SafeAreaView>
   );
 };
@@ -167,7 +188,7 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  header: {
+  header2: {
     padding: 20,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 20 : 20,
   },
@@ -185,6 +206,55 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
     marginBottom: 8,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    marginBottom: 35,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: "#fff",
+    borderWidth: 1,
+    borderRadius: 100,
+    paddingLeft: 10,
+    width: 144,
+    marginLeft: 165
+  },
+  searchIcon: {
+    marginRight: 6,
+  },
+  searchInput: {
+    color: 'white',
+    fontSize: 14,
+    flex: 1,
+  },
+  navbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
+    backgroundColor: '#111',
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+  },
+  navItem: {
+    alignItems: 'center',
+  },
+  navLabel: {
+    fontSize: 10,
+    color: '#bbb',
+    marginTop: 7,
   },
   playlistCreator: {
     fontSize: 16,
