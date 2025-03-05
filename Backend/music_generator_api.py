@@ -1,172 +1,179 @@
-from fastapi import FastAPI, HTTPException, Body
+from fastapi import FastAPI, HTTPException, Depends, Header
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import Optional, List, Dict
 import random
-import uvicorn
-import numpy as np
+import os
+import json
 from enum import Enum
 
-app = FastAPI(title="Music Generator API")
+app = FastAPI(title="Mood Music Generator API")
 
-# Define mood types for the API
+# Mood classes
 class Mood(str, Enum):
     HAPPY = "happy"
     SAD = "sad"
     RELAXED = "relaxed"
     ENERGETIC = "energetic"
+    ANXIOUS = "anxious"
     ANGRY = "angry"
     NEUTRAL = "neutral"
 
+# API configuration
+API_KEY = "SG_b2f02c2605b8fc32"
+MUSIC_GEN_API_URL = "https://api.segmind.io/v1/music/generate"  # Example service endpoint
+
+# Request models
 class MoodInput(BaseModel):
     mood: Mood
-    intensity: float = 0.5  # 0.0 to 1.0 representing intensity of the mood
+    intensity: Optional[float] = 0.5  # 0.0 to 1.0
+    preferences: Optional[Dict[str, str]] = None
 
-class MusicParameters(BaseModel):
-    bpm: int  # Beats per minute
-    key: str  # Musical key
-    scale: str  # Major/minor
-    instruments: List[str]
-    duration_seconds: int = 30
-
+# Response models
 class MusicResponse(BaseModel):
-    track_id: str
-    parameters: MusicParameters
-    download_url: str
-    stream_url: str
+    music_url: str
+    duration: int  # in seconds
+    mood: Mood
+    intensity: float
+    genre: Optional[str] = None
+    tempo: Optional[int] = None  # BPM
 
-# Music generation parameters based on mood
-mood_music_parameters = {
+# Mood to musical characteristics mapping
+MOOD_TO_MUSIC = {
     Mood.HAPPY: {
-        "bpm_range": (110, 130),
-        "keys": ["C", "G", "D", "A"],
-        "scale": "major",
-        "instruments": ["piano", "acoustic_guitar", "glockenspiel", "strings"]
+        "genres": ["pop", "upbeat", "cheerful"],
+        "tempo_range": (100, 140),
+        "key": ["C major", "G major", "D major"],
+        "instruments": ["piano", "guitar", "synth"]
     },
     Mood.SAD: {
-        "bpm_range": (60, 80),
-        "keys": ["A", "E", "B", "F#"],
-        "scale": "minor",
-        "instruments": ["piano", "cello", "violin", "ambient_pad"]
+        "genres": ["ballad", "ambient", "slow"],
+        "tempo_range": (60, 80),
+        "key": ["A minor", "E minor", "D minor"],
+        "instruments": ["piano", "strings", "acoustic guitar"]
     },
     Mood.RELAXED: {
-        "bpm_range": (70, 90),
-        "keys": ["D", "G", "C", "F"],
-        "scale": "major",
-        "instruments": ["acoustic_guitar", "piano", "flute", "ambient_pad"]
+        "genres": ["ambient", "chill", "lofi"],
+        "tempo_range": (70, 90),
+        "key": ["F major", "G major", "C major"],
+        "instruments": ["piano", "synth pad", "strings"]
     },
     Mood.ENERGETIC: {
-        "bpm_range": (125, 145),
-        "keys": ["E", "A", "D", "B"],
-        "scale": "major",
-        "instruments": ["electric_guitar", "synth", "drums", "bass"]
+        "genres": ["edm", "rock", "upbeat"],
+        "tempo_range": (120, 160),
+        "key": ["E major", "A major", "B major"],
+        "instruments": ["synth", "electric guitar", "drums"]
+    },
+    Mood.ANXIOUS: {
+        "genres": ["tense", "atmospheric", "dark ambient"],
+        "tempo_range": (80, 110),
+        "key": ["B minor", "F# minor", "C# minor"],
+        "instruments": ["strings", "synth", "percussion"]
     },
     Mood.ANGRY: {
-        "bpm_range": (90, 110),
-        "keys": ["E", "B", "F#", "C#"],
-        "scale": "minor",
-        "instruments": ["distorted_guitar", "drums", "bass", "synth"]
+        "genres": ["rock", "metal", "intense"],
+        "tempo_range": (90, 140),
+        "key": ["E minor", "A minor", "D minor"],
+        "instruments": ["electric guitar", "drums", "bass"]
     },
     Mood.NEUTRAL: {
-        "bpm_range": (85, 100),
-        "keys": ["C", "G", "D", "F"],
-        "scale": "major",
-        "instruments": ["piano", "strings", "light_percussion", "bass"]
+        "genres": ["ambient", "background", "neutral"],
+        "tempo_range": (80, 100),
+        "key": ["C major", "G major", "F major"],
+        "instruments": ["piano", "soft synth", "strings"]
     }
 }
 
-# Mock database for generated tracks
-generated_tracks = {}
+# Dependency to verify API key
+def verify_api_key(x_api_key: str = Header(...)):
+    if x_api_key != API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+    return x_api_key
 
-def generate_music_parameters(mood: Mood, intensity: float) -> MusicParameters:
-    """Generate music parameters based on mood and intensity"""
-    mood_params = mood_music_parameters[mood]
-    
-    # Adjust BPM based on intensity
-    bpm_min, bpm_max = mood_params["bpm_range"]
-    intensity_adjusted_max = bpm_min + (bpm_max - bpm_min) * intensity
-    bpm = int(random.uniform(bpm_min, intensity_adjusted_max))
-    
-    # Select key and scale
-    key = random.choice(mood_params["keys"])
-    scale = mood_params["scale"]
-    
-    # Select instruments (more intense moods use more instruments)
-    num_instruments = max(2, int(2 + intensity * 3))
-    instruments = random.sample(mood_params["instruments"], min(num_instruments, len(mood_params["instruments"])))
-    
-    # Duration based on intensity (more intense = shorter)
-    duration = int(20 + (1 - intensity) * 40)  # 20-60 seconds
-    
-    return MusicParameters(
-        bpm=bpm,
-        key=key,
-        scale=scale,
-        instruments=instruments,
-        duration_seconds=duration
-    )
+# Cached music (for demo/testing purposes)
+CACHED_MUSIC = {
+    Mood.HAPPY: [
+        {"url": "https://storage.soundgen.io/demo/happy_1.mp3", "duration": 180},
+        {"url": "https://storage.soundgen.io/demo/happy_2.mp3", "duration": 210},
+    ],
+    Mood.SAD: [
+        {"url": "https://storage.soundgen.io/demo/sad_1.mp3", "duration": 195},
+        {"url": "https://storage.soundgen.io/demo/sad_2.mp3", "duration": 225},
+    ],
+    # Add entries for other moods
+}
 
-def mock_generate_music(parameters: MusicParameters) -> str:
+@app.post("/generate-music/", response_model=MusicResponse, dependencies=[Depends(verify_api_key)])
+async def generate_music(mood_input: MoodInput):
     """
-    Mocked function to generate music based on parameters.
-    In a real implementation, this would call a music generation model.
-    Returns a track ID.
-    """
-    # In a real implementation, this would:
-    # 1. Call a music generation model/service
-    # 2. Save the generated audio file
-    # 3. Return a reference to the file
-    
-    track_id = f"track_{random.randint(10000, 99999)}"
-    # Store the parameters for later retrieval
-    generated_tracks[track_id] = parameters
-    
-    return track_id
-
-@app.post("/generate-music", response_model=MusicResponse)
-async def generate_music(mood_input: MoodInput = Body(...)):
-    """
-    Generate music based on detected mood from face recognition.
-    Returns music metadata and URLs to access the generated track.
+    Generate music based on detected mood and optional parameters.
     """
     try:
-        # Validate intensity
-        if mood_input.intensity < 0 or mood_input.intensity > 1:
-            raise HTTPException(status_code=400, detail="Intensity must be between 0.0 and 1.0")
+        # Get musical characteristics for the mood
+        music_params = MOOD_TO_MUSIC[mood_input.mood]
         
-        # Generate music parameters based on mood
-        parameters = generate_music_parameters(mood_input.mood, mood_input.intensity)
+        # Adjust parameters based on intensity
+        tempo_min, tempo_max = music_params["tempo_range"]
+        intensity_factor = mood_input.intensity
         
-        # Generate music (mocked)
-        track_id = mock_generate_music(parameters)
+        # Calculate tempo based on intensity (higher intensity = faster tempo)
+        tempo = int(tempo_min + (tempo_max - tempo_min) * intensity_factor)
         
-        # In a real implementation, these URLs would point to actual files
-        base_url = "https://api.yourappdomain.com/music"
+        # Select random genre from the mood's genres
+        genre = random.choice(music_params["genres"])
         
-        return MusicResponse(
-            track_id=track_id,
-            parameters=parameters,
-            download_url=f"{base_url}/download/{track_id}",
-            stream_url=f"{base_url}/stream/{track_id}"
-        )
-    
+        # In a real implementation, you would call an external music generation API
+        # For this example, we'll use cached responses for demo purposes
+        
+        # Simulate API call to music generation service
+        try:
+            # In production, replace this with actual API call
+            # async with httpx.AsyncClient() as client:
+            #     response = await client.post(
+            #         MUSIC_GEN_API_URL,
+            #         json={
+            #             "mood": mood_input.mood,
+            #             "tempo": tempo,
+            #             "genre": genre,
+            #             "key": random.choice(music_params["key"]),
+            #             "instruments": random.sample(music_params["instruments"], 2),
+            #             "duration": 180  # 3 minutes
+            #         },
+            #         headers={"Authorization": f"Bearer {API_KEY}"}
+            #     )
+            #     result = response.json()
+            #     music_url = result["url"]
+            #     duration = result["duration"]
+            
+            # For demo, use cached results
+            cached = random.choice(CACHED_MUSIC.get(mood_input.mood, [{"url": "https://storage.soundgen.io/demo/default.mp3", "duration": 180}]))
+            music_url = cached["url"]
+            duration = cached["duration"]
+            
+            return MusicResponse(
+                music_url=music_url,
+                duration=duration,
+                mood=mood_input.mood,
+                intensity=mood_input.intensity,
+                genre=genre,
+                tempo=tempo
+            )
+            
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Music generation service error: {str(e)}")
+            
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating music: {str(e)}")
 
-@app.get("/track/{track_id}", response_model=MusicResponse)
-async def get_track(track_id: str):
-    """Retrieve information about a previously generated track"""
-    if track_id not in generated_tracks:
-        raise HTTPException(status_code=404, detail="Track not found")
-    
-    parameters = generated_tracks[track_id]
-    base_url = "https://api.yourappdomain.com/music"
-    
-    return MusicResponse(
-        track_id=track_id,
-        parameters=parameters,
-        download_url=f"{base_url}/download/{track_id}",
-        stream_url=f"{base_url}/stream/{track_id}"
-    )
+@app.get("/health")
+def health_check():
+    """Health check endpoint"""
+    return {"status": "healthy"}
+
+@app.get("/available-moods", response_model=List[str])
+def get_available_moods(api_key: str = Depends(verify_api_key)):
+    """Get all available mood categories"""
+    return [mood.value for mood in Mood]
 
 if __name__ == "__main__":
-    uvicorn.run("music_generator_api:app", host="0.0.0.0", port=8000, reload=True)
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
