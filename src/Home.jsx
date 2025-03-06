@@ -10,8 +10,10 @@ const artists = [
 
 export default function HomePage() {
   return (
-    <LinearGradient colors={["#000", "#3b85ed"]} style={styles.container}>
+    <LinearGradient colors={["#000", "#800080"]} style={styles.container}>
       
+      <ScrollView contentContainerStyle={{ paddingBottom: 30 }} showsVerticalScrollIndicator={false}>
+        
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>MOODBEATS</Text>
@@ -20,8 +22,6 @@ export default function HomePage() {
             <TextInput placeholder="Search" placeholderTextColor="#fff" style={styles.searchInput} />
           </View>
         </View>
-
-        <ScrollView contentContainerStyle={{ paddingBottom: 30 }} showsVerticalScrollIndicator={false}>
 
         {/* Recently Played */}
         <Section title="Recently Played">

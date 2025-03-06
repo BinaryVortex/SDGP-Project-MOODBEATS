@@ -10,6 +10,7 @@ import {
   StatusBar
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
+import { Feather } from '@expo/vector-icons';
 
 const searchIcon = `
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -50,9 +51,25 @@ const MoodbeatsApp = () => {
           ))}
         </View>
       </ScrollView>
+
+      {/* Bottom Navigation */}
+            <View style={styles.navbar}>
+              <NavItem icon="home" label="Home" />
+              <NavItem icon="heart" label="Mood" />
+             <NavItem icon="music" label="Playlist" />
+              <NavItem icon="user" label="Profile"/>
+            </View>
+
     </SafeAreaView>
   );
 };
+
+const NavItem = ({ icon, label }) => (
+  <TouchableOpacity style={styles.navItem}>
+    <Feather name={icon} size={20} color="#fff" />
+    <Text style={styles.navLabel}>{label}</Text>
+  </TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -100,6 +117,27 @@ const styles = StyleSheet.create({
     color: '#777',
     textAlign: 'center',
   },
+
+  navbar: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-around', 
+    paddingVertical: 10, 
+    backgroundColor: '#111', 
+    position: 'absolute', 
+    bottom: 0, 
+    width: '100%' 
+  },
+
+  navItem: { 
+    alignItems: 'center' 
+  },
+
+  navLabel: { 
+    fontSize: 10, 
+    color: '#fff', 
+    marginTop: 5 
+  }
+
 });
 
 export default MoodbeatsApp;

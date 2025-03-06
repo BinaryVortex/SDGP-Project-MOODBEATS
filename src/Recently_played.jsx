@@ -38,8 +38,9 @@ export default function MoodBeatsPreview() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+
       {/* <LinearGradient colors={['#6a11cb', '#2575fc']} style={styles.header}> */}
+      
         {/* Header */}
                 <View style={styles.header}>
                   <Text style={styles.title}>MOODBEATS</Text>

@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, ScrollView, Image } from 'react-native';
 import { ChevronLeft, Camera, Music2, Disc3 } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const ProfileSetup = () => {
   const [focusedField, setFocusedField] = useState(null);
 
   return (
-    <ImageBackground
-      source={require('../assets/Back02.jpg')}
-      style={styles.container}
-    >
+    <LinearGradient colors={["#000", "#FF007F"]} style={styles.container}>
     
       {/* Header */}
       <View style={styles.header}>
@@ -61,7 +59,7 @@ const ProfileSetup = () => {
       </View>
       </ScrollView>
 
-    </ImageBackground>
+    </LinearGradient>
     
   );
 };
@@ -69,9 +67,9 @@ const ProfileSetup = () => {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    padding: 20, 
-    backgroundColor: '#000' 
-},
+    paddingTop: 40, 
+    backgroundColor: "#000"
+  },
 
   header: { 
     flexDirection: 'row', 
@@ -106,22 +104,22 @@ const styles = StyleSheet.create({
 
   cameraButton: { 
     position: 'absolute', 
-    bottom: 0, 
-    right: 75, 
-    backgroundColor: 'orange', 
+    bottom: 5, 
+    right: 85, 
+    backgroundColor: '#000', 
     padding: 10, 
     borderRadius: 20 
 },
 
   iconSpin: { 
     position: 'absolute', 
-    top: 0, 
-    right: 100, 
+    top: 2, 
+    right: 115, 
     transform: [{ rotate: '360deg' }] 
 },
 
   form: { 
-    marginBottom: 55 
+    marginBottom: 65 
 },
 
   input: { 
@@ -133,7 +131,7 @@ const styles = StyleSheet.create({
 },
 
   inputFocused: { 
-    borderColor: '#0ef', 
+    borderColor: 'white', 
     borderWidth: 2 
 },
 
@@ -155,7 +153,7 @@ const styles = StyleSheet.create({
     flex: 1, 
     padding: 15, 
     borderRadius: 10, 
-    backgroundColor: 'orange', 
+    backgroundColor: '#000', 
     alignItems: 'center' 
 },
 
