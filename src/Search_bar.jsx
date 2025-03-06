@@ -12,7 +12,7 @@ const SearchBar = ({ onSearch }) => {
 
   return (
     <View style={styles.container}>
-      <Icon name="search" size={20} color="#888" style={styles.icon} />
+      <Icon name="search" size={20} color="#fff" style={styles.icon} />
       <TextInput
         style={styles.input}
         placeholder="Search music..."
@@ -24,7 +24,7 @@ const SearchBar = ({ onSearch }) => {
       />
       {query.length > 0 && (
         <TouchableOpacity onPress={handleClear} style={styles.clearButton}>
-          <Icon name="close-circle" size={20} color="#888" />
+          <Icon name="close-circle" size={20} color="#fff" />
         </TouchableOpacity>
       )}
     </View>
@@ -35,11 +35,12 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#333",
     borderRadius: 10,
     paddingHorizontal: 10,
     height: 40,
-    margin: 10,
+    margin: 20,
+    marginTop: 50,
   },
   icon: {
     marginRight: 8,
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: "#333",
+    color: "#fff",
   },
   clearButton: {
     padding: 5,

@@ -7,14 +7,14 @@ const ProfileSetup = () => {
   const [focusedField, setFocusedField] = useState(null);
 
   return (
-    <LinearGradient colors={["#000", "#FF007F"]} style={styles.container}>
+    <LinearGradient colors={["#000", "#800080"]} style={styles.container}>
     
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton}>
           <ChevronLeft size={24} color="white" />
         </TouchableOpacity>
-        <Text style={styles.title}><Music2 size={20} color="orange" /> MOODBEAST</Text>
+        <Text style={styles.title}>MOODBEAST</Text>
       </View>
       <ScrollView contentContainerStyle={{ paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
       {/* Profile Picture */}
@@ -23,7 +23,6 @@ const ProfileSetup = () => {
         <Image source={require("../assets/Profile_photo.png")} size={70} style={{width: 60, height: 60}}/>
 
         
-          {/* <Camera size={35} color="#fff" /> */}
         </View>
         <TouchableOpacity style={styles.cameraButton}>
           <Camera size={16} color="white" />
@@ -90,7 +89,7 @@ const styles = StyleSheet.create({
 
   profileContainer: { 
     alignItems: 'center', 
-    marginBottom: 30
+    marginBottom: 25
 },
 
   profilePicture: { 
@@ -119,7 +118,9 @@ const styles = StyleSheet.create({
 },
 
   form: { 
-    marginBottom: 65 
+    marginBottom: 65,
+    marginRight: 20,
+    marginLeft: 20, 
 },
 
   input: { 
@@ -146,7 +147,8 @@ const styles = StyleSheet.create({
     borderRadius: 10, 
     backgroundColor: '#444', 
     alignItems: 'center', 
-    marginRight: 10
+    marginRight: 20,
+    marginLeft: 20,
  },
 
   continueButton: { 
@@ -154,7 +156,8 @@ const styles = StyleSheet.create({
     padding: 15, 
     borderRadius: 10, 
     backgroundColor: '#000', 
-    alignItems: 'center' 
+    alignItems: 'center', 
+    marginRight: 20
 },
 
   buttonText: { 

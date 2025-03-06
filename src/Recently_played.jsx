@@ -12,19 +12,10 @@ const tracks = [
   { id: 5, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
   { id: 6, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
   { id: 7, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
-  { id: 8, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
+  { id: 8, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: false },
   { id: 9, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
   { id: 10, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
   { id: 11, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
-  { id: 12, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
-  { id: 13, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
-  { id: 14, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
-  { id: 15, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
-  { id: 16, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
-  { id: 17, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
-  { id: 18, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
-  { id: 19, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
-  { id: 20, title: 'Save your tears', artist: 'The Weeknd', img: 'https://via.placeholder.com/40', duration: '3:56', liked: true },
 ];
 
 const PlayButton = ({ isPlaying, onPress }) => (
@@ -52,7 +43,7 @@ export default function MoodBeatsPreview() {
       {/* Recently Played */}
       <View style={styles.content}>
         <View style={styles.sectionHeader}>
-          <Clock size={16} color="#FF007F" />
+          <Clock size={16} color="#800080" />
           <Text style={styles.sectionTitle}>Recently Played</Text>
           
         </View>
@@ -216,7 +207,7 @@ const styles = StyleSheet.create({
   },
 
   playButton: { 
-    backgroundColor: '#FF007F', 
+    backgroundColor: '#800080', 
     padding: 10, 
     borderRadius: 20 
   },

@@ -35,7 +35,7 @@ export default function OTPVerification() {
   };
 
   return (
-    <LinearGradient colors={["#000", "#FF007F"]} style={styles.container}>
+    <LinearGradient colors={["#000", "#800080"]} style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton}>
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   },
 
   activeButton: { 
-    backgroundColor: '#FF007F' 
+    backgroundColor: '#800080' 
   },
 
   disabledButton: { 
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
   
   pressedButton: { 
-    backgroundColor: '#FF007F' 
+    backgroundColor: '#800080' 
   },
 
   numberText: { 
