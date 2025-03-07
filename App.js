@@ -1,5 +1,5 @@
 import React from 'react';
-import MusicApp from './MusicApp';
+import MusicApp from './src/MusicApp';
 
 export default function App() {
   return <MusicApp />;
