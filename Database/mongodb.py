@@ -1,6 +1,6 @@
 import motor.motor_asyncio
 from fastapi import FastAPI
-from .models import User, Song, Playlist  # Import models
+from .Schemas import User, Song, Playlist  # Import models
 
 app = FastAPI()
 
