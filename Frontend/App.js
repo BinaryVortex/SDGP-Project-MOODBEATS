@@ -1,12 +1,7 @@
+// App.js
 import React from 'react';
-import { SafeAreaView } from 'react-native';
-import songdisplay from './src/songdisplay'; // If file is lowercase
- // Import from src folder
+import AppNavigator from './src/navigation/AppNavigator';
 
 export default function App() {
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <songdisplay />
-    </SafeAreaView>
-  );
+  return <AppNavigator />;
 }
