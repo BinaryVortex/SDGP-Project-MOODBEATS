@@ -17,7 +17,6 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(voice_emotion_router)
 app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(playlists.router, prefix="/playlists", tags=["Playlists"])
 app.include_router(music.router, prefix="/music", tags=["Music"])
