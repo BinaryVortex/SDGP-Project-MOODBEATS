@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Animated, ScrollView
+  View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Animated, ScrollView 
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import { useNavigation } from '@react-navigation/native';
-
+w
 const MusicPlayer = () => {
   const navigation = useNavigation();
   const [isPlaying, setIsPlaying] = useState(false);
@@ -23,8 +23,8 @@ const MusicPlayer = () => {
   // Play/Pause Function
   const togglePlayPause = async () => {
     if (!sound) {
-      const { sound: newSound, status } = await Audio.Sound.createAsync(
-        require('./song.mp3'), // Replace with your audio file
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        require('../assets/song.mp3'), // Ensure the file is inside the assets folder
         { shouldPlay: true }
       );
       setSound(newSound);
