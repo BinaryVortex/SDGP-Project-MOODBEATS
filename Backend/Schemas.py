@@ -50,7 +50,6 @@ class Song(BaseModel):
 
 # Playlist Schema
 class Playlist(BaseModel):
-    id: Optional[PyObjectId] = Field(alias="_id")
     mood: str
     songs: List[str]  # Store song IDs or titles
 
