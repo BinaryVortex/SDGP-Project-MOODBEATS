@@ -6,7 +6,7 @@ import MusicappPlaylist from './src/MusicappPlaylist';
 
 export default function App() {
   return (
-    <MusicappPlaylist/>
+    <MusicApp/>
   );
 }
 
