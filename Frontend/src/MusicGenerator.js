@@ -59,7 +59,7 @@ const MusicGenerator = () => {
       <StatusBar barStyle="dark-content" />
       
       <View style={styles.header}>
-        <Text style={styles.logo}>MoodMusic</Text>
+        <Text style={styles.logo}>MOODBEATS</Text>
         <Text style={styles.tagline}>Music that matches how you feel</Text>
       </View>
       
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   logo: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#16A34A',
+    color: '#800080',
   },
   tagline: {
     fontSize: 14,
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   },
   selectedMoodCard: {
     borderWidth: 2,
-    borderColor: '#16A34A',
+    borderColor: '#ad0aad',
   },
   emojiText: {
     fontSize: 40,
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     color: '#334155',
   },
   generateButton: {
-    backgroundColor: '#16A34A',
+    backgroundColor: '#800080',
     marginHorizontal: 20,
     height: 54,
     borderRadius: 12,
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     color: '#64748B',
   },
   playButton: {
-    backgroundColor: '#16A34A',
+    backgroundColor: '#800080',
     borderRadius: 30,
     paddingVertical: 12,
     paddingHorizontal: 30,
