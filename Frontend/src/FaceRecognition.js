@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#3b85ed',
+    backgroundColor: '#800080',
     padding: 15,
     paddingTop: StatusBar.currentHeight + 15,
   },
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
   },
   navBar: {
     flexDirection: 'row',
-    backgroundColor: '#3b85ed',
+    backgroundColor: '#800080',
     paddingBottom: 10,
   },
   navItem: {
