@@ -109,7 +109,6 @@ const ArtistProfile = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -211,6 +210,57 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF6B00",
     borderRadius: 3,
   },
+  songsSection: {
+    paddingHorizontal: 20,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  sectionTitle: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  seeAllText: {
+    color: "#FF6B00",
+    fontSize: 14,
+  },
+  songItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  songImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 5,
+    marginRight: 15,
+  },
+  songInfo: {
+    flex: 1,
+  },
+  songTitle: {
+    color: "white",
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  songArtist: {
+    color: "#999",
+    fontSize: 14,
+  },
+  playingIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#FF6B00",
+    marginRight: 10,
+  },
+  songMenuButton: {
+    padding: 5,
+  },
+});
 
-}
 export default ArtistProfile;
