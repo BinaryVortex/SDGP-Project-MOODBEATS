@@ -824,7 +824,7 @@ const styles = StyleSheet.create({
     maxWidth: 300,
   },
   continueButton: {
-    backgroundColor: '#FF6600',
+    backgroundColor: '#800080',
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 8,
