@@ -18,12 +18,19 @@ class PyObjectId(ObjectId):
   
 # Playlist Schema
 class Mood(BaseModel):
-  
-    mood: str
-    
+    name: str  # Mood name (e.g., Happy, Sad)
+    description: str  # Mood description
+    associated_songs: List[str]  # List of song IDs
 
     class Config:
         json_encoders = {ObjectId: str}
         json_schema_extra = {
-            
-       }
+            "example": {
+                "name": "Relaxed",
+                "description": "A calm and soothing mood",
+                "associated_songs": [
+                    "64b1a9d5c2eafbd7a8d8c3e5",
+                    "64b1a9d5c2eafbd7a8d8c3e6"
+                ]
+            }
+        }
