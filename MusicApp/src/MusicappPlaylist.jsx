@@ -110,5 +110,107 @@ const ArtistProfile = () => {
 };
 
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#121212",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 16,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  backIcon: {
+    color: "white",
+    fontSize: 24,
+  },
+  menuButton: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  menuIcon: {
+    color: "white",
+    fontSize: 24,
+  },
+  profileContainer: {
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  profileImage: {
+    width: width - 80,
+    height: width - 80,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  artistName: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  artistStats: {
+    color: "#999",
+    fontSize: 14,
+    marginBottom: 20,
+  },
+  actionButtons: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  followButton: {
+    backgroundColor: "#FF6B00",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    flex: 1,
+    marginRight: 10,
+    alignItems: "center",
+  },
+  followButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  playButton: {
+    backgroundColor: "#333",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    flex: 1,
+    marginLeft: 10,
+    alignItems: "center",
+  },
+  playButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  progressBarContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  progressBar: {
+    height: 3,
+    backgroundColor: "#333",
+    borderRadius: 3,
+  },
+  progress: {
+    width: "30%",
+    height: "100%",
+    backgroundColor: "#FF6B00",
+    borderRadius: 3,
+  },
 
+}
 export default ArtistProfile;
