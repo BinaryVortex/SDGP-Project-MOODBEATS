@@ -1,7 +1,7 @@
 import asyncio
 from fastapi import FastAPI, HTTPException
 from mongodb import db, to_json, check_db_connection  # Import database connection
-from Schemas import User, Song, Playlist
+from Schemas import User, Song, Playlist, History
 from bson import ObjectId
 
 import asyncio
@@ -70,6 +70,38 @@ async def create_playlist(playlist: Playlist):
 async def get_playlists():
     playlists = await db.playlists.find().to_list(100)
     return {"playlists": [to_json(playlist) for playlist in playlists]}
+
+# Create a history entry
+@app.post("/history/")
+async def create_history(history: History):
+    history_dict = history.dict()
+
+    # Convert userId and songId to ObjectId
+    try:
+        history_dict["userId"] = ObjectId(history_dict["userId"])
+    except:
+        raise HTTPException(status_code=400, detail="Invalid userId format")
+
+    try:
+        history_dict["songId"] = ObjectId(history_dict["songId"])
+    except:
+        raise HTTPException(status_code=400, detail="Invalid songId format")
+
+    result = await db.history.insert_one(history_dict)
+
+    # Convert ObjectId to string before returning
+    history_dict["_id"] = str(result.inserted_id)
+    history_dict["userId"] = str(history_dict["userId"])
+    history_dict["songId"] = str(history_dict["songId"])
+
+    return {"message": "History record created", "history": history_dict}
+
+# Get all history entries
+@app.get("/history/")
+async def get_history():
+    history_entries = await db.history.find().to_list(100)
+    return {"history": [to_json(entry) for entry in history_entries]}
+
 
 if __name__ == "__main__":
     import uvicorn
