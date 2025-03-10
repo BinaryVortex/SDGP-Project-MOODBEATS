@@ -2,6 +2,8 @@
 from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional
 from bson import ObjectId
+from pydantic import BaseModel, ConfigDict
+from bson import ObjectId
 
 # For MongoDB ObjectId handling
 class PyObjectId(ObjectId):
@@ -61,3 +63,11 @@ class Playlist(BaseModel):
                 "songs": ["song_id_1", "song_id_2"]
             }
         }
+
+# History Schema
+class History(BaseModel):
+    userId: str  # Use str instead of ObjectId
+    songId: str
+    moodAtPlay: str
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
