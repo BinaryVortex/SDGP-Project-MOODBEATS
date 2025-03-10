@@ -34,7 +34,8 @@ const LoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={['black', '#3b85ed']}
+        colors={['black', '#800080', 'black']}
+        locations={[0, 0.6, 1.0]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={styles.gradient}
@@ -53,7 +54,7 @@ const LoginScreen = ({ navigation }) => {
                 <Text style={styles.logoText}>MB</Text>
               </View>
               <Text style={styles.welcomeText}>Welcome Back!</Text>
-              <Text style={styles.subtitleText}>Sign in to stay in tune with your music</Text>
+              <Text style={styles.subtitleText}>Sign in to stay in tune with your music 💫</Text>
             </View>
 
             {/* Login Form */}
@@ -170,6 +171,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
     paddingTop: 40,
+    paddingBottom: 60, // Adding padding at the bottom for better visibility with black gradient
   },
   logoContainer: {
     alignItems: 'center',
@@ -195,22 +197,24 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: '#ffffff',
-    marginBottom: 8,
+    marginBottom: 20,
   },
   subtitleText: {
     fontSize: 16,
     color: 'rgba(255,255,255,0.7)',
+    fontWeight:'bold',
+    marginBottom:20,
   },
   formContainer: {
     width: '100%',
   },
   inputContainer: {
-    marginBottom: 20,
+    marginBottom: 40,
   },
   label: {
     fontSize: 14,
     color: '#ffffff',
-    marginBottom: 8,
+    marginBottom:25,
   },
   input: {
     backgroundColor: 'rgba(0, 0, 0, 0.0)',
@@ -220,6 +224,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.3)',
+    fontWeight:'bold'
   },
   optionsRow: {
     flexDirection: 'row',
@@ -230,19 +235,20 @@ const styles = StyleSheet.create({
   rememberMe: {
     flexDirection: 'row',
     alignItems: 'center',
+    
   },
   checkbox: {
     width: 20,
     height: 20,
     borderRadius: 4,
     borderWidth: 2,
-    borderColor: 'lightblue',
+    borderColor: '#FF00FF',
     marginRight: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   checkboxChecked: {
-    backgroundColor: 'lightblue',
+    backgroundColor: '#FF00FF',
   },
   checkmark: {
     color: 'black',
@@ -253,8 +259,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   forgotPassword: {
-    color: 'lightblue',
+    color: '#FF00FF',
     fontSize: 14,
+    fontWeight:'bold',
   },
   loginButton: {
     width: '100%',
@@ -264,6 +271,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.3)',
+    marginTop:30,
   },
   loginGradient: {
     flex: 1,
@@ -284,16 +292,19 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    marginTop:20,
   },
   dividerText: {
     color: 'rgba(255,255,255,0.7)',
     paddingHorizontal: 16,
     fontSize: 14,
+    marginTop:20,
   },
   socialButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 24,
+    marginTop:30,
   },
   socialButton: {
     flex: 1,
@@ -315,15 +326,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    margintop:30,
   },
   signUpText: {
     color: 'rgba(255,255,255,0.7)',
     fontSize: 14,
+    marginTop:30,
   },
   signUpLink: {
     color: '#ffffff',
     fontSize: 14,
     fontWeight: 'bold',
+    marginTop:30,
   },
 });
 
