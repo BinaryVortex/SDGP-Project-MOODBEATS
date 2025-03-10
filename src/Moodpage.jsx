@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export default function MoodSelectionScreen() {
   const [scrollY] = useState(new Animated.Value(0));
+  const [selectedEmoji, setSelectedEmoji] = useState(null);
 
   const NavItem = ({ icon, label, color }) => (
     <TouchableOpacity style={styles.navItem}>
@@ -14,9 +15,13 @@ export default function MoodSelectionScreen() {
     </TouchableOpacity>
   );
 
+  const handleEmojiPress = (emoji) => {
+    setSelectedEmoji(emoji);
+  };
+
   return (
     <LinearGradient
-      colors={['black', '#3b85ed']}
+      colors={['black', '#800080']}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
       style={styles.container}
@@ -53,10 +58,41 @@ export default function MoodSelectionScreen() {
 
         <Text style={styles.orText}>Or</Text>
 
-        <TouchableOpacity style={styles.optionButton}>
-          <Text style={styles.emojiText}>😊 😢 😐 😡 😴</Text>
+        <View style={styles.moodContainer}>
+          <View style={styles.emojiContainer}>
+            <TouchableOpacity
+              style={[styles.emojiButton, selectedEmoji === "😊" && styles.selectedEmoji]}
+              onPress={() => handleEmojiPress("😊")}
+            >
+              <Text style={styles.emojiText}>😊</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.emojiButton, selectedEmoji === "😢" && styles.selectedEmoji]}
+              onPress={() => handleEmojiPress("😢")}
+            >
+              <Text style={styles.emojiText}>😢</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.emojiButton, selectedEmoji === "😐" && styles.selectedEmoji]}
+              onPress={() => handleEmojiPress("😐")}
+            >
+              <Text style={styles.emojiText}>😐</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.emojiButton, selectedEmoji === "😡" && styles.selectedEmoji]}
+              onPress={() => handleEmojiPress("😡")}
+            >
+              <Text style={styles.emojiText}>😡</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.emojiButton, selectedEmoji === "😴" && styles.selectedEmoji]}
+              onPress={() => handleEmojiPress("😴")}
+            >
+              <Text style={styles.emojiText}>😴</Text>
+            </TouchableOpacity>
+          </View>
           <Text style={styles.optionText}>Current Mood</Text>
-        </TouchableOpacity>
+        </View>
       </Animated.ScrollView>
 
       <View style={styles.navbar}>
@@ -120,6 +156,29 @@ const styles = StyleSheet.create({
   optionText: {
     color: "white",
     marginTop: 10,
+  },
+  moodContainer: {
+    backgroundColor: "rgba(0, 0, 0, 0.0)",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    marginVertical: 10,
+    width: "80%",
+    alignSelf: 'center',
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.3)",
+  },
+  emojiContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  emojiButton: {
+    padding: 10,
+    borderRadius: 25,
+  },
+  selectedEmoji: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   emojiText: {
     fontSize: 24,
