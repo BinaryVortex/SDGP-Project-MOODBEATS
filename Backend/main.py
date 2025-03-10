@@ -30,7 +30,7 @@ def read_root():
     return {"message": "Welcome to MoodBeats API"}
 
 
-# Post all moods
+# MOOD all moods
 @app.post("/moods/")
 async def create_mood(mood: Mood):
     mood_dict = mood.dict(exclude={"id"})
