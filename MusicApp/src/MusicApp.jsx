@@ -86,7 +86,15 @@ const MusicApp = () => {
       
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.logo}>Logo</Text>
+
+      <View style={styles.header}>
+      {/* Logo Image */}
+      <Image
+        source={require('./assets/logo.png')} // Local image
+        style={styles.logo}
+      />
+      
+
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
