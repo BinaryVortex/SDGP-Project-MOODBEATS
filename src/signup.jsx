@@ -29,7 +29,7 @@ const SignUpScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={['#000', '#3b85ed', '#000']}
+        colors={['#000', '#800080', '#000']}
         style={styles.gradient}
       >
         <KeyboardAvoidingView
@@ -40,7 +40,7 @@ const SignUpScreen = () => {
             {/* Logo and App Name */}
             <View style={styles.logoContainer}>
               <Text style={styles.appName}>MOODBEATS</Text>
-              <Text style={styles.tagline}>Sign in to stay in tune with your music</Text>
+              <Text style={styles.tagline}>Sign in to stay in tune with your music💫</Text>
             </View>
 
             {/* Sign Up Form */}
@@ -111,7 +111,7 @@ const SignUpScreen = () => {
             <View style={styles.signInContainer}>
               <Text style={styles.signInText}>Already have an account? </Text>
               <TouchableOpacity>
-                <Text style={styles.signInLink}>Sign In</Text>
+                <Text style={styles.signInLink}>Login</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>

@@ -89,7 +89,7 @@ const MusicPlaylistApp = () => {
       <ScrollView style={styles.scrollView}>
         {/* Header Section */}
         <LinearGradient
-          colors={['#4c669f', '#3b5998', '#192f6a']}
+          colors={['#800080', 'rgb(200, 0, 255)', '#800080']}
           style={styles.header2}
         >
           <View style={styles.searchContainer}>
@@ -172,10 +172,11 @@ const MusicPlaylistApp = () => {
       </View>
 
       <View style={styles.navbar}>
-              <NavItem icon="home" label="Home" color="white" />
-              <NavItem icon="heart" label="Mood" color="white" />
-              <NavItem icon="music" label="Playlists" color="white" />
-            </View>
+        <NavItem icon="home" label="Home" color="white" />
+        <NavItem icon="heart" label="Mood" color="white" />
+        <NavItem icon="music" label="Playlists" color="white" />
+        <NavItem icon="user" label="Profile" color="white" />
+      </View>
     </SafeAreaView>
   );
 };
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     paddingLeft: 10,
     width: 144,
-    marginLeft: 165
+    marginLeft: 175
   },
   searchIcon: {
     marginRight: 6,
@@ -278,7 +279,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#1db954',
+    backgroundColor: 'rgb(200, 0, 255)',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 20,

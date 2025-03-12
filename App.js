@@ -5,10 +5,11 @@ import LoginScreen from './src/login';
 import MusicPlaylistApp from './src/playlists';
 import SignInScreen from './src/signup';
 import MoodRecognition from './src/VoiceRecog';
+import SignUpScreen from './src/signup';
 
 export default function App() {
   return (
-    <LoginScreen/>
+    <MusicPlaylistApp/>
   );
 }
 
