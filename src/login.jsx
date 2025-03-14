@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,16 +11,81 @@ import {
   ActivityIndicator,
   Dimensions,
   SafeAreaView,
+  Animated,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { AntDesign, FontAwesome } from '@expo/vector-icons';
+import * as Font from 'expo-font';
+import AppLoading from 'expo-app-loading';
 
 const { width } = Dimensions.get('window');
+
+// Add font loading functionality
+const loadFonts = () => {
+  return Font.loadAsync({
+    'URWChanceryL': require('./assets/fonts/URWChanceryL.ttf'), // Make sure to add this font file to your assets
+  });
+};
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+  
+  // Animation values for button color and brightness
+  const buttonColorAnim = useRef(new Animated.Value(0)).current;
+  
+  // Interpolate animation value to color - using a much brighter magenta
+  const buttonBackgroundColor = buttonColorAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#800080', '#FF00FF']
+  });
+  
+  // Add glow effect animation
+  const buttonGlowEffect = buttonColorAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0px', '6px']
+  });
+  
+  // Brightness/scale effect
+  const buttonScale = buttonColorAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.05]
+  });
+
+  // Load fonts
+  React.useEffect(() => {
+    async function prepare() {
+      try {
+        await loadFonts();
+        setFontsLoaded(true);
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+    prepare();
+  }, []);
+
+  const handlePressIn = () => {
+    setIsPressed(true);
+    Animated.timing(buttonColorAnim, {
+      toValue: 1,
+      duration: 150,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    setIsPressed(false);
+    Animated.timing(buttonColorAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
 
   const handleLogin = async () => {
     setIsLoading(true);
@@ -30,6 +95,10 @@ const LoginScreen = ({ navigation }) => {
       // Add your login logic here
     }, 1500);
   };
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" color="#800080" />;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -54,7 +123,7 @@ const LoginScreen = ({ navigation }) => {
                 <Text style={styles.logoText}>MB</Text>
               </View>
               <Text style={styles.welcomeText}>Welcome Back!</Text>
-              <Text style={styles.subtitleText}>Sign in to stay in tune with your music 💫</Text>
+              <Text style={styles.subtitleText}>Login to stay in tune with your music 💫</Text>
             </View>
 
             {/* Login Form */}
@@ -100,23 +169,50 @@ const LoginScreen = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
 
-              {/* Login Button */}
-              <TouchableOpacity
-                style={styles.loginButton}
-                onPress={handleLogin}
-                disabled={isLoading}
-              >
-                <LinearGradient
-                  colors={['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.1)']}
-                  style={styles.loginGradient}
+              {/* Login Button with Enhanced Animation */}
+              <Animated.View style={{
+                shadowColor: '#FF00FF',
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: buttonColorAnim,
+                shadowRadius: 10,
+                transform: [{ scale: buttonScale }],
+              }}>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPressIn={handlePressIn}
+                  onPressOut={handlePressOut}
+                  onPress={handleLogin}
+                  disabled={isLoading}
                 >
-                  {isLoading ? (
-                    <ActivityIndicator color="#ffffff" />
-                  ) : (
-                    <Text style={styles.loginText}>Login to MOODBEATS</Text>
-                  )}
-                </LinearGradient>
-              </TouchableOpacity>
+                  <Animated.View style={[
+                    styles.loginButton,
+                    { 
+                      backgroundColor: buttonBackgroundColor,
+                    }
+                  ]}>
+                    <LinearGradient
+                      colors={isPressed ? 
+                        ['rgba(255,255,255,0.5)', 'rgba(255,255,255,0.3)'] : 
+                        ['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.1)']}
+                      style={styles.loginGradient}
+                    >
+                      {isLoading ? (
+                        <ActivityIndicator color="#ffffff" />
+                      ) : (
+                        <Animated.Text style={[
+                          styles.loginText,
+                          { 
+                            color: isPressed ? '#FFFFFF' : '#F0F0F0',
+                            textShadowColor: 'rgba(255,255,255,0.5)',
+                            textShadowOffset: {width: 0, height: 0},
+                            textShadowRadius: isPressed ? 10 : 0,
+                          }
+                        ]}>Login to MOODBEATS</Animated.Text>
+                      )}
+                    </LinearGradient>
+                  </Animated.View>
+                </TouchableOpacity>
+              </Animated.View>
 
               {/* Social Login */}
               <View style={styles.dividerContainer}>
@@ -128,16 +224,19 @@ const LoginScreen = ({ navigation }) => {
               <View style={styles.socialButtons}>
                 {/* Google Login */}
                 <TouchableOpacity style={styles.socialButton}>
+                  <AntDesign name="google" size={20} color="#ffffff" style={styles.socialIcon} />
                   <Text style={styles.socialButtonText}>Google</Text>
                 </TouchableOpacity>
 
                 {/* Facebook Login */}
                 <TouchableOpacity style={styles.socialButton}>
+                  <FontAwesome name="facebook" size={20} color="#ffffff" style={styles.socialIcon} />
                   <Text style={styles.socialButtonText}>Facebook</Text>
                 </TouchableOpacity>
 
                 {/* Instagram Login */}
                 <TouchableOpacity style={styles.socialButton}>
+                  <AntDesign name="instagram" size={20} color="#ffffff" style={styles.socialIcon} />
                   <Text style={styles.socialButtonText}>Instagram</Text>
                 </TouchableOpacity>
               </View>
@@ -202,8 +301,8 @@ const styles = StyleSheet.create({
   subtitleText: {
     fontSize: 16,
     color: 'rgba(255,255,255,0.7)',
-    fontWeight:'bold',
-    marginBottom:20,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
   formContainer: {
     width: '100%',
@@ -214,7 +313,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     color: '#ffffff',
-    marginBottom:25,
+    marginBottom: 25,
   },
   input: {
     backgroundColor: 'rgba(0, 0, 0, 0.0)',
@@ -224,7 +323,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.3)',
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
   optionsRow: {
     flexDirection: 'row',
@@ -235,7 +334,6 @@ const styles = StyleSheet.create({
   rememberMe: {
     flexDirection: 'row',
     alignItems: 'center',
-    
   },
   checkbox: {
     width: 20,
@@ -261,7 +359,7 @@ const styles = StyleSheet.create({
   forgotPassword: {
     color: '#FF00FF',
     fontSize: 14,
-    fontWeight:'bold',
+    fontWeight: 'bold',
   },
   loginButton: {
     width: '100%',
@@ -269,9 +367,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
     marginBottom: 24,
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-    marginTop:30,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.5)',
+    marginTop: 30,
   },
   loginGradient: {
     flex: 1,
@@ -292,52 +390,55 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    marginTop:20,
+    marginTop: 20,
   },
   dividerText: {
     color: 'rgba(255,255,255,0.7)',
     paddingHorizontal: 16,
     fontSize: 14,
-    marginTop:20,
+    marginTop: 20,
   },
   socialButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 24,
-    marginTop:30,
+    marginTop: 30,
   },
   socialButton: {
     flex: 1,
     height: 48,
     backgroundColor: 'rgba(0, 0, 0, 0.0)',
     borderRadius: 10,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 6,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.3)',
-    
   },
   socialButtonText: {
     color: '#ffffff',
     fontSize: 14,
   },
+  socialIcon: {
+    marginRight: 8,
+  },
   signUpContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    margintop:30,
+    marginTop: 30,
   },
   signUpText: {
     color: 'rgba(255,255,255,0.7)',
     fontSize: 14,
-    marginTop:30,
+    marginTop: 30,
   },
   signUpLink: {
-    color: '#ffffff',
+    color: '#FF00FF',
     fontSize: 14,
     fontWeight: 'bold',
-    marginTop:30,
+    marginTop: 30,
   },
 });
 
