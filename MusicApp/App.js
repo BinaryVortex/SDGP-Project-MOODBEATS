@@ -3,10 +3,12 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import MusicApp from './src/MusicApp';
 import MusicappPlaylist from './src/MusicappPlaylist';
+import AiCoverart from './src/AiCoverart';
+
 
 export default function App() {
   return (
-    <MusicappPlaylist/>
+    <AiCoverart/>
   );
 }
 
