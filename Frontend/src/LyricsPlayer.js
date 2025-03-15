@@ -1,106 +1,132 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
+import Slider from '@react-native-community/slider';
 import { Ionicons } from '@expo/vector-icons';
 
-const LyricsPlayer = () => {
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isFavorite, setIsFavorite] = useState(false);
-  
-  // Sample lyrics with highlighted parts (first line)
-  const lyrics = [
-    { text: "Barefoot on the grass, oh, listenin' to our favourite song", highlighted: true },
-    { text: "I have faith in what I see, now I know I have met", highlighted: false },
-    { text: "An angel in person, and she looks perfect", highlighted: false },
-    { text: "Though I don't deserve this, you look perfect tonight", highlighted: false },
-  ];
+const { width } = Dimensions.get('window');
 
-  const togglePlay = () => setIsPlaying(!isPlaying);
-  const toggleFavorite = () => setIsFavorite(!isFavorite);
+const LyricsPlayer = ({ route, navigation }) => {
+  const { position: initialPosition, isPlaying: initialIsPlaying, song } = route.params;
+  const [position, setPosition] = useState(initialPosition);
+  const [isPlaying, setIsPlaying] = useState(initialIsPlaying);
+
+  // Format time to mm:ss
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+
+  // Update progress every second when playing
+  useEffect(() => {
+    let interval;
+    if (isPlaying) {
+      interval = setInterval(() => {
+        setPosition((prev) => {
+          if (prev >= song.duration) {
+            setIsPlaying(false);
+            clearInterval(interval);
+            return 0;
+          }
+          return prev + 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isPlaying, song.duration]);
+
+  // Handle play/pause
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
+    // In a real app, you would control audio here
+  };
+
+  // Handle slider change
+  const handleSliderChange = (value) => {
+    setPosition(value);
+    // In a real app, you would seek the audio here
+  };
+
+  // Check if a lyric should be highlighted based on current position
+  const isLyricActive = (lyric) => {
+    return position >= lyric.startTime && position <= lyric.endTime;
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      
-      {/* Top navigation */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuButton}>
-          <Ionicons name="ellipsis-horizontal" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Progress bar */}
-      <View style={styles.progressContainer}>
-        <View style={styles.progressBar}>
-          <View style={styles.progress} />
-        </View>
+    <View style={styles.container}>
+      <View style={styles.playerControls}>
         <View style={styles.timeContainer}>
-          <Text style={styles.timeText}>3:47</Text>
-          <Text style={styles.timeText}>4:19</Text>
+          <Text style={styles.timeText}>{formatTime(position)}</Text>
+          <Text style={styles.timeText}>{formatTime(song.duration)}</Text>
+        </View>
+        
+        <Slider
+          style={styles.progressBar}
+          minimumValue={0}
+          maximumValue={song.duration}
+          value={position}
+          onValueChange={handleSliderChange}
+          minimumTrackTintColor="#800000"
+          maximumTrackTintColor="#777"
+          thumbTintColor="#800000"
+        />
+
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity>
+            <Ionicons name="play-skip-back" size={30} color="white" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.playButton} 
+            onPress={handlePlayPause}
+          >
+            <Ionicons name={isPlaying ? "pause" : "play"} size={30} color="white" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity>
+            <Ionicons name="play-skip-forward" size={30} color="white" />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.additionalControls}>
+          <TouchableOpacity>
+            <Ionicons name="repeat" size={22} color="white" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity>
+            <Ionicons name="heart-outline" size={22} color="white" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity>
+            <Ionicons name="shuffle" size={22} color="white" />
+          </TouchableOpacity>
         </View>
       </View>
 
-      {/* Playback controls */}
-      <View style={styles.controlsContainer}>
-        <TouchableOpacity style={styles.controlButton}>
-          <Ionicons name="play-skip-back" size={28} color="white" />
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.playButton} onPress={togglePlay}>
-          {isPlaying ? (
-            <Ionicons name="pause" size={28} color="white" />
-          ) : (
-            <Ionicons name="play" size={28} color="white" />
-          )}
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.controlButton}>
-          <Ionicons name="play-skip-forward" size={28} color="white" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Secondary controls */}
-      <View style={styles.secondaryControls}>
-        <TouchableOpacity style={styles.secondaryButton}>
-          <Ionicons name="repeat" size={24} color="white" />
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.secondaryButton} onPress={toggleFavorite}>
-          <Ionicons 
-            name={isFavorite ? "heart" : "heart-outline"} 
-            size={24} 
-            color="white" 
-          />
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.secondaryButton}>
-          <Ionicons name="close" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.divider} />
-
-      {/* Lyrics section */}
       <View style={styles.lyricsContainer}>
-        <Text style={styles.lyricsTitle}>Lyrics</Text>
-        
-        <View style={styles.lyricsContent}>
-          {lyrics.map((line, index) => (
-            <Text 
-              key={index} 
+        <Text style={styles.lyricsHeader}>Lyrics</Text>
+        <ScrollView style={styles.scrollView}>
+          {song.lyrics.map((lyric, index) => (
+            <Text
+              key={index}
               style={[
-                styles.lyricLine, 
-                line.highlighted && styles.highlightedLyric
+                styles.lyricText,
+                isLyricActive(lyric) && styles.activeLyric,
               ]}
             >
-              {line.text}
+              {lyric.line}
             </Text>
           ))}
-        </View>
+        </ScrollView>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -110,94 +136,63 @@ const styles = StyleSheet.create({
     backgroundColor: '#121212',
     padding: 16,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  backButton: {
-    padding: 5,
-  },
-  menuButton: {
-    padding: 5,
-  },
-  progressContainer: {
-    marginBottom: 20,
-  },
-  progressBar: {
-    height: 4,
-    backgroundColor: '#444',
-    borderRadius: 2,
-  },
-  progress: {
-    width: '65%',
-    height: '100%',
-    backgroundColor: '#e65c00',
-    borderRadius: 2,
+  playerControls: {
+    marginTop: 30,
   },
   timeContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 5,
   },
   timeText: {
     color: '#aaa',
     fontSize: 12,
   },
-  controlsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
+  progressBar: {
+    width: '100%',
+    height: 40,
   },
-  controlButton: {
-    padding: 15,
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginTop: 5,
   },
   playButton: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#e65c00',
+    backgroundColor: '#800080',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 20,
   },
-  secondaryControls: {
+  additionalControls: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 20,
-  },
-  secondaryButton: {
-    padding: 10,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#333',
-    marginBottom: 20,
+    marginTop: 20,
   },
   lyricsContainer: {
     flex: 1,
+    marginTop: 20,
   },
-  lyricsTitle: {
+  lyricsHeader: {
     color: 'white',
     fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  lyricsContent: {
-    backgroundColor: '#333',
-    borderRadius: 8,
-    padding: 16,
-  },
-  lyricLine: {
-    color: 'white',
-    fontSize: 16,
     marginBottom: 10,
-    lineHeight: 24,
   },
-  highlightedLyric: {
-    color: '#e65c00',
+  scrollView: {
+    flex: 1,
+    backgroundColor: '#222',
+    borderRadius: 10,
+    padding: 15,
+  },
+  lyricText: {
+    color: '#aaa',
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  activeLyric: {
+    color: '#800000',
+    fontWeight: 'bold',
   },
 });
 
