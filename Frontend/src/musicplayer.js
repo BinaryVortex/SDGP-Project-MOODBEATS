@@ -1,307 +1,268 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from 'react-native';
-import { Ionicons, Feather } from '@expo/vector-icons';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  Animated,
+} from 'react-native';
+import { Audio } from 'expo-av';
+import Slider from '@react-native-community/slider';
+import { Ionicons, AntDesign, MaterialIcons } from '@expo/vector-icons';
+import song from './song';
 
-const MusicPlayer = () => {
-  const [showLyrics, setShowLyrics] = useState(false);
+const { width } = Dimensions.get('window');
+
+const MusicPlayer = ({ navigation }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState('3:47');
-  const [totalDuration, setTotalDuration] = useState('4:23');
-  const [progress, setProgress] = useState(0.7);
+  const [sound, setSound] = useState(null);
+  const [position, setPosition] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Sample song data
-  const song = {
-    title: "Perfect",
-    artist: "Ed Sheeran",
-    coverArt: "https://example.com/perfect.jpg", // Replace with actual image path
-    lyrics: [
-      "Barefoot on the grass,",
-      "oh, listenin' to our",
-      "favourite song",
-      "I have faith in what I",
-      "see, now I know I",
-      "have met",
-      "An angel in person,",
-      "and she looks perfect",
-      "",
-      "Though I don't",
-      "deserve this, you look",
-      "perfect tonight"
-    ]
+  // Format time to mm:ss
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
-  const toggleLyrics = () => {
-    setShowLyrics(!showLyrics);
-  };
+  useEffect(() => {
+    // Load sound when component mounts
+    const loadSound = async () => {
+      try {
+        // Note: In a real app, you would use song.audioFile
+        // This is just for demonstration - no actual audio will play
+        const { sound } = await Audio.Sound.createAsync(
+          require('../assets/placeholder.mp3'),
+          { shouldPlay: false }
+        );
+        setSound(sound);
+        setIsLoaded(true);
+      } catch (error) {
+        console.log('Error loading sound:', error);
+      }
+    };
 
-  const togglePlayPause = () => {
+    loadSound();
+
+    // Clean up
+    return () => {
+      if (sound) {
+        sound.unloadAsync();
+      }
+    };
+  }, []);
+
+  // Play or pause sound
+  const handlePlayPause = async () => {
+    if (!sound) return;
+
+    if (isPlaying) {
+      await sound.pauseAsync();
+    } else {
+      await sound.playAsync();
+    }
     setIsPlaying(!isPlaying);
   };
 
-  // Placeholder function for seeking
-  const handleSeek = (value) => {
-    // Implement seeking functionality
-    console.log('Seek to:', value);
+  // Update progress every second when playing
+  useEffect(() => {
+    let interval;
+    if (isPlaying) {
+      interval = setInterval(() => {
+        setPosition((prev) => {
+          if (prev >= song.duration) {
+            setIsPlaying(false);
+            clearInterval(interval);
+            return 0;
+          }
+          return prev + 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isPlaying]);
+
+  // Handle slider change
+  const handleSliderChange = (value) => {
+    setPosition(value);
+    if (sound) {
+      sound.setPositionAsync(value * 1000);
+    }
+  };
+
+  // Navigate to lyrics screen
+  const navigateToLyrics = () => {
+    navigation.navigate('LyricsPlayer', {
+      position,
+      isPlaying,
+      song,
+    });
   };
 
   return (
     <View style={styles.container}>
-      {!showLyrics ? (
-        // Main player view
-        <View style={styles.playerContainer}>
-          <View style={styles.header}>
-            <TouchableOpacity>
-              <Ionicons name="arrow-back" size={24} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Ionicons name="ellipsis-horizontal" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Ionicons name="ellipsis-horizontal" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
 
-          <View style={styles.albumArtContainer}>
-            <Image 
-              source={{ uri: song.coverArt }}
-              style={styles.albumArt}
-              defaultSource={require('./assets/default-album.png')} // Add a default placeholder
+      <View style={styles.albumContainer}>
+        <Image source={song.albumArt} style={styles.albumArt} />
+      </View>
+
+      <View style={styles.infoContainer}>
+        <Text style={styles.songTitle}>{song.title}</Text>
+        <Text style={styles.artistName}>{song.artist}</Text>
+      </View>
+
+      <View style={styles.controlsContainer}>
+        <View style={styles.progressContainer}>
+          <Slider
+            style={styles.progressBar}
+            minimumValue={0}
+            maximumValue={song.duration}
+            value={position}
+            onValueChange={handleSliderChange}
+            minimumTrackTintColor="#800000"
+            maximumTrackTintColor="#777"
+            thumbTintColor="#800000"
+          />
+          <View style={styles.timeContainer}>
+            <Text style={styles.timeText}>{formatTime(position)}</Text>
+            <Text style={styles.timeText}>{formatTime(song.duration)}</Text>
+          </View>
+        </View>
+
+        <View style={styles.playerControls}>
+          <TouchableOpacity>
+            <Ionicons name="play-skip-back" size={36} color="white" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.playButton} onPress={handlePlayPause}>
+            <Ionicons
+              name={isPlaying ? "pause" : "play"}
+              size={36}
+              color="white"
             />
-          </View>
-
-          <View style={styles.songInfoContainer}>
-            <Text style={styles.songTitle}>{song.title}</Text>
-            <Text style={styles.artistName}>{song.artist}</Text>
-          </View>
-
-          <View style={styles.progressBarContainer}>
-            <View style={styles.progressBar}>
-              <View style={[styles.progress, { width: `${progress * 100}%` }]} />
-            </View>
-            <View style={styles.timeContainer}>
-              <Text style={styles.timeText}>{currentTime}</Text>
-              <Text style={styles.timeText}>{totalDuration}</Text>
-            </View>
-          </View>
-
-          <View style={styles.controlsContainer}>
-            <TouchableOpacity>
-              <Ionicons name="play-skip-back" size={32} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.playButton} onPress={togglePlayPause}>
-              <Ionicons 
-                name={isPlaying ? "pause" : "play"} 
-                size={32} 
-                color="white" 
-                style={{ marginLeft: isPlaying ? 0 : 4 }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Ionicons name="play-skip-forward" size={32} color="white" />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.additionalControlsContainer}>
-            <TouchableOpacity>
-              <Ionicons name="repeat" size={24} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Ionicons name="heart-outline" size={24} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Feather name="shuffle" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
-
-          <TouchableOpacity style={styles.lyricsButton} onPress={toggleLyrics}>
-            <Text style={styles.lyricsButtonText}>Lyrics</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity>
+            <Ionicons name="play-skip-forward" size={36} color="white" />
           </TouchableOpacity>
         </View>
-      ) : (
-        // Lyrics view
-        <View style={styles.lyricsContainer}>
-          <View style={styles.header}>
-            <TouchableOpacity onPress={toggleLyrics}>
-              <Ionicons name="arrow-back" size={24} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Ionicons name="ellipsis-horizontal" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
 
-          <View style={styles.progressBarContainer}>
-            <View style={styles.progressBar}>
-              <View style={[styles.progress, { width: `${progress * 100}%` }]} />
-            </View>
-            <View style={styles.timeContainer}>
-              <Text style={styles.timeText}>{currentTime}</Text>
-              <Text style={styles.timeText}>{totalDuration}</Text>
-            </View>
-          </View>
-
-          <View style={styles.controlsContainer}>
-            <TouchableOpacity>
-              <Ionicons name="play-skip-back" size={32} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.playButton} onPress={togglePlayPause}>
-              <Ionicons 
-                name={isPlaying ? "pause" : "play"} 
-                size={32} 
-                color="white" 
-                style={{ marginLeft: isPlaying ? 0 : 4 }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Ionicons name="play-skip-forward" size={32} color="white" />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.additionalControlsContainer}>
-            <TouchableOpacity>
-              <Ionicons name="repeat" size={24} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Ionicons name="heart-outline" size={24} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Feather name="shuffle" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.lyricsHeader}>Lyrics</Text>
+        <View style={styles.additionalControls}>
+          <TouchableOpacity>
+            <Ionicons name="repeat" size={24} color="white" />
+          </TouchableOpacity>
           
-          <ScrollView style={styles.lyricsScrollView}>
-            <View style={styles.lyricsTextContainer}>
-              {song.lyrics.map((line, index) => (
-                <Text 
-                  key={index} 
-                  style={[
-                    styles.lyricsText,
-                    // Highlight current line (this would be dynamic in a real app)
-                    index >= 0 && index <= 8 ? styles.activeLyrics : {}
-                  ]}
-                >
-                  {line}
-                </Text>
-              ))}
-            </View>
-          </ScrollView>
+          <TouchableOpacity>
+            <Ionicons name="heart-outline" size={24} color="white" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity>
+            <Ionicons name="shuffle" size={24} color="white" />
+          </TouchableOpacity>
         </View>
-      )}
+
+        <TouchableOpacity 
+          style={styles.lyricsButton}
+          onPress={navigateToLyrics}
+        >
+          <Text style={styles.lyricsText}>Lyrics</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
-const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#121212',
-  },
-  playerContainer: {
-    flex: 1,
-    padding: 20,
+    padding: 16,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginTop: 20,
   },
-  albumArtContainer: {
+  albumContainer: {
     alignItems: 'center',
-    marginBottom: 30,
+    marginTop: 30,
   },
   albumArt: {
     width: width - 80,
     height: width - 80,
-    borderRadius: 8,
+    borderRadius: 10,
   },
-  songInfoContainer: {
+  infoContainer: {
     alignItems: 'center',
-    marginBottom: 30,
+    marginTop: 30,
   },
   songTitle: {
     color: 'white',
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 8,
   },
   artistName: {
-    color: 'white',
+    color: '#aaa',
     fontSize: 18,
+    marginTop: 5,
   },
-  progressBarContainer: {
-    marginBottom: 20,
+  controlsContainer: {
+    marginTop: 30,
+  },
+  progressContainer: {
+    width: '100%',
   },
   progressBar: {
-    height: 4,
-    backgroundColor: '#4f4f4f',
-    borderRadius: 2,
-  },
-  progress: {
-    height: 4,
-    backgroundColor: '#e67e22',
-    borderRadius: 2,
+    width: '100%',
+    height: 40,
   },
   timeContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    marginTop: -15,
   },
   timeText: {
-    color: '#9f9f9f',
+    color: '#aaa',
     fontSize: 12,
   },
-  controlsContainer: {
+  playerControls: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    marginBottom: 30,
+    marginTop: 15,
   },
   playButton: {
-    backgroundColor: '#e67e22',
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: '#800080',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  additionalControlsContainer: {
+  additionalControls: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    marginBottom: 30,
+    justifyContent: 'space-around',
+    marginTop: 30,
   },
   lyricsButton: {
     alignItems: 'center',
-  },
-  lyricsButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  lyricsContainer: {
-    flex: 1,
-    padding: 20,
-  },
-  lyricsHeader: {
-    color: 'white',
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 15,
-  },
-  lyricsScrollView: {
-    flex: 1,
-  },
-  lyricsTextContainer: {
-    backgroundColor: '#333',
-    borderRadius: 8,
-    padding: 16,
+    marginTop: 30,
   },
   lyricsText: {
     color: 'white',
     fontSize: 18,
-    marginBottom: 10,
-  },
-  activeLyrics: {
-    color: '#e67e22',
   },
 });
 
