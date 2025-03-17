@@ -1,4 +1,3 @@
-// ChatHeader.jsx
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -32,3 +31,45 @@ const ChatHeader = ({ onClose }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 15,
+    backgroundColor: '#5350C4',
+  },
+  headerInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  logoContainer: {
+    width: 35,
+    height: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 17.5,
+  },
+  chatbotLogo: {
+    width: 25,
+    height: 25,
+  },
+  logoText: {
+    color: '#FFFFFF',
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 20,
+    letterSpacing: 0.2,
+  },
+  closeButton: {
+    height: 40,
+    width: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+  },
+});
+
+export default ChatHeader;
