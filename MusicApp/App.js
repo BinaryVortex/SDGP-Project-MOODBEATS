@@ -3,11 +3,15 @@ import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
-import AppNavigator from './src/navigation/AppNavigator';
-import { ChatProvider } from './src/contexts/ChatContext';
 import { useFonts, Inter_400Regular, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
 
-// Import your existing components
+// Import app navigators
+import AppNavigator from './src/navigation/AppNavigator';
+
+// Import context providers
+import { ChatProvider } from './src/contexts/ChatContext';
+
+// Import existing components
 import MusicApp from './src/MusicApp';
 import MusicappPlaylist from './src/MusicappPlaylist';
 import AiCoverart from './src/AiCoverart';
@@ -27,6 +31,7 @@ export default function App() {
     );
   }
 
+  // Use the new Chatbot app
   return (
     <SafeAreaProvider>
       <ChatProvider>
@@ -38,7 +43,7 @@ export default function App() {
     </SafeAreaProvider>
   );
   
-  // To use your previous components instead, uncomment the desired one:
+  // To use previous components instead, uncomment one of these:
   // return <AiCoverart />;
   // return <MusicApp />;
   // return <MusicappPlaylist />;
