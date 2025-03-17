@@ -6,6 +6,9 @@ import os
 import uvicorn
 from routes import chat, files
 from config import settings
+from routes import chat, files
+
+
 
 # Create upload directories if they don't exist
 os.makedirs("uploads/images", exist_ok=True)
@@ -20,7 +23,7 @@ app = FastAPI(
 # CORS middleware configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_origins=["*"],  # During development, allow all origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -49,5 +52,10 @@ async def root():
 async def health_check():
     return {"status": "healthy"}
 
+@app.get("/test")
+async def test_endpoint():
+    return {"status": "success", "message": "API is working!"}
+
 if __name__ == "__main__":
-    uvicorn.run("main:app", host=settings.HOST, port=settings.PORT, reload=settings.DEBUG)
+    # uvicorn.run("main:app", host=settings.HOST, port=settings.PORT, reload=settings.DEBUG)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

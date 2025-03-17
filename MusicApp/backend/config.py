@@ -1,7 +1,7 @@
 import os
-from typing import List
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
+from typing import List, Optional  # Add this line
 
 # Load environment variables from .env file
 load_dotenv()
@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     # Gemini API settings
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     GEMINI_API_URL: str = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent"
+
+      # OpenAI API settings (optional)
+    OPENAI_API_KEY: Optional[str] = None
     
     # File upload settings
     MAX_UPLOAD_SIZE: int = 10 * 1024 * 1024  # 10 MB

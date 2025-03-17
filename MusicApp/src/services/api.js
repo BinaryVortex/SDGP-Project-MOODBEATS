@@ -4,7 +4,9 @@ import * as FileSystem from 'expo-file-system';
 // API configuration - adjust these URLs as needed for your environment
 const API_URL = Platform.OS === 'ios' 
   ? 'http://localhost:8000/api/v1' 
-  : 'http://10.0.2.2:8000/api/v1'; // Use 10.0.2.2 for Android emulator
+  : Platform.OS === 'android' 
+    ? 'http://10.0.2.2:8000/api/v1'     // For Android emulator
+    : 'http://192.168.1.114:8000/api/v1'; // Replace with your computer's actual IP
 
 /**
  * Fetch bot response from the API
