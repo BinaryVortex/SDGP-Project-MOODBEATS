@@ -7,9 +7,14 @@ import {
   Animated,
   SafeAreaView,
   TextInput,
+  Dimensions,
+  StatusBar,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Feather } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const MoodRecognition = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -79,65 +84,74 @@ const MoodRecognition = () => {
   };
 
   const NavItem = ({ icon, label, color }) => (
-      <TouchableOpacity style={styles.navItem}>
-        <Feather name={icon} size={20} color={color || "#bbb"} />
-        <Text style={[styles.navLabel, { color: color || "#bbb" }]}>{label}</Text>
-      </TouchableOpacity>
-    );
+    <TouchableOpacity style={styles.navItem}>
+      <Feather name={icon} size={20} color={color || "#bbb"} />
+      <Text style={[styles.navLabel, { color: color || "#bbb" }]}>{label}</Text>
+    </TouchableOpacity>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-          <Text style={styles.title}>MOODBEATS</Text>
+      <StatusBar barStyle="light-content" />
+      <LinearGradient
+        colors={['black', '#800080', 'black']}
+        locations={[0, 0.6, 1.0]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={styles.gradient}
+      >
+        <View style={styles.header}>
+          <Text style={styles.logoText}>MOODBEATS</Text>
           <View style={styles.searchContainer}>
             <Feather name="search" size={16} color="#999" style={styles.searchIcon} />
             <TextInput placeholder="Search" placeholderTextColor="#aaa" style={styles.searchInput} />
           </View>
         </View>
-      
 
-      <View style={styles.content}>
-        
-      <Text style={styles.title2}>Voice Mood Recognition</Text>
-        <Animated.View
-          style={[
-            styles.recordingIndicator,
-            {
-              transform: [{ scale: pulseAnim }],
-              backgroundColor: isRecording ? '#FF4444' : '#666',
-            },
-          ]}
-        />
+        <View style={styles.content}>
+          <Text style={styles.title}>Voice Mood Recognition</Text>
+          <Animated.View
+            style={[
+              styles.recordingIndicator,
+              {
+                transform: [{ scale: pulseAnim }],
+                backgroundColor: isRecording ? '#FF4444' : '#666',
+              },
+            ]}
+          />
 
-        <TouchableOpacity
-          style={styles.recordButton}
-          onPress={handleStartRecording}
-          disabled={isRecording}
-        >
-          <View style={styles.recordButtonContent}>
-            <Icon name="microphone" size={32} color={isRecording ? '#666' : '#fff'} />
-            <Text style={styles.recordButtonText}>
-              {isRecording ? 'Recording...' : 'Start Recording'}
-            </Text>
-          </View>
-        </TouchableOpacity>
-
-        {detectedMood && (
-          <View style={styles.resultContainer}>
-            <Text style={styles.moodText}>Detected Mood:</Text>
-            <Text style={[styles.moodResult, { color: getMoodColor() }]}>
-              {detectedMood}
-            </Text>
-            <Text style={styles.confidenceText}>Confidence: {confidence}%</Text>
-          </View>
-        )}
-      </View>
-
-      <View style={styles.navbar}>
-              <NavItem icon="home" label="Home" color="white" />
-              <NavItem icon="heart" label="Mood" color="white" />
-              <NavItem icon="music" label="Playlists" color="white" />
+          <TouchableOpacity
+            style={styles.recordButton}
+            onPress={handleStartRecording}
+            disabled={isRecording}
+          >
+            <View style={styles.recordButtonContent}>
+              <Icon name="microphone" size={32} color={isRecording ? '#666' : '#fff'} />
+              <Text style={styles.recordButtonText}>
+                {isRecording ? 'Recording...' : 'Start Recording'}
+              </Text>
             </View>
+          </TouchableOpacity>
+
+          {detectedMood && (
+            <View style={styles.resultContainer}>
+              <Text style={styles.moodText}>Detected Mood:</Text>
+              <Text style={[styles.moodResult, { color: getMoodColor() }]}>
+                {detectedMood}
+              </Text>
+              <Text style={styles.confidenceText}>Confidence: {confidence}%</Text>
+            </View>
+          )}
+        </View>
+
+        {/* Bottom Navigation Bar - Exact copy from MusicPlaylistApp */}
+        <View style={styles.navbar}>
+          <NavItem icon="home" label="Home" color="white" />
+          <NavItem icon="heart" label="Mood" color="#FF00FF" />
+          <NavItem icon="music" label="Playlists" color="white" />
+          <NavItem icon="user" label="Profile" color="white" />
+        </View>
+      </LinearGradient>
     </SafeAreaView>
   );
 };
@@ -145,7 +159,10 @@ const MoodRecognition = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: 'black',
+  },
+  gradient: {
+    flex: 1,
   },
   navbar: {
     flexDirection: 'row',
@@ -164,59 +181,48 @@ const styles = StyleSheet.create({
     color: '#bbb',
     marginTop: 7,
   },
-  headerSpacer: {
-    backgroundColor: 'black',
-    height: 20, // Adjust height as needed
-  },
-  header2: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    backgroundColor: 'black',
-  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    marginTop: 50,
-    backgroundColor: 'black',
+    marginBottom: 30,
+    paddingHorizontal: 16,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 20 : 20,
   },
-  title: {
+  logoText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
-    textAlign: "center",
-    marginBottom: 20,
+    color: '#ffffff',
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#333',
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    width: 150
+    borderColor: "#fff",
+    borderWidth: 1,
+    borderRadius: 100,
+    paddingLeft: 10,
+    width: 144,
   },
   searchIcon: {
     marginRight: 6,
   },
   searchInput: {
-    color: '#fff',
+    color: 'white',
     fontSize: 14,
-    flex: 1
+    flex: 1,
   },
-  title2: {
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
+    marginBottom: 30,
   },
   content: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 5,
-    backgroundColor: '#3b85ed', // Blue middle section
   },
   recordingIndicator: {
     width: 20,
@@ -254,6 +260,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    marginBottom: 90,
   },
   moodText: {
     fontSize: 18,
