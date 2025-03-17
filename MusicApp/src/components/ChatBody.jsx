@@ -1,4 +1,3 @@
-// ChatBody.jsx
 import React, { useRef, useEffect } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import MessageItem from './MessageItem';
@@ -38,3 +37,17 @@ const ChatBody = ({ messages, isLoading }) => {
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  contentContainer: {
+    padding: 15,
+    gap: 15,
+    paddingBottom: 20,
+  },
+});
+
+export default ChatBody;
