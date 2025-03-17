@@ -174,7 +174,7 @@ const MusicPlaylistApp = () => {
       <View style={styles.navbar}>
         <NavItem icon="home" label="Home" color="white" />
         <NavItem icon="heart" label="Mood" color="white" />
-        <NavItem icon="music" label="Playlists" color="white" />
+        <NavItem icon="music" label="Playlists" color="#FF00FF" />
         <NavItem icon="user" label="Profile" color="white" />
       </View>
     </SafeAreaView>
@@ -184,7 +184,7 @@ const MusicPlaylistApp = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'transparent', // Make the container transparent
+    backgroundColor: 'black', // Make the container transparent
   },
   scrollView: {
     flex: 1,
@@ -204,8 +204,8 @@ const styles = StyleSheet.create({
   },
   playlistTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
+    fontWeight: 'bolder',
+    color: 'white',
     marginBottom: 8,
   },
   header: {
@@ -217,8 +217,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: 'bolder',
+    color: '#ffff',
     textAlign: "center",
     marginBottom: 20,
   },
@@ -286,9 +286,11 @@ const styles = StyleSheet.create({
   },
   shuffleButton: {
     padding: 10,
+    Color:'white',
   },
   trackList: {
     padding: 20,
+    color:'white',
   },
   trackItem: {
     flexDirection: 'row',
@@ -296,32 +298,35 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#eeeeee',
+    color:'white',
   },
   currentTrack: {
-    backgroundColor: '#f7f7f7',
+    backgroundColor: 'rgb(200, 0, 255)',
   },
   trackNumber: {
     width: 30,
     fontSize: 16,
-    color: '#8e8e93',
+    color: 'white',
+
   },
   trackInfo: {
     flex: 1,
     marginRight: 20,
+    color:'white',
   },
   trackTitle: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#000000',
+    color: 'white',
     marginBottom: 4,
   },
   trackArtist: {
     fontSize: 14,
-    color: '#8e8e93',
+    color: 'white',
   },
   trackPlays: {
     fontSize: 14,
-    color: '#8e8e93',
+    color: 'white',
     marginRight: 20,
   },
   playbackBar: {
