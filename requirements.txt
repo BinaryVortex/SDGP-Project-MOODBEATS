@@ -16,5 +16,33 @@ numpy>=1.23.0
 scikit-learn>=1.2.0
 soundfile>=0.12.1
 python-dotenv>=1.0.0
+
+
+moodbeats-api/
+├── main.py                          # Your existing FastAPI app entry point (as provided)
+├── config.py                        # Configuration file (Option 1: at root level)
+├── routes/
+│   ├── __init__.py                  # Empty init file to make routes a package
+│   ├── voice_emotion.py             # Updated with model integration
+│   ├── facial_emotion.py            # Your existing facial emotion routes
+│   ├── music.py                     # Your existing music routes
+│   ├── playlists.py                 # Your existing playlist routes
+│   ├── recommendation.py            # Your existing recommendation routes
+│   └── users.py                     # Your existing user routes
+├── services/
+│   ├── __init__.py                  # Empty init file to make services a package
+│   ├── auth.py                      # Authentication service
+│   └── config.py                    # Configuration file (Option 2: in services)
+├── ml_models/
+│   ├── __init__.py                  # Empty init file to make ml_models a package
+│   └── emotion_detector.py          # Implementation of your model interface
+├── models/
+│   └── voice_emotion_model.h5       # Your trained model file from Colab
+├── utils/
+│   ├── __init__.py                  # Empty init file to make utils a package
+│   └── audio_processing.py          # Helper functions for audio processing
+├── temp/                            # Directory for temporary file storage
+│   └── .gitkeep                     # Empty file to ensure the directory is created in git
+└── requirements.txt    
 """
 
