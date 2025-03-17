@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,27 +9,100 @@ import {
   Platform,
   SafeAreaView,
   ScrollView,
+  Animated,
+  ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { FontAwesome, AntDesign } from '@expo/vector-icons';
 
 const SignUpScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isPressed, setIsPressed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Animation values for button color and brightness
+  const buttonColorAnim = useRef(new Animated.Value(0)).current;
+  
+  // Interpolate animation value to color
+  const buttonBackgroundColor = buttonColorAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#800080', '#FF00FF']
+  });
+  
+  // Brightness/scale effect
+  const buttonScale = buttonColorAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.05]
+  });
+
+  const handlePressIn = () => {
+    setIsPressed(true);
+    Animated.timing(buttonColorAnim, {
+      toValue: 1,
+      duration: 150,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    setIsPressed(false);
+    Animated.timing(buttonColorAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
 
   const handleSignUp = () => {
-    if (password !== confirmPassword) {
-      console.log('Passwords do not match!');
+    // Reset error state
+    setError('');
+    setIsLoading(true);
+    
+    // Basic validation
+    if (!name || !email || !password || !confirmPassword) {
+      setError('All fields are required');
+      setIsLoading(false);
       return;
     }
+    
+    if (password !== confirmPassword) {
+      setError('Passwords do not match!');
+      setIsLoading(false);
+      return;
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address');
+      setIsLoading(false);
+      return;
+    }
+    
     console.log('Sign up with:', name, email, password);
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false);
+      // Here you would typically call an API to register the user
+    }, 1500);
+  };
+
+  const handleSocialSignUp = (platform) => {
+    console.log(`Signing up with ${platform}`);
+    // Implement social sign-up logic here
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={['#000', '#800080', '#000']}
+        colors={['black', '#800080', 'black']}
+        locations={[0, 0.6, 1.0]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
         style={styles.gradient}
       >
         <KeyboardAvoidingView
@@ -45,6 +118,8 @@ const SignUpScreen = () => {
 
             {/* Sign Up Form */}
             <View style={styles.formContainer}>
+              {error ? <Text style={styles.errorText}>{error}</Text> : null}
+              
               <TextInput
                 style={styles.input}
                 placeholder="Full Name"
@@ -78,30 +153,87 @@ const SignUpScreen = () => {
                 secureTextEntry
               />
               
-              <TouchableOpacity
-                style={styles.signUpButton}
-                onPress={handleSignUp}
-              >
-                <LinearGradient
-                  colors={['#7c3aed', '#4f46e5']}
-                  style={styles.buttonGradient}
+              {/* Enhanced Sign Up Button with Animation */}
+              <Animated.View style={{
+                shadowColor: '#FF00FF',
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: buttonColorAnim,
+                shadowRadius: 10,
+                transform: [{ scale: buttonScale }],
+                marginTop: 10,
+              }}>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPressIn={handlePressIn}
+                  onPressOut={handlePressOut}
+                  onPress={handleSignUp}
+                  disabled={isLoading}
                 >
-                  <Text style={styles.buttonText}>Sign Up</Text>
-                </LinearGradient>
-              </TouchableOpacity>
+                  <Animated.View style={[
+                    styles.signUpButton,
+                    { 
+                      backgroundColor: buttonBackgroundColor,
+                    }
+                  ]}>
+                    <LinearGradient
+                      colors={isPressed ? 
+                        ['rgba(255,255,255,0.5)', 'rgba(255,255,255,0.3)'] : 
+                        ['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.1)']}
+                      style={styles.buttonGradient}
+                    >
+                      {isLoading ? (
+                        <ActivityIndicator color="#ffffff" />
+                      ) : (
+                        <Animated.Text style={[
+                          styles.buttonText,
+                          { 
+                            color: isPressed ? '#FFFFFF' : '#F0F0F0',
+                            textShadowColor: 'rgba(255,255,255,0.5)',
+                            textShadowOffset: {width: 0, height: 0},
+                            textShadowRadius: isPressed ? 10 : 0,
+                          }
+                        ]}>Sign Up to MOODBEATS</Animated.Text>
+                      )}
+                    </LinearGradient>
+                  </Animated.View>
+                </TouchableOpacity>
+              </Animated.View>
             </View>
 
             {/* Social Sign Up Options */}
             <View style={styles.socialContainer}>
-              <Text style={styles.orText}>OR</Text>
+              {/* Divider with text */}
+              <View style={styles.dividerContainer}>
+                <View style={styles.divider} />
+                <Text style={styles.dividerText}>Or continue with</Text>
+                <View style={styles.divider} />
+              </View>
+
               <View style={styles.socialButtons}>
-                <TouchableOpacity style={styles.socialButton}>
+                {/* Google Login */}
+                <TouchableOpacity 
+                  style={styles.socialButton}
+                  onPress={() => handleSocialSignUp('Google')}
+                >
+                  <AntDesign name="google" size={20} color="#ffffff" style={styles.socialIcon} />
                   <Text style={styles.socialButtonText}>Google</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.socialButton}>
+                
+                {/* Facebook Login */}
+                <TouchableOpacity 
+                  style={styles.socialButton}
+                  onPress={() => handleSocialSignUp('Facebook')}
+                >
+                  <FontAwesome name="facebook" size={20} color="#ffffff" style={styles.socialIcon} />
                   <Text style={styles.socialButtonText}>Facebook</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.socialButton}>
+                
+                {/* Instagram Login */}
+                <TouchableOpacity 
+                  style={styles.socialButton}
+                  onPress={() => handleSocialSignUp('Instagram')}
+                >
+                  <AntDesign name="instagram" size={20} color="#ffffff" style={styles.socialIcon} />
                   <Text style={styles.socialButtonText}>Instagram</Text>
                 </TouchableOpacity>
               </View>
@@ -135,6 +267,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
     justifyContent: 'center',
+    paddingBottom: 60, // Adding padding at the bottom for better visibility with black gradient
   },
   logoContainer: {
     alignItems: 'center',
@@ -145,8 +278,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
     letterSpacing: 2,
-    marginTop:40,
-    marginBottom:20,
+    marginTop: 40,
+    marginBottom: 20,
   },
   tagline: {
     fontSize: 16,
@@ -158,19 +291,24 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   input: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(0, 0, 0, 0.0)',
     borderRadius: 10,
     padding: 15,
     marginBottom: 25,
     color: '#ffffff',
     fontSize: 16,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    fontWeight: 'bold',
   },
   signUpButton: {
     width: '100%',
-    height: 50,
+    height: 56,
     borderRadius: 10,
     overflow: 'hidden',
-    marginTop: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.5)',
   },
   buttonGradient: {
     flex: 1,
@@ -179,50 +317,74 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#ffffff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   socialContainer: {
     marginTop: 10,
   },
-  orText: {
-    color: '#cccccc',
-    textAlign: 'center',
-    marginBottom: 20,
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    marginTop: 20,
+  },
+  dividerText: {
+    color: 'rgba(255,255,255,0.7)',
+    paddingHorizontal: 16,
+    fontSize: 14,
+    marginTop: 20,
   },
   socialButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 24,
-    marginTop: 10,
+    marginTop: 30,
   },
   socialButton: {
     flex: 1,
     height: 48,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 12,
+    backgroundColor: 'rgba(0, 0, 0, 0.0)',
+    borderRadius: 10,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 6,
+    marginHorizontal: 3,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   socialButtonText: {
     color: '#ffffff',
     fontSize: 14,
   },
+  socialIcon: {
+    marginRight: 8,
+  },
   signInContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 20,
-    marginBottom:30,
+    marginBottom: 30,
   },
   signInText: {
     color: '#cccccc',
     fontSize: 14,
   },
   signInLink: {
-    color: '#7c3aed',
+    color: '#FF00FF',
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  errorText: {
+    color: '#ff4757',
+    fontSize: 14,
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });
 

@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 6,
+    marginHorizontal: 3,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
