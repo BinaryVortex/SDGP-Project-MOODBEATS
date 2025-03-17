@@ -8,10 +8,13 @@ import {
   ScrollView, 
   Animated,
   SafeAreaView,
-  Dimensions
+  Dimensions,
+  StatusBar,
+  Platform
 } from "react-native";
-import { FontAwesome, AntDesign } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
@@ -63,8 +66,16 @@ export default function MoodSelectionScreen({ navigation }) {
     console.log('Continue with selected mood:', selectedEmoji);
   };
 
+  const NavItem = ({ icon, label, color }) => (
+    <TouchableOpacity style={styles.navItem}>
+      <Feather name={icon} size={20} color={color || "#bbb"} />
+      <Text style={[styles.navLabel, { color: color || "#bbb" }]}>{label}</Text>
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
       <LinearGradient
         colors={['black', '#800080', 'black']}
         locations={[0, 0.6, 1.0]}
@@ -199,24 +210,12 @@ export default function MoodSelectionScreen({ navigation }) {
           )}
         </Animated.ScrollView>
 
-        {/* Bottom Navigation Bar - Styled like the first code */}
+        {/* Bottom Navigation Bar - Exact copy from MusicPlaylistApp */}
         <View style={styles.navbar}>
-          <TouchableOpacity style={styles.navItem}>
-            <AntDesign name="home" size={20} color="#bbb" />
-            <Text style={styles.navLabel}>Home</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
-            <AntDesign name="heart" size={20} color="#FF00FF" />
-            <Text style={[styles.navLabel, { color: "#FF00FF" }]}>Mood</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
-            <AntDesign name="search1" size={20} color="#bbb" />
-            <Text style={styles.navLabel}>Discover</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
-            <AntDesign name="user" size={20} color="#bbb" />
-            <Text style={styles.navLabel}>Profile</Text>
-          </TouchableOpacity>
+          <NavItem icon="home" label="Home" color="white" />
+          <NavItem icon="heart" label="Mood" color="#FF00FF" />
+          <NavItem icon="music" label="Playlists" color="white" />
+          <NavItem icon="user" label="Profile" color="white" />
         </View>
       </LinearGradient>
     </SafeAreaView>
@@ -226,12 +225,13 @@ export default function MoodSelectionScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'black',
   },
   gradient: {
     flex: 1,
   },
   scrollContent: {
-    paddingTop: 40,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 20 : 20,
     paddingBottom: 100,
     paddingHorizontal: 16,
   },
@@ -262,21 +262,19 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    width: 150,
+    borderColor: "#fff",
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 100,
+    paddingLeft: 10,
+    width: 144,
   },
   searchIcon: {
     marginRight: 6,
   },
   searchInput: {
-    color: '#fff',
+    color: 'white',
     fontSize: 14,
-    flex: 1
+    flex: 1,
   },
   optionButton: {
     backgroundColor: "rgba(0, 0, 0, 0.0)",
@@ -363,23 +361,18 @@ const styles = StyleSheet.create({
   navbar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 15,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    paddingVertical: 10,
+    backgroundColor: '#111',
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
   },
   navItem: {
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 15,
   },
   navLabel: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#bbb',
     marginTop: 7,
-    fontWeight: '500',
   },
 });

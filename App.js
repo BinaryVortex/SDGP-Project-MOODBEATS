@@ -9,7 +9,7 @@ import SignUpScreen from './src/signup';
 
 export default function App() {
   return (
-    <MoodRecognition/>
+    <MoodSelectionScreen/>
   );
 };
 
