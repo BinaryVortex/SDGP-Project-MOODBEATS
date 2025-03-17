@@ -9,9 +9,9 @@ import SignUpScreen from './src/signup';
 
 export default function App() {
   return (
-    <LoginScreen/>
+    <MoodSelectionScreen/>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

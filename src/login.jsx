@@ -15,17 +15,8 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
-import * as Font from 'expo-font';
-import AppLoading from 'expo-app-loading';
 
 const { width } = Dimensions.get('window');
-
-// Add font loading functionality
-const loadFonts = () => {
-  return Font.loadAsync({
-    'URWChanceryL': require('./assets/fonts/URWChanceryL.ttf'), // Make sure to add this font file to your assets
-  });
-};
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -33,7 +24,6 @@ const LoginScreen = ({ navigation }) => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
-  const [fontsLoaded, setFontsLoaded] = useState(false);
   
   // Animation values for button color and brightness
   const buttonColorAnim = useRef(new Animated.Value(0)).current;
@@ -55,19 +45,6 @@ const LoginScreen = ({ navigation }) => {
     inputRange: [0, 1],
     outputRange: [1, 1.05]
   });
-
-  // Load fonts
-  React.useEffect(() => {
-    async function prepare() {
-      try {
-        await loadFonts();
-        setFontsLoaded(true);
-      } catch (e) {
-        console.warn(e);
-      }
-    }
-    prepare();
-  }, []);
 
   const handlePressIn = () => {
     setIsPressed(true);
@@ -95,10 +72,6 @@ const LoginScreen = ({ navigation }) => {
       // Add your login logic here
     }, 1500);
   };
-
-  if (!fontsLoaded) {
-    return <ActivityIndicator size="large" color="#800080" />;
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -301,8 +274,8 @@ const styles = StyleSheet.create({
   subtitleText: {
     fontSize: 16,
     color: 'rgba(255,255,255,0.7)',
-    fontWeight: 'bold',
-    marginBottom: 20,
+    fontWeight:'bold',
+    marginBottom:20,
   },
   formContainer: {
     width: '100%',
@@ -313,7 +286,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     color: '#ffffff',
-    marginBottom: 25,
+    marginBottom:25,
   },
   input: {
     backgroundColor: 'rgba(0, 0, 0, 0.0)',
@@ -323,7 +296,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.3)',
-    fontWeight: 'bold'
+    fontWeight:'bold'
   },
   optionsRow: {
     flexDirection: 'row',
@@ -359,7 +332,7 @@ const styles = StyleSheet.create({
   forgotPassword: {
     color: '#FF00FF',
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight:'bold',
   },
   loginButton: {
     width: '100%',
@@ -390,19 +363,19 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    marginTop: 20,
+    marginTop:20,
   },
   dividerText: {
     color: 'rgba(255,255,255,0.7)',
     paddingHorizontal: 16,
     fontSize: 14,
-    marginTop: 20,
+    marginTop:20,
   },
   socialButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 24,
-    marginTop: 30,
+    marginTop:30,
   },
   socialButton: {
     flex: 1,
@@ -427,18 +400,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 30,
+    margintop:30,
   },
   signUpText: {
     color: 'rgba(255,255,255,0.7)',
     fontSize: 14,
-    marginTop: 30,
+    marginTop:30,
   },
   signUpLink: {
     color: '#FF00FF',
     fontSize: 14,
     fontWeight: 'bold',
-    marginTop: 30,
+    marginTop:30,
   },
 });
 
