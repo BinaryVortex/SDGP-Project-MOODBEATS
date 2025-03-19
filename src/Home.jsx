@@ -8,7 +8,7 @@ const artists = [
   "Ariana Grande", "Drake"
 ];
 
-export default function HomePage() {
+export default function HomePage({ setPage }) {
   return (
     <LinearGradient colors={["#000", "#800080"]} style={styles.container}>
       
@@ -24,7 +24,7 @@ export default function HomePage() {
         </View>
 
         {/* Recently Played */}
-        <Section title="Recently Played">
+        <Section title="Recently Played" setPage={setPage}>
           <FlatList
             horizontal
             data={Array(3).fill(0)}
@@ -49,7 +49,7 @@ export default function HomePage() {
         </Section>
 
         {/* Quick Pick */}
-        <Section title="Quick Pick">
+        <Section title="Quick Pick" setPage={setPage}>
           <FlatList
               horizontal
               data={Array(4).fill(0)}
@@ -84,7 +84,7 @@ export default function HomePage() {
         </Section>
 
         {/* Artists */}
-        <Section title="Artists">
+        <Section title="Artists" setPage={setPage}>
           <FlatList
             horizontal
             data={artists}
@@ -96,7 +96,7 @@ export default function HomePage() {
         </Section>
 
         {/* Trending */}
-        <Section title="Trending">
+        <Section title="Trending" setPage={setPage}>
           <FlatList
             horizontal
             data={Array(5).fill(0)}
@@ -110,20 +110,20 @@ export default function HomePage() {
 
       {/* Bottom Navigation */}
       <View style={styles.navbar}>
-        <NavItem icon="home" label="Home" />
-        <NavItem icon="heart" label="Mood" />
-        <NavItem icon="music" label="Playlist" />
-        <NavItem icon="user" label="Profile"/>
+        <NavItem icon="home" label="Home" setPage={setPage} color="#FF00FF"/>
+        <NavItem icon="heart" label="Mood" setPage={setPage} />
+        <NavItem icon="music" label="Playlist" setPage={setPage} />
+        <NavItem icon="user" label="Profile" setPage={setPage}/>
       </View>
     </LinearGradient>
   );
 }
 
-const Section = ({ title, children }) => (
+const Section = ({ title, children, setPage }) => (
   <View style={styles.section}>
     <View style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
       <Text style={styles.sectionTitle}>{title}</Text>
-      <Ionicons name="chevron-forward" size={20} color="white" />
+      <Ionicons name="chevron-forward" size={20} color="white" onPress={() => setPage(title)}/>
     </View>
     {children}
   </View>
@@ -152,12 +152,12 @@ const ArtistItem = ({ name }) => (
   </TouchableOpacity>
 );
 
-const NavItem = ({ icon, label }) => (
-  <TouchableOpacity style={styles.navItem}>
-    <Feather name={icon} size={20} color="#fff" />
-    <Text style={styles.navLabel}>{label}</Text>
-  </TouchableOpacity>
-);
+const NavItem = ({ icon, label, color, setPage }) => (
+    <TouchableOpacity style={styles.navItem} onPress={() => setPage(icon)}>
+      <Feather name={icon} size={20} color={color || "#bbb"} />
+      <Text style={[styles.navLabel, { color: color || "#bbb" }]}>{label}</Text>
+    </TouchableOpacity>
+  );
 
 const styles = StyleSheet.create({
 

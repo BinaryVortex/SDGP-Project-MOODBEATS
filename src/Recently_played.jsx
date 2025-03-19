@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Image, TouchableOpacity, FlatList, StyleSheet, ScrollView } from 'react-native';
-// import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Home, Music, Smile, Heart, Clock, MoreVertical, Play, Pause } from 'lucide-react-native';
 import { Feather } from '@expo/vector-icons';
 
@@ -24,111 +24,78 @@ const PlayButton = ({ isPlaying, onPress }) => (
   </TouchableOpacity>
 );
 
-export default function MoodBeatsPreview() {
+export default function MoodBeatsPreview({setPage}) {
   const [playingTrack, setPlayingTrack] = useState(null);
 
   return (
-    <View style={styles.container}>
-
-      {/* <LinearGradient colors={['#6a11cb', '#2575fc']} style={styles.header}> */}
+    <LinearGradient colors={["#000", "#800080"]} style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.title}>MOODBEATS</Text>
+        <View style={styles.searchContainer}>
+          <Feather name="search" size={16} color="#fff" style={styles.searchIcon} />
+          <TextInput placeholder="Search" placeholderTextColor="#fff" style={styles.searchInput} />
+        </View>
+      </View>
       
-        {/* Header */}
-                <View style={styles.header}>
-                  <Text style={styles.title}>MOODBEATS</Text>
-                  <View style={styles.searchContainer}>
-                    <Feather name="search" size={16} color="#fff" style={styles.searchIcon} />
-                    <TextInput placeholder="Search" placeholderTextColor="#fff" style={styles.searchInput} />
-                  </View>
-                </View>
       {/* Recently Played */}
       <View style={styles.content}>
         <View style={styles.sectionHeader}>
           <Clock size={16} color="#800080" />
           <Text style={styles.sectionTitle}>Recently Played</Text>
-          
         </View>
 
         <ScrollView contentContainerStyle={{ paddingBottom: 30 }} showsVerticalScrollIndicator={false}>
-        <FlatList
-          data={tracks}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.trackItem}>
-              <Image source={{ uri: item.img }} style={styles.trackImage} />
-              <View style={styles.trackDetails}>
-                <Text style={styles.trackTitle}>{item.title}</Text>
-                <Text style={styles.trackSubtitle}>{item.artist} • {item.duration}</Text>
+          <FlatList
+            nestedScrollEnabled={true} 
+            data={tracks}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.trackItem}>
+                <Image source={{ uri: item.img }} style={styles.trackImage} />
+                <View style={styles.trackDetails}>
+                  <Text style={styles.trackTitle}>{item.title}</Text>
+                  <Text style={styles.trackSubtitle}>{item.artist} • {item.duration}</Text>
+                </View>
+                <View style={styles.trackActions}>
+                  <PlayButton isPlaying={playingTrack === item.id} onPress={() => setPlayingTrack(playingTrack === item.id ? null : item.id)} />
+                  <TouchableOpacity>
+                    <Heart size={16} color={item.liked ? '#FF007F' : '#ccc'} fill={item.liked ? '#FF007F' : 'none'} />
+                  </TouchableOpacity>
+                  <TouchableOpacity>
+                    <MoreVertical size={16} color="#ccc" />
+                  </TouchableOpacity>
+                </View>
               </View>
-              <View style={styles.trackActions}>
-                <PlayButton isPlaying={playingTrack === item.id} onPress={() => setPlayingTrack(playingTrack === item.id ? null : item.id)} />
-                <TouchableOpacity>
-                  <Heart size={16} color={item.liked ? '#FF007F' : '#ccc'} fill={item.liked ? '#FF007F' : 'none'} />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <MoreVertical size={16} color="#ccc" />
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-        />
+            )}
+          />
         </ScrollView>
       </View>
 
       {/* Bottom Navigation */}
       <View style={styles.navbar}>
-        <NavItem icon="home" label="Home" />
-        <NavItem icon="heart" label="Mood" />
-       <NavItem icon="music" label="Playlist" />
-        <NavItem icon="user" label="Profile"/>
+        <NavItem icon="home" label="Home" setPage={setPage} color="#FF00FF"/>
+        <NavItem icon="heart" label="Mood" setPage={setPage} />
+        <NavItem icon="music" label="Playlist" setPage={setPage} />
+        <NavItem icon="user" label="Profile" setPage={setPage}/>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
-const NavItem = ({ icon, label }) => (
-  <TouchableOpacity style={styles.navItem}>
-    <Feather name={icon} size={20} color="#fff" />
-    <Text style={styles.navLabel}>{label}</Text>
+const NavItem = ({ icon, label, color, setPage }) => (
+  <TouchableOpacity style={styles.navItem} onPress={() => setPage(icon)}>
+    <Feather name={icon} size={20} color={color || "#bbb"} />
+    <Text style={[styles.navLabel, { color: color || "#bbb" }]}>{label}</Text>
   </TouchableOpacity>
 );
 
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: '#111', 
     paddingTop: 45,
   },
 
-  header: { 
-    padding: 20, 
-    paddingTop: 50 
-  },
-
-  logo: { 
-    color: 'white', 
-    fontSize: 18, 
-    fontWeight: 'bold', 
-    marginBottom: 10 
-  },
-
-  searchInput: { 
-    backgroundColor: 'rgba(255,255,255,0.2)', 
-    borderRadius: 20, 
-    padding: 10, 
-    color: 'white' 
-  },
-
-  content: { 
-    flex: 1, 
-    padding: 10 ,
-    marginTop: -45,
-  },
-
-  sectionHeader: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    marginBottom: 10 
-  },
   header: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
@@ -146,20 +113,34 @@ const styles = StyleSheet.create({
   searchContainer: { 
     flexDirection: 'row', 
     alignItems: 'center', 
-    backgroundColor: '#333', 
+    backgroundColor: 'rgba(255, 255, 255, 0.1)', 
     borderRadius: 20, 
     paddingHorizontal: 10, 
-    width: 150 
+    width: 150,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)', 
   },
   
   searchIcon: { 
     marginRight: 6,
-   },
+  },
 
   searchInput: {
     color: '#fff', 
     fontSize: 14, 
     flex: 1 
+  },
+
+  content: { 
+    flex: 1, 
+    padding: 10,
+    marginTop: -20,
+  },
+
+  sectionHeader: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    marginBottom: 20 
   },
 
   sectionTitle: { 
@@ -175,7 +156,9 @@ const styles = StyleSheet.create({
     marginBottom: 10, 
     padding: 10, 
     borderRadius: 10, 
-    backgroundColor: 'rgba(255,255,255,0.1)' 
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)', 
   },
 
   trackImage: { 
@@ -231,5 +214,4 @@ const styles = StyleSheet.create({
     color: '#fff', 
     marginTop: 5 
   }
-
 });
