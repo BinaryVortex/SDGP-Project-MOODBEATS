@@ -18,9 +18,20 @@
     "ffmpeg-static": "^5.2.0",
     "fluent-ffmpeg": "^2.1.2",
     "form-data": "^4.0.0",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "ai",
+    "image-generation",
+    "music",
+    "album-cover",
+    "api"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
   }
 }

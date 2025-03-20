@@ -31,7 +31,8 @@ export default function App() {
     );
   }
 
-  // Use the new Chatbot app
+  // Comment out this section
+  /*
   return (
     <SafeAreaProvider>
       <ChatProvider>
@@ -42,9 +43,12 @@ export default function App() {
       </ChatProvider>
     </SafeAreaProvider>
   );
+  */
+
+  // Uncomment this line instead
+  return <AiCoverart />;
   
-  // To use previous components instead, uncomment one of these:
-  // return <AiCoverart />;
+  // Other options:
   // return <MusicApp />;
   // return <MusicappPlaylist />;
 }

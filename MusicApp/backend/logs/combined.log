@@ -1,0 +1,13 @@
+2025-03-20T16:42:44.830Z info: Server running on port 5000
+2025-03-20T16:42:45.180Z info: Server running on port 5000
+2025-03-20T16:51:20.116Z info: Server running on port 5000
+2025-03-20T16:51:20.558Z info: Server running on port 5000
+2025-03-20T16:51:27.788Z info: Server running on port 5000
+2025-03-20T16:53:48.080Z info: Generating image for prompt: I want to create amazing background with sun
+2025-03-20T16:53:49.101Z error: Image generation error:
+2025-03-20T16:53:53.713Z info: Test endpoint called
+2025-03-20T16:54:01.293Z info: Generating image for prompt: I want to create amazing background with sun
+2025-03-20T16:54:02.279Z error: Image generation error:
+2025-03-20T16:56:07.903Z info: Server running on port 5000
+2025-03-20T16:57:23.644Z info: Generating image for prompt: I want sun rise background 
+2025-03-20T16:57:24.763Z error: Image generation error:

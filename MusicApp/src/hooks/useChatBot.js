@@ -54,6 +54,7 @@ const useChatBot = () => {
         isError: true,
         timestamp: new Date(),
       };
+    
       
       setMessages(prevMessages => [...prevMessages, errorMessage]);
     } finally {
