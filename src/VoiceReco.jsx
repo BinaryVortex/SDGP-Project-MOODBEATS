@@ -15,8 +15,11 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Feather } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
+import { COLORS, GRADIENTS } from './constants/theme';
 
-const MoodRecognition = ({ setPage }) => {
+const MoodRecognition = () => {
+  const navigation = useNavigation();
   const [isRecording, setIsRecording] = useState(false);
   const [detectedMood, setDetectedMood] = useState(null);
   const [confidence, setConfidence] = useState(0);
@@ -68,6 +71,15 @@ const MoodRecognition = ({ setPage }) => {
     setConfidence(0);
   };
 
+  const handleContinue = () => {
+    if (detectedMood) {
+      navigation.navigate('Playlist', { 
+        screen: 'PlaylistScreen',
+        params: { mood: detectedMood.toLowerCase() }
+      });
+    }
+  };
+
   const getMoodColor = () => {
     switch (detectedMood) {
       case 'Happy':
@@ -83,18 +95,11 @@ const MoodRecognition = ({ setPage }) => {
     }
   };
 
-  const NavItem = ({ icon, label, color }) => (
-    <TouchableOpacity style={styles.navItem}>
-      <Feather name={icon} size={20} color={color || "#bbb"} />
-      <Text style={[styles.navLabel, { color: color || "#bbb" }]}>{label}</Text>
-    </TouchableOpacity>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['black', '#800080', 'black']}
+        colors={GRADIENTS.main}
         locations={[0, 0.6, 1.0]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
@@ -140,17 +145,18 @@ const MoodRecognition = ({ setPage }) => {
                 {detectedMood}
               </Text>
               <Text style={styles.confidenceText}>Confidence: {confidence}%</Text>
+              
+              <TouchableOpacity 
+                style={styles.continueButton} 
+                onPress={handleContinue}
+              >
+                <Text style={styles.continueButtonText}>View Recommended Playlist</Text>
+              </TouchableOpacity>
             </View>
           )}
         </View>
-
-        {/* Bottom Navigation Bar - Exact copy from MusicPlaylistApp */}
-        <View style={styles.navbar}>
-          <NavItem icon="home" label="Home" color="white" />
-          <NavItem icon="heart" label="Mood" color="#FF00FF" />
-          <NavItem icon="music" label="Playlists" color="white" />
-          <NavItem icon="user" label="Profile" color="white" />
-        </View>
+        
+        {/* Bottom Navigation Bar is now handled by the NavigationBar component */}
       </LinearGradient>
     </SafeAreaView>
   );
@@ -275,6 +281,18 @@ const styles = StyleSheet.create({
   confidenceText: {
     fontSize: 16,
     color: '#fff',
+  },
+  continueButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    marginTop: 20,
+  },
+  continueButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

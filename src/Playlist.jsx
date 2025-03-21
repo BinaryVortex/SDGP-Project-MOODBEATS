@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,18 +15,24 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { COLORS } from './constants/theme';
 
 const { width } = Dimensions.get('window');
 
-const MusicPlaylistApp = ({setPage}) => {
+const MusicPlaylistApp = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { mood } = route.params || {};
+  
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(0);
   const [likedTracks, setLikedTracks] = useState(new Set());
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(80);
   
-
-  const playlist = {
+  // Playlist could be modified based on mood parameter
+  const [playlist, setPlaylist] = useState({
     title: "Summer Hits 2025",
     creator: "Music Waves",
     followers: "2.3M followers",
@@ -38,7 +44,48 @@ const MusicPlaylistApp = ({setPage}) => {
       { id: 4, title: "Ocean Breeze", artist: "Coastal", duration: "3:56", plays: "1.5M" },
       { id: 5, title: "Beach Party", artist: "Sandy Toes", duration: "4:02", plays: "956K" },
     ]
-  };
+  });
+
+  // Update playlist based on mood
+  useEffect(() => {
+    if (mood) {
+      // In a real app, you would fetch mood-based playlists from an API
+      let playlistTitle = "Default Playlist";
+      switch(mood) {
+        case 'happy':
+        case '😊':
+          playlistTitle = "Happy Vibes";
+          break;
+        case 'sad':
+        case '😢':
+          playlistTitle = "Melancholy Tunes";
+          break;
+        case 'relaxed':
+        case '😌':
+          playlistTitle = "Chill Session";
+          break;
+        case 'angry':
+        case '😡':
+          playlistTitle = "Release the Tension";
+          break;
+        case 'content':
+        case '😐':
+          playlistTitle = "Peaceful Moments";
+          break;
+        case 'excited':
+        case '🤩':
+          playlistTitle = "Energy Boost";
+          break;
+        default:
+          playlistTitle = "Mood Mix";
+      }
+      
+      setPlaylist(prevPlaylist => ({
+        ...prevPlaylist,
+        title: playlistTitle
+      }));
+    }
+  }, [mood]);
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
@@ -69,16 +116,21 @@ const MusicPlaylistApp = ({setPage}) => {
     if (!isPlaying) setIsPlaying(true);
   };
 
+  const navigateToMusicPlayer = (trackIndex) => {
+    setCurrentTrack(trackIndex);
+    navigation.navigate('MusicPlayer', { 
+      trackId: playlist.tracks[trackIndex].id,
+      trackIndex
+    });
+  };
+
   const TrackItem = ({ track, index }) => (
     <TouchableOpacity
       style={[
         styles.trackItem,
         currentTrack === index && styles.currentTrack
       ]}
-      onPress={() => {
-        setCurrentTrack(index);
-        setIsPlaying(true);
-      }}
+      onPress={() => navigateToMusicPlayer(index)}
     >
       <Text style={[styles.trackNumber, currentTrack === index && styles.currentTrackText]}>
         {index + 1}
@@ -107,23 +159,16 @@ const MusicPlaylistApp = ({setPage}) => {
     </TouchableOpacity>
   );
 
-  const NavItem = ({ icon, label, color, setPage }) => (
-    <TouchableOpacity style={styles.navItem} onPress={() => setPage(icon)}>
-      <Feather name={icon} size={20} color={color || "#bbb"} />
-      <Text style={[styles.navLabel, { color: color || "#bbb" }]}>{label}</Text>
-    </TouchableOpacity>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       <ScrollView style={styles.scrollView}>
         {/* Header Section */}
         <LinearGradient
-          colors={['black', 'rgb(200, 0, 255)', '#800080']}
+          colors={['black', 'rgb(200, 0, 255)', COLORS.primary]}
           style={styles.header}
         >
-          {/* MoodBeats Logo and Search Bar from second code */}
+          {/* MoodBeats Logo and Search Bar */}
           <View style={styles.headerTop}>
             <Text style={styles.logoText}>MOODBEATS</Text>
             <View style={styles.searchContainer}>
@@ -166,7 +211,6 @@ const MusicPlaylistApp = ({setPage}) => {
 
         {/* Track List */}
         <View style={styles.trackList}>
-          {/* Removed header texts as requested */}
           {playlist.tracks.map((track, index) => (
             <TrackItem
               key={track.id}
@@ -211,13 +255,7 @@ const MusicPlaylistApp = ({setPage}) => {
         </View>
       </View>
 
-      {/* Navigation Bar */}
-      <View style={styles.navbar}>
-        <NavItem icon="home" label="Home" color="white" setPage={setPage}/>
-        <NavItem icon="heart" label="Mood" color="white" setPage={setPage}/>
-        <NavItem icon="music" label="Playlists" color="#FF00FF" setPage={setPage}/>
-        <NavItem icon="user" label="Profile" color="white" setPage={setPage}/>
-      </View>
+      {/* Bottom Navigation Bar is now handled by the NavigationBar component */}
     </SafeAreaView>
   );
 };

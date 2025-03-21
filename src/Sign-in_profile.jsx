@@ -2,64 +2,68 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, ScrollView, Image } from 'react-native';
 import { ChevronLeft, Camera, Music2, Disc3 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 
 const ProfileSetup = () => {
   const [focusedField, setFocusedField] = useState(null);
+  const navigation = useNavigation();
 
   return (
     <LinearGradient colors={["#000", "#800080"]} style={styles.container}>
-    
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <ChevronLeft size={24} color="white" />
         </TouchableOpacity>
         <Text style={styles.title}>MOODBEAST</Text>
       </View>
-      <ScrollView contentContainerStyle={{ paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
-      {/* Profile Picture */}
-      <View style={styles.profileContainer}>
-        <View style={styles.profilePicture}>
-        <Image source={require("../assets/Profile_photo.png")} size={70} style={{width: 60, height: 60}}/>
-
-        
+      <ScrollView 
+        contentContainerStyle={{ paddingBottom: 70 }} 
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Profile Picture */}
+        <View style={styles.profileContainer}>
+          <View style={styles.profilePicture}>
+          <Image source={require("../assets/Profile_photo.png")} size={70} style={{width: 60, height: 60}}/>
+          </View>
+          <TouchableOpacity style={styles.cameraButton}>
+            <Camera size={16} color="white" />
+          </TouchableOpacity>
+          <Disc3 size={20} color="orange" style={styles.iconSpin} />
         </View>
-        <TouchableOpacity style={styles.cameraButton}>
-          <Camera size={16} color="white" />
-        </TouchableOpacity>
-        <Disc3 size={20} color="orange" style={styles.iconSpin} />
-      </View>
 
-      {/* Form */}
-      <View style={styles.form}>
-        {['First Name', 'Surname', 'Date of Birth', 'Email', 'Phone Number'].map((label) => (
-          <TextInput
-            key={label}
-            placeholder={label}
-            placeholderTextColor="#fff"
-            style={[
-              styles.input,
-              focusedField === label && styles.inputFocused
-            ]}
-            onFocus={() => setFocusedField(label)}
-            onBlur={() => setFocusedField(null)}
-          />
-        ))}
-      </View>
+        {/* Form */}
+        <View style={styles.form}>
+          {['First Name', 'Surname', 'Date of Birth', 'Email', 'Phone Number'].map((label) => (
+            <TextInput
+              key={label}
+              placeholder={label}
+              placeholderTextColor="#fff"
+              style={[
+                styles.input,
+                focusedField === label && styles.inputFocused
+              ]}
+              onFocus={() => setFocusedField(label)}
+              onBlur={() => setFocusedField(null)}
+            />
+          ))}
+        </View>
 
-      {/* Buttons */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.skipButton}>
-          <Text style={styles.buttonText}>Skip</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.continueButton}>
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
+        {/* Buttons */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.skipButton}>
+            <Text style={styles.buttonText}>Skip</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.continueButton}
+            onPress={() => navigation.navigate('Home')}
+          >
+            <Text style={styles.buttonText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
-
+      {/* No NavigationBar here - it's handled in AppNavigation.jsx */}
     </LinearGradient>
-    
   );
 };
 

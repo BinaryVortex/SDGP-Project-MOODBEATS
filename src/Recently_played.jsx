@@ -3,6 +3,8 @@ import { View, Text, TextInput, Image, TouchableOpacity, FlatList, StyleSheet, S
 import { LinearGradient } from 'expo-linear-gradient';
 import { Home, Music, Smile, Heart, Clock, MoreVertical, Play, Pause } from 'lucide-react-native';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { COLORS } from './constants/theme';
 
 const tracks = [
   { id: 1, title: 'Sprinter', artist: 'Central Cee x Dave', img: 'https://via.placeholder.com/40', duration: '3:42', liked: true },
@@ -24,11 +26,23 @@ const PlayButton = ({ isPlaying, onPress }) => (
   </TouchableOpacity>
 );
 
-export default function MoodBeatsPreview({setPage}) {
+export default function MoodBeatsPreview() {
+  const navigation = useNavigation();
   const [playingTrack, setPlayingTrack] = useState(null);
 
+  const handlePlayTrack = (trackId) => {
+    setPlayingTrack(playingTrack === trackId ? null : trackId);
+    // Could navigate to music player in a real app
+    if (playingTrack !== trackId) {
+      navigation.navigate('Playlist', { 
+        screen: 'MusicPlayer', 
+        params: { trackId }
+      });
+    }
+  };
+
   return (
-    <LinearGradient colors={["#000", "#800080"]} style={styles.container}>
+    <LinearGradient colors={["#000", COLORS.primary]} style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>MOODBEATS</Text>
@@ -41,11 +55,11 @@ export default function MoodBeatsPreview({setPage}) {
       {/* Recently Played */}
       <View style={styles.content}>
         <View style={styles.sectionHeader}>
-          <Clock size={16} color="#800080" />
+          <Clock size={16} color={COLORS.primary} />
           <Text style={styles.sectionTitle}>Recently Played</Text>
         </View>
 
-        <ScrollView contentContainerStyle={{ paddingBottom: 30 }} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={{ paddingBottom: 90 }} showsVerticalScrollIndicator={false}>
           <FlatList
             nestedScrollEnabled={true} 
             data={tracks}
@@ -58,7 +72,10 @@ export default function MoodBeatsPreview({setPage}) {
                   <Text style={styles.trackSubtitle}>{item.artist} • {item.duration}</Text>
                 </View>
                 <View style={styles.trackActions}>
-                  <PlayButton isPlaying={playingTrack === item.id} onPress={() => setPlayingTrack(playingTrack === item.id ? null : item.id)} />
+                  <PlayButton 
+                    isPlaying={playingTrack === item.id} 
+                    onPress={() => handlePlayTrack(item.id)} 
+                  />
                   <TouchableOpacity>
                     <Heart size={16} color={item.liked ? '#FF007F' : '#ccc'} fill={item.liked ? '#FF007F' : 'none'} />
                   </TouchableOpacity>
@@ -72,23 +89,10 @@ export default function MoodBeatsPreview({setPage}) {
         </ScrollView>
       </View>
 
-      {/* Bottom Navigation */}
-      <View style={styles.navbar}>
-        <NavItem icon="home" label="Home" setPage={setPage} color="#FF00FF"/>
-        <NavItem icon="heart" label="Mood" setPage={setPage} />
-        <NavItem icon="music" label="Playlist" setPage={setPage} />
-        <NavItem icon="user" label="Profile" setPage={setPage}/>
-      </View>
+      {/* Bottom Navigation Bar is now handled by the NavigationBar component */}
     </LinearGradient>
   );
 }
-
-const NavItem = ({ icon, label, color, setPage }) => (
-  <TouchableOpacity style={styles.navItem} onPress={() => setPage(icon)}>
-    <Feather name={icon} size={20} color={color || "#bbb"} />
-    <Text style={[styles.navLabel, { color: color || "#bbb" }]}>{label}</Text>
-  </TouchableOpacity>
-);
 
 const styles = StyleSheet.create({
   container: { 

@@ -4,7 +4,7 @@ const song = {
     title: 'Perfect',
     artist: 'Ed Sheeran',
     duration: 263, // in seconds (4:23)
-    albumArt: require('../assets/song-cover.jpg'),
+    albumArt: 'https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?q=80&w=1000&auto=format&fit=crop',
     audioFile: 'perfect.mp3',
     lyrics: [
       {

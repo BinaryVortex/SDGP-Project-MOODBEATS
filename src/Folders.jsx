@@ -12,6 +12,8 @@ import {
 import { SvgXml } from 'react-native-svg';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
+import { COLORS, GRADIENTS } from './constants/theme';
 
 const folderIcon = `
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -26,14 +28,22 @@ const playlists = [
   { id: 4, title: 'Custom Playlist', songs: 100 },
 ];
 
-const MoodbeatsApp = ({setPage}) => {
+const MoodbeatsApp = () => {
+  const navigation = useNavigation();
+  
+  const handlePlaylistPress = (playlistId) => {
+    navigation.navigate('PlaylistScreen', { 
+      playlistId,
+      source: 'folders'
+    });
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="light-content" />
       
-      {/* Added LinearGradient as the main container background */}
-      <LinearGradient colors={["#000", "#800080"]} style={styles.container}>
-        {/* Added header with logo and search bar from first code */}
+      <LinearGradient colors={GRADIENTS.main} style={styles.container}>
+        {/* Header with logo and search bar */}
         <View style={styles.header}>
           <Text style={styles.logoText}>MOODBEATS</Text>
           <View style={styles.searchContainer}>
@@ -45,7 +55,11 @@ const MoodbeatsApp = ({setPage}) => {
         <ScrollView contentContainerStyle={styles.playlistContainer}>
           <View style={styles.gridContainer}>
             {playlists.map((playlist) => (
-              <TouchableOpacity key={playlist.id} style={styles.playlistBox} onPress={() => setPage("expanded")}>
+              <TouchableOpacity 
+                key={playlist.id} 
+                style={styles.playlistBox} 
+                onPress={() => handlePlaylistPress(playlist.id)}
+              >
                 <SvgXml xml={folderIcon} width={50} height={50} />
                 <Text style={styles.playlistTitle}>{playlist.title}</Text>
                 <Text style={styles.playlistSubtitle}>{playlist.songs} Songs</Text>
@@ -53,37 +67,23 @@ const MoodbeatsApp = ({setPage}) => {
             ))}
           </View>
         </ScrollView>
-
-        {/* Bottom Navigation */}
-        <View style={styles.navbar}>
-          <NavItem icon="home" label="Home" setPage={setPage}/>
-          <NavItem icon="heart" label="Mood"  setPage={setPage}/>
-          <NavItem icon="music" label="Playlist" setPage={setPage} color="#FF00FF"/>
-          <NavItem icon="user" label="Profile" setPage={setPage}/>
-        </View>
+        
+        {/* Bottom Navigation Bar is now handled by the NavigationBar component */}
       </LinearGradient>
     </SafeAreaView>
   );
 };
 
-const NavItem = ({ icon, label, color, setPage }) => (
-  <TouchableOpacity style={styles.navItem} onPress={() => setPage(icon)}>
-    <Feather name={icon} size={20} color={color || "#bbb"} />
-    <Text style={[styles.navLabel, { color: color || "#bbb" }]}>{label}</Text>
-  </TouchableOpacity>
-);
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#000', // Set background color for status bar area
+    backgroundColor: COLORS.background,
   },
   container: {
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 60,
   },
-  // Added header styles from first code
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -93,9 +93,8 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#ffffff', // Changed to white for dark gradient theme
+    color: COLORS.text,
   },
-  // Modified search container to match first code's style
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -108,12 +107,12 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   searchInput: {
-    color: '#fff',
+    color: COLORS.text,
     fontSize: 14,
     flex: 1,
   },
   playlistContainer: {
-    paddingBottom: 80, // Added more padding to prevent content from hiding behind navbar
+    paddingBottom: 80,
   },
   gridContainer: {
     flexDirection: 'row',
@@ -135,31 +134,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 5,
-    color: '#fff',
+    color: COLORS.text,
   },
   playlistSubtitle: {
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.7)',
     textAlign: 'center',
-  },
-  navbar: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-around', 
-    paddingVertical: 10, 
-    backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-    position: 'absolute', 
-    bottom: 0, 
-    width: '110%',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  navItem: { 
-    alignItems: 'center'  
-  },
-  navLabel: { 
-    fontSize: 10, 
-    color: '#fff', 
-    marginTop: 5 
   }
 });
 

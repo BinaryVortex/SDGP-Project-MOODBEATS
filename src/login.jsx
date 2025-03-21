@@ -15,10 +15,13 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { COLORS, GRADIENTS } from './constants/theme';
 
 const { width } = Dimensions.get('window');
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
+  const navigation = useNavigation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -28,16 +31,10 @@ const LoginScreen = ({ navigation }) => {
   // Animation values for button color and brightness
   const buttonColorAnim = useRef(new Animated.Value(0)).current;
   
-  // Interpolate animation value to color - using a much brighter magenta
+  // Interpolate animation value to color
   const buttonBackgroundColor = buttonColorAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#800080', '#FF00FF']
-  });
-  
-  // Add glow effect animation
-  const buttonGlowEffect = buttonColorAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0px', '6px']
+    outputRange: [COLORS.primary, COLORS.primaryLight]
   });
   
   // Brightness/scale effect
@@ -69,14 +66,22 @@ const LoginScreen = ({ navigation }) => {
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      // Add your login logic here
+      // In a real app, you would check login credentials
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Main' }],
+      });
     }, 1500);
+  };
+
+  const navigateToSignup = () => {
+    navigation.navigate('Signup');
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={['black', '#800080', 'black']}
+        colors={GRADIENTS.header}
         locations={[0, 0.6, 1.0]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
@@ -142,9 +147,9 @@ const LoginScreen = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
 
-              {/* Login Button with Enhanced Animation */}
+              {/* Login Button with Animation */}
               <Animated.View style={{
-                shadowColor: '#FF00FF',
+                shadowColor: COLORS.primaryLight,
                 shadowOffset: { width: 0, height: 0 },
                 shadowOpacity: buttonColorAnim,
                 shadowRadius: 10,
@@ -159,14 +164,12 @@ const LoginScreen = ({ navigation }) => {
                 >
                   <Animated.View style={[
                     styles.loginButton,
-                    { 
-                      backgroundColor: buttonBackgroundColor,
-                    }
+                    { backgroundColor: buttonBackgroundColor }
                   ]}>
                     <LinearGradient
                       colors={isPressed ? 
-                        ['rgba(255,255,255,0.5)', 'rgba(255,255,255,0.3)'] : 
-                        ['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.1)']}
+                        GRADIENTS.buttonPressed : 
+                        GRADIENTS.button}
                       style={styles.loginGradient}
                     >
                       {isLoading ? (
@@ -217,7 +220,7 @@ const LoginScreen = ({ navigation }) => {
               {/* Sign Up Link */}
               <View style={styles.signUpContainer}>
                 <Text style={styles.signUpText}>New to MOODBEATS? </Text>
-                <TouchableOpacity onPress={() => console.log('Navigate to Sign Up')}>
+                <TouchableOpacity onPress={navigateToSignup}>
                   <Text style={styles.signUpLink}>Create an account</Text>
                 </TouchableOpacity>
               </View>
@@ -243,7 +246,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
     paddingTop: 40,
-    paddingBottom: 60, // Adding padding at the bottom for better visibility with black gradient
+    paddingBottom: 60,
   },
   logoContainer: {
     alignItems: 'center',
@@ -313,13 +316,13 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 4,
     borderWidth: 2,
-    borderColor: '#FF00FF',
+    borderColor: COLORS.primaryLight,
     marginRight: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   checkboxChecked: {
-    backgroundColor: '#FF00FF',
+    backgroundColor: COLORS.primaryLight,
   },
   checkmark: {
     color: 'black',
@@ -330,7 +333,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   forgotPassword: {
-    color: '#FF00FF',
+    color: COLORS.primaryLight,
     fontSize: 14,
     fontWeight:'bold',
   },
@@ -400,7 +403,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    margintop:30,
+    marginTop:30,
   },
   signUpText: {
     color: 'rgba(255,255,255,0.7)',
@@ -408,7 +411,7 @@ const styles = StyleSheet.create({
     marginTop:30,
   },
   signUpLink: {
-    color: '#FF00FF',
+    color: COLORS.primaryLight,
     fontSize: 14,
     fontWeight: 'bold',
     marginTop:30,

@@ -11,11 +11,17 @@ import {
 import { Audio } from 'expo-av';
 import Slider from '@react-native-community/slider';
 import { Ionicons, AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import song from './song';
+import { COLORS } from './constants/theme';
 
 const { width } = Dimensions.get('window');
 
-const MusicPlayer = ({ navigation }) => {
+const MusicPlayer = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { trackId, trackIndex } = route.params || {};
+  
   const [isPlaying, setIsPlaying] = useState(false);
   const [sound, setSound] = useState(null);
   const [position, setPosition] = useState(0);
@@ -130,9 +136,9 @@ const MusicPlayer = ({ navigation }) => {
             maximumValue={song.duration}
             value={position}
             onValueChange={handleSliderChange}
-            minimumTrackTintColor="#800000"
+            minimumTrackTintColor={COLORS.primary}
             maximumTrackTintColor="#777"
-            thumbTintColor="#800000"
+            thumbTintColor={COLORS.primaryLight}
           />
           <View style={styles.timeContainer}>
             <Text style={styles.timeText}>{formatTime(position)}</Text>
@@ -247,7 +253,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 35,
-    backgroundColor: '#800080',
+    backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },

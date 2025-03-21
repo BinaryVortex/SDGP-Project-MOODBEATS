@@ -16,10 +16,13 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
+import { COLORS, GRADIENTS } from './constants/theme';
 
 const { width } = Dimensions.get('window');
 
-export default function MoodSelectionScreen({ setPage }) {
+export default function MoodSelectionScreen() {
+  const navigation = useNavigation();
   const [scrollY] = useState(new Animated.Value(0));
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [isPressed, setIsPressed] = useState(false);
@@ -30,7 +33,7 @@ export default function MoodSelectionScreen({ setPage }) {
   // Interpolate animation value to color
   const buttonBackgroundColor = buttonColorAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#800080', '#FF00FF']
+    outputRange: [COLORS.primary, COLORS.primaryLight]
   });
   
   // Brightness/scale effect
@@ -62,22 +65,26 @@ export default function MoodSelectionScreen({ setPage }) {
   };
 
   const handleContinue = () => {
-    // Handle continue action
-    console.log('Continue with selected mood:', selectedEmoji);
+    // Navigate to playlist with selected mood
+    navigation.navigate('Playlist', {
+      screen: 'PlaylistScreen',
+      params: { mood: selectedEmoji }
+    });
   };
 
-  const NavItem = ({ icon, label, color }) => (
-    <TouchableOpacity style={styles.navItem} onPress={() => setPage(icon)}>
-      <Feather name={icon} size={20} color={color || "#bbb"} />
-      <Text style={[styles.navLabel, { color: color || "#bbb" }]}>{label}</Text>
-    </TouchableOpacity>
-  );
+  const navigateToFaceDetection = () => {
+    navigation.navigate('FaceRecognition');
+  };
+
+  const navigateToVoiceDetection = () => {
+    navigation.navigate('VoiceRecognition');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['black', '#800080', 'black']}
+        colors={GRADIENTS.header}
         locations={[0, 0.6, 1.0]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
@@ -102,14 +109,14 @@ export default function MoodSelectionScreen({ setPage }) {
 
           <Text style={styles.title}>Which option would you prefer?😊</Text>
 
-          <TouchableOpacity style={styles.optionButton}>
+          <TouchableOpacity style={styles.optionButton} onPress={navigateToFaceDetection}>
             <FontAwesome name="camera" size={50} color="white" />
             <Text style={styles.optionText}>Face Detection</Text>
           </TouchableOpacity>
 
           <Text style={styles.orText}>Or</Text>
 
-          <TouchableOpacity style={styles.optionButton}>
+          <TouchableOpacity style={styles.optionButton} onPress={navigateToVoiceDetection}>
             <FontAwesome name="microphone" size={50} color="white" />
             <Text style={styles.optionText}>Voice Detection</Text>
           </TouchableOpacity>
@@ -169,7 +176,7 @@ export default function MoodSelectionScreen({ setPage }) {
           {/* Continue Button with Enhanced Animation */}
           {selectedEmoji && (
             <Animated.View style={{
-              shadowColor: '#FF00FF',
+              shadowColor: COLORS.primaryLight,
               shadowOffset: { width: 0, height: 0 },
               shadowOpacity: buttonColorAnim,
               shadowRadius: 10,
@@ -190,14 +197,14 @@ export default function MoodSelectionScreen({ setPage }) {
                 ]}>
                   <LinearGradient
                     colors={isPressed ? 
-                      ['rgba(255,255,255,0.5)', 'rgba(255,255,255,0.3)'] : 
-                      ['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.1)']}
+                      GRADIENTS.buttonPressed : 
+                      GRADIENTS.button}
                     style={styles.buttonGradient}
                   >
                     <Animated.Text style={[
                       styles.continueText,
                       { 
-                        color: isPressed ? '#FFFFFF' : '#F0F0F0',
+                        color: isPressed ? COLORS.text : '#F0F0F0',
                         textShadowColor: 'rgba(255,255,255,0.5)',
                         textShadowOffset: {width: 0, height: 0},
                         textShadowRadius: isPressed ? 10 : 0,
@@ -209,14 +216,8 @@ export default function MoodSelectionScreen({ setPage }) {
             </Animated.View>
           )}
         </Animated.ScrollView>
-
-        {/* Bottom Navigation Bar - Exact copy from MusicPlaylistApp */}
-        <View style={styles.navbar}>
-          <NavItem icon="home" label="Home" color="white" />
-          <NavItem icon="heart" label="Mood" color="#FF00FF" />
-          <NavItem icon="music" label="Playlists" color="white" />
-          <NavItem icon="user" label="Profile" color="white" />
-        </View>
+        
+        {/* Bottom Navigation Bar is now handled by the NavigationBar component */}
       </LinearGradient>
     </SafeAreaView>
   );

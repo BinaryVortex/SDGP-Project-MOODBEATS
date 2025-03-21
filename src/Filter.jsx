@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
-import { Home, Music, Smile, Clock, MoreVertical, Play, Pause, Filter } from 'lucide-react-native';
+import { View, Text, TextInput, Image, TouchableOpacity, FlatList, StyleSheet, ScrollView, SafeAreaView, StatusBar } from 'react-native';
+import { Home, Music, Smile, Clock, MoreVertical, Play, Pause, Filter as FilterIcon } from 'lucide-react-native';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { COLORS, GRADIENTS } from './constants/theme';
 
 const tracks = [
   { id: 1, title: 'Sprinter', artist: 'Central Cee x Dave', img: 'https://via.placeholder.com/40', duration: '3:42', liked: true },
@@ -19,7 +23,7 @@ const PlayButton = ({ isPlaying, onPress }) => (
   </TouchableOpacity>
 );
 
-export default function FilterPre() {
+export function FilterPre() {
   const [playingTrack, setPlayingTrack] = useState(null);
   const [showFilter, setShowFilter] = useState(false);
 
@@ -35,7 +39,7 @@ export default function FilterPre() {
       <View style={styles.filterContainer}>
         <TouchableOpacity onPress={() => setShowFilter(!showFilter)} style={styles.filterButton}>
           <Text style={styles.filterText}>Filter</Text>
-          <Filter size={16} color="white" />
+          <FilterIcon size={16} color="white" />
         </TouchableOpacity>
       </View>
 
@@ -79,6 +83,114 @@ export default function FilterPre() {
     </View>
   );
 }
+
+// Filter categories for the main Filter component
+const filterCategories = [
+  { id: 'genres', title: 'Genres', options: ['Pop', 'Hip-Hop', 'Rock', 'Electronic', 'R&B', 'Jazz', 'Classical', 'Country'] },
+  { id: 'mood', title: 'Mood', options: ['Happy', 'Sad', 'Energetic', 'Chill', 'Romantic', 'Focused', 'Party'] },
+  { id: 'tempo', title: 'Tempo', options: ['Slow', 'Medium', 'Fast'] },
+  { id: 'release', title: 'Release Date', options: ['Last Week', 'Last Month', 'Last Year', 'All Time'] },
+];
+
+// Main Filter component 
+const Filter = () => {
+  const navigation = useNavigation();
+  const [selectedFilters, setSelectedFilters] = useState({});
+
+  const toggleFilter = (category, option) => {
+    setSelectedFilters(prev => {
+      const newFilters = { ...prev };
+      
+      if (!newFilters[category]) {
+        newFilters[category] = [option];
+      } else if (newFilters[category].includes(option)) {
+        newFilters[category] = newFilters[category].filter(item => item !== option);
+        if (newFilters[category].length === 0) {
+          delete newFilters[category];
+        }
+      } else {
+        newFilters[category] = [...newFilters[category], option];
+      }
+      
+      return newFilters;
+    });
+  };
+
+  const isOptionSelected = (category, option) => {
+    return selectedFilters[category]?.includes(option) || false;
+  };
+
+  const clearFilters = () => {
+    setSelectedFilters({});
+  };
+
+  const applyFilters = () => {
+    // Pass the selected filters back to the playlist
+    navigation.navigate('PlaylistScreen', { filters: selectedFilters });
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
+      <LinearGradient colors={GRADIENTS.main} style={styles.gradient}>
+        
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Filter Music</Text>
+          <TouchableOpacity onPress={clearFilters}>
+            <Text style={styles.clearText}>Clear All</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Filter Categories */}
+        <ScrollView style={styles.scrollView}>
+          {filterCategories.map((category) => (
+            <View key={category.id} style={styles.categorySection}>
+              <Text style={styles.categoryTitle}>{category.title}</Text>
+              <View style={styles.optionsContainer}>
+                {category.options.map((option) => (
+                  <TouchableOpacity
+                    key={option}
+                    style={[
+                      styles.optionChip,
+                      isOptionSelected(category.id, option) && styles.selectedChip
+                    ]}
+                    onPress={() => toggleFilter(category.id, option)}
+                  >
+                    <Text 
+                      style={[
+                        styles.optionText,
+                        isOptionSelected(category.id, option) && styles.selectedOptionText
+                      ]}
+                    >
+                      {option}
+                    </Text>
+                    {isOptionSelected(category.id, option) && (
+                      <MaterialIcons name="check" size={16} color="white" style={styles.checkIcon} />
+                    )}
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+
+        {/* Apply Button */}
+        <View style={styles.footer}>
+          <TouchableOpacity 
+            style={styles.applyButton}
+            onPress={applyFilters}
+          >
+            <Text style={styles.applyButtonText}>Apply Filters</Text>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   container: { 
@@ -201,5 +313,80 @@ const styles = StyleSheet.create({
     padding: 10, 
     borderRadius: 20 
   },
-
+  
+  // Styles for the main Filter component
+  gradient: {
+    flex: 1,
+  },
+  backButton: {
+    padding: 5,
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  clearText: {
+    color: COLORS?.primary || '#FF8000',
+    fontSize: 14,
+  },
+  scrollView: {
+    flex: 1,
+    padding: 16,
+  },
+  categorySection: {
+    marginBottom: 24,
+  },
+  categoryTitle: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+  optionsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  optionChip: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    marginRight: 10,
+    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  selectedChip: {
+    backgroundColor: COLORS?.primary || '#FF8000',
+  },
+  optionText: {
+    color: '#aaa',
+    fontSize: 14,
+  },
+  selectedOptionText: {
+    color: 'white',
+  },
+  checkIcon: {
+    marginLeft: 6,
+  },
+  footer: {
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  applyButton: {
+    backgroundColor: COLORS?.primary || '#FF8000',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  applyButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
+
+export default Filter;

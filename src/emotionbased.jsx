@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS } from './constants/theme';
 import song from './song';
 
-const EmotionBased = ({ navigation }) => {
+const EmotionBased = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  
   const [emotion, setEmotion] = useState('romantic');
   const [recommendations, setRecommendations] = useState([]);
 
@@ -50,24 +56,24 @@ const EmotionBased = ({ navigation }) => {
     // In a real app, this would come from an API
     const recommendations = {
       romantic: [
-        { title: 'Thinking Out Loud', artist: 'Ed Sheeran' },
-        { title: 'All of Me', artist: 'John Legend' },
-        { title: 'Can\'t Help Falling in Love', artist: 'Elvis Presley' },
+        { id: 1, title: 'Thinking Out Loud', artist: 'Ed Sheeran' },
+        { id: 2, title: 'All of Me', artist: 'John Legend' },
+        { id: 3, title: 'Can\'t Help Falling in Love', artist: 'Elvis Presley' },
       ],
       sad: [
-        { title: 'Someone Like You', artist: 'Adele' },
-        { title: 'Fix You', artist: 'Coldplay' },
-        { title: 'Hurt', artist: 'Johnny Cash' },
+        { id: 4, title: 'Someone Like You', artist: 'Adele' },
+        { id: 5, title: 'Fix You', artist: 'Coldplay' },
+        { id: 6, title: 'Hurt', artist: 'Johnny Cash' },
       ],
       happy: [
-        { title: 'Happy', artist: 'Pharrell Williams' },
-        { title: 'Can\'t Stop the Feeling', artist: 'Justin Timberlake' },
-        { title: 'Uptown Funk', artist: 'Mark Ronson ft. Bruno Mars' },
+        { id: 7, title: 'Happy', artist: 'Pharrell Williams' },
+        { id: 8, title: 'Can\'t Stop the Feeling', artist: 'Justin Timberlake' },
+        { id: 9, title: 'Uptown Funk', artist: 'Mark Ronson ft. Bruno Mars' },
       ],
       neutral: [
-        { title: 'Viva la Vida', artist: 'Coldplay' },
-        { title: 'Believer', artist: 'Imagine Dragons' },
-        { title: 'High Hopes', artist: 'Panic! At The Disco' },
+        { id: 10, title: 'Viva la Vida', artist: 'Coldplay' },
+        { id: 11, title: 'Believer', artist: 'Imagine Dragons' },
+        { id: 12, title: 'High Hopes', artist: 'Panic! At The Disco' },
       ],
     };
     
@@ -84,24 +90,43 @@ const EmotionBased = ({ navigation }) => {
     setRecommendations(songRecommendations);
   }, []);
 
+  const navigateToSong = (songId) => {
+    navigation.navigate('MusicPlayer', { trackId: songId });
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Emotion Analysis</Text>
-      
-      <View style={styles.emotionContainer}>
-        <Text style={styles.label}>Current Song Mood:</Text>
-        <Text style={styles.emotion}>{emotion.charAt(0).toUpperCase() + emotion.slice(1)}</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Emotion Analysis</Text>
+        <View style={{ width: 24 }} /> {/* Placeholder for alignment */}
       </View>
       
-      <View style={styles.recommendationsContainer}>
-        <Text style={styles.label}>Similar Songs:</Text>
-        {recommendations.map((recommendation, index) => (
-          <TouchableOpacity key={index} style={styles.recommendationItem}>
-            <Text style={styles.songTitle}>{recommendation.title}</Text>
-            <Text style={styles.artistName}>{recommendation.artist}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <ScrollView>
+        <View style={styles.emotionContainer}>
+          <Text style={styles.label}>Current Song Mood:</Text>
+          <Text style={styles.emotion}>{emotion.charAt(0).toUpperCase() + emotion.slice(1)}</Text>
+        </View>
+        
+        <View style={styles.recommendationsContainer}>
+          <Text style={styles.label}>Similar Songs:</Text>
+          {recommendations.map((recommendation) => (
+            <TouchableOpacity 
+              key={recommendation.id} 
+              style={styles.recommendationItem}
+              onPress={() => navigateToSong(recommendation.id)}
+            >
+              <View>
+                <Text style={styles.songTitle}>{recommendation.title}</Text>
+                <Text style={styles.artistName}>{recommendation.artist}</Text>
+              </View>
+              <Ionicons name="play-circle-outline" size={28} color={COLORS.primary} />
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -109,38 +134,52 @@ const EmotionBased = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
-    padding: 16,
+    backgroundColor: COLORS.backgroundLight,
+    paddingTop: 50,
   },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginBottom: 20,
+  },
+  headerTitle: {
     color: 'white',
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginVertical: 20,
+  },
+  backButton: {
+    padding: 5,
   },
   emotionContainer: {
-    backgroundColor: '#222',
+    backgroundColor: COLORS.backgroundMedium,
     padding: 15,
     borderRadius: 10,
+    marginHorizontal: 16,
     marginBottom: 20,
   },
   label: {
-    color: '#aaa',
+    color: COLORS.textSecondary,
     fontSize: 16,
     marginBottom: 10,
   },
   emotion: {
-    color: '#800000',
+    color: COLORS.primaryLight,
     fontSize: 24,
     fontWeight: 'bold',
   },
   recommendationsContainer: {
-    backgroundColor: '#222',
+    backgroundColor: COLORS.backgroundMedium,
     padding: 15,
     borderRadius: 10,
-    flex: 1,
+    marginHorizontal: 16,
+    marginBottom: 30,
   },
   recommendationItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#333',
@@ -151,7 +190,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   artistName: {
-    color: '#aaa',
+    color: COLORS.textSecondary,
     fontSize: 14,
     marginTop: 5,
   },

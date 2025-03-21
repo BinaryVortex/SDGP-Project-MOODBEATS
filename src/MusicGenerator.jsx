@@ -1,128 +1,202 @@
 import React, { useState } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  Text, 
-  SafeAreaView, 
+import {
+  View,
+  Text,
+  StyleSheet,
   TouchableOpacity,
+  TextInput,
+  ScrollView,
   ActivityIndicator,
-  StatusBar
+  Image,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
-
-const API_URL = 'https://ngrok.com/new-features-update?ref=private';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons, Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { COLORS, GRADIENTS } from './constants/theme';
 
 const MusicGenerator = () => {
-  const [selectedMood, setSelectedMood] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [generatedTrack, setGeneratedTrack] = useState(null);
+  const navigation = useNavigation();
+  const [prompt, setPrompt] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedMusic, setGeneratedMusic] = useState(null);
+  const [generationStep, setGenerationStep] = useState(0);
 
-  // List of moods from your API
-  const moods = [
-    { id: 'happy', name: 'Happy', emoji: '😊', color: '#DCFCE7' },
-    { id: 'sad', name: 'Sad', emoji: '😢', color: '#EFF6FF' },
-    { id: 'relaxed', name: 'Relaxed', emoji: '😌', color: '#F0FDF4' },
-    { id: 'energetic', name: 'Energetic', emoji: '⚡', color: '#ECFDF5' },
-    { id: 'angry', name: 'Angry', emoji: '😠', color: '#FEF2F2' },
-    { id: 'neutral', name: 'Neutral', emoji: '😐', color: '#F8FAFC' }
-  ];
+  const handleGenerate = () => {
+    if (prompt.trim() === '') return;
+    
+    setIsGenerating(true);
+    setGenerationStep(0);
+    setGeneratedMusic(null);
+    
+    // Simulate a multi-step generation process
+    const steps = [
+      'Analyzing prompt...',
+      'Generating melody...',
+      'Adding harmonies...',
+      'Adding rhythm section...',
+      'Mastering audio...',
+      'Finalizing your track...'
+    ];
+    
+    // Advance through steps with delays to simulate processing
+    let currentStep = 0;
+    const stepInterval = setInterval(() => {
+      currentStep++;
+      setGenerationStep(currentStep);
+      
+      if (currentStep >= steps.length) {
+        clearInterval(stepInterval);
+        
+        // After all steps, simulate a completed track
+        setTimeout(() => {
+          setIsGenerating(false);
+          setGeneratedMusic({
+            title: `AI Generated: ${prompt.slice(0, 20)}${prompt.length > 20 ? '...' : ''}`,
+            duration: '3:42',
+            coverImage: 'https://via.placeholder.com/300'
+          });
+        }, 1000);
+      }
+    }, 1500);
+  };
 
-  const generateMusic = async () => {
-    if (!selectedMood) return;
+  const playGeneratedMusic = () => {
+    navigation.navigate('Playlist', {
+      screen: 'MusicPlayer',
+      params: { 
+        generatedTrack: generatedMusic,
+        isAIGenerated: true
+      }
+    });
+  };
+
+  const renderGenerationProgress = () => {
+    const steps = [
+      'Analyzing prompt...',
+      'Generating melody...',
+      'Adding harmonies...',
+      'Adding rhythm section...',
+      'Mastering audio...',
+      'Finalizing your track...'
+    ];
     
-    setIsLoading(true);
-    
-    try {
-      // Call your API
-      const response = await fetch(`${API_URL}/generate-music`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          mood: selectedMood,
-          intensity: 0.7 // Using a fixed intensity for simplicity
-        }),
-      });
-      
-      const data = await response.json();
-      setGeneratedTrack(data);
-      
-    } catch (error) {
-      console.error('Error generating music:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    return (
+      <View style={styles.progressContainer}>
+        <ActivityIndicator size="large" color={COLORS.primary} style={styles.loader} />
+        <Text style={styles.progressText}>{steps[generationStep]}</Text>
+        <Text style={styles.progressSubtext}>This might take a moment...</Text>
+      </View>
+    );
+  };
+
+  const renderGeneratedMusic = () => {
+    return (
+      <View style={styles.resultContainer}>
+        <Text style={styles.successText}>✓ Music Generated!</Text>
+        
+        <View style={styles.trackCard}>
+          <Image 
+            source={{ uri: generatedMusic.coverImage }} 
+            style={styles.trackImage} 
+          />
+          <View style={styles.trackInfo}>
+            <Text style={styles.trackTitle}>{generatedMusic.title}</Text>
+            <Text style={styles.trackSubtitle}>AI Generated • {generatedMusic.duration}</Text>
+          </View>
+        </View>
+        
+        <TouchableOpacity 
+          style={styles.playButton}
+          onPress={playGeneratedMusic}
+        >
+          <Ionicons name="play" size={24} color="white" />
+          <Text style={styles.playButtonText}>Play Now</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.generateAgainButton}
+          onPress={() => setGeneratedMusic(null)}
+        >
+          <Text style={styles.generateAgainText}>Generate Another Track</Text>
+        </TouchableOpacity>
+      </View>
+    );
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      
-      <View style={styles.header}>
-        <Text style={styles.logo}>MOODBEATS</Text>
-        <Text style={styles.tagline}>Music that matches how you feel</Text>
-      </View>
-      
-      <View style={styles.moodSelectorContainer}>
-        <Text style={styles.promptText}>How are you feeling today?</Text>
+      <StatusBar barStyle="light-content" />
+      <LinearGradient colors={GRADIENTS.main} style={styles.gradient}>
         
-        <View style={styles.moodGrid}>
-          {moods.map((mood) => (
-            <TouchableOpacity
-              key={mood.id}
-              style={[
-                styles.moodCard,
-                { backgroundColor: mood.color },
-                selectedMood === mood.id && styles.selectedMoodCard
-              ]}
-              onPress={() => setSelectedMood(mood.id)}
-            >
-              <Text style={styles.emojiText}>{mood.emoji}</Text>
-              <Text style={styles.moodText}>{mood.name}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-      
-      <TouchableOpacity
-        style={[
-          styles.generateButton,
-          !selectedMood && styles.disabledButton
-        ]}
-        onPress={generateMusic}
-        disabled={!selectedMood || isLoading}
-      >
-        {isLoading ? (
-          <ActivityIndicator color="white" size="small" />
-        ) : (
-          <Text style={styles.generateButtonText}>Generate Music</Text>
-        )}
-      </TouchableOpacity>
-      
-      {generatedTrack && (
-        <View style={styles.playerCard}>
-          <View style={styles.trackInfoRow}>
-            <View style={[styles.albumArt, { backgroundColor: moods.find(m => m.id === selectedMood)?.color }]}>
-              <Text style={styles.albumEmoji}>{moods.find(m => m.id === selectedMood)?.emoji}</Text>
-            </View>
-            
-            <View style={styles.trackInfo}>
-              <Text style={styles.trackTitle}>{selectedMood.charAt(0).toUpperCase() + selectedMood.slice(1)} Melody</Text>
-              <Text style={styles.trackSubtitle}>
-                {generatedTrack.parameters.key} {generatedTrack.parameters.scale} • {generatedTrack.parameters.bpm} BPM
-              </Text>
-            </View>
-          </View>
-          
-          <TouchableOpacity style={styles.playButton}>
-            <Text style={styles.playButtonText}>Play</Text>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
-          
-          <Text style={styles.instrumentsText}>
-            Instruments: {generatedTrack.parameters.instruments.join(', ')}
-          </Text>
+          <Text style={styles.headerTitle}>AI Music Generator</Text>
+          <View style={{ width: 24 }} /> {/* Empty space for alignment */}
         </View>
-      )}
+        
+        <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
+          {!generatedMusic ? (
+            <View style={styles.promptContainer}>
+              <Text style={styles.title}>Generate AI Music</Text>
+              <Text style={styles.subtitle}>
+                Describe the music you want to create and our AI will generate it for you.
+              </Text>
+              
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="E.g., 'A relaxing lo-fi beat with piano and rain sounds'"
+                  placeholderTextColor="rgba(255,255,255,0.5)"
+                  value={prompt}
+                  onChangeText={setPrompt}
+                  multiline
+                  numberOfLines={4}
+                  editable={!isGenerating}
+                />
+              </View>
+              
+              <View style={styles.suggestionsContainer}>
+                <Text style={styles.suggestionsTitle}>Suggestions:</Text>
+                {['Upbeat pop song with catchy chorus', 'Ambient soundscape with nature sounds', 'Electronic dance track with strong bass'].map((suggestion, index) => (
+                  <TouchableOpacity 
+                    key={index} 
+                    style={styles.suggestionButton}
+                    onPress={() => setPrompt(suggestion)}
+                    disabled={isGenerating}
+                  >
+                    <Feather name="zap" size={14} color={COLORS.primary} />
+                    <Text style={styles.suggestionText}>{suggestion}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              
+              <TouchableOpacity 
+                style={[styles.generateButton, (!prompt.trim() || isGenerating) && styles.disabledButton]}
+                onPress={handleGenerate}
+                disabled={!prompt.trim() || isGenerating}
+              >
+                {isGenerating ? (
+                  <ActivityIndicator color="white" size="small" />
+                ) : (
+                  <>
+                    <Ionicons name="musical-notes" size={20} color="white" />
+                    <Text style={styles.generateButtonText}>Generate Music</Text>
+                  </>
+                )}
+              </TouchableOpacity>
+              
+              {isGenerating && renderGenerationProgress()}
+            </View>
+          ) : (
+            renderGeneratedMusic()
+          )}
+        </ScrollView>
+      </LinearGradient>
     </SafeAreaView>
   );
 };
@@ -130,134 +204,181 @@ const MusicGenerator = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: COLORS.background,
+  },
+  gradient: {
+    flex: 1,
   },
   header: {
-    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
     paddingTop: 20,
     paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
   },
-  logo: {
-    fontSize: 28,
+  backButton: {
+    padding: 5,
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#800080',
   },
-  tagline: {
-    fontSize: 14,
-    color: '#64748B',
+  content: {
+    flex: 1,
   },
-  moodSelectorContainer: {
-    padding: 20,
+  contentContainer: {
+    padding: 16,
+    paddingBottom: 40,
   },
-  promptText: {
-    fontSize: 20,
+  promptContainer: {
+    marginTop: 20,
+  },
+  title: {
+    color: 'white',
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#334155',
-  },
-  moodGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  moodCard: {
-    width: '48%',
-    borderRadius: 16,
-    padding: 20,
-    alignItems: 'center',
-    marginBottom: 15,
-    elevation: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  selectedMoodCard: {
-    borderWidth: 2,
-    borderColor: '#ad0aad',
-  },
-  emojiText: {
-    fontSize: 40,
     marginBottom: 10,
   },
-  moodText: {
+  subtitle: {
+    color: 'rgba(255,255,255,0.7)',
     fontSize: 16,
-    fontWeight: '500',
-    color: '#334155',
+    marginBottom: 30,
+  },
+  inputContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 10,
+    padding: 5,
+    marginBottom: 20,
+  },
+  input: {
+    color: 'white',
+    fontSize: 16,
+    padding: 10,
+    textAlignVertical: 'top',
+    minHeight: 120,
+  },
+  suggestionsContainer: {
+    marginBottom: 30,
+  },
+  suggestionsTitle: {
+    color: 'white',
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  suggestionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 8,
+  },
+  suggestionText: {
+    color: 'white',
+    fontSize: 14,
+    marginLeft: 8,
   },
   generateButton: {
-    backgroundColor: '#800080',
-    marginHorizontal: 20,
-    height: 54,
-    borderRadius: 12,
+    backgroundColor: COLORS.primary,
+    borderRadius: 10,
+    padding: 16,
     alignItems: 'center',
+    flexDirection: 'row',
     justifyContent: 'center',
   },
   disabledButton: {
-    backgroundColor: '#94A3B8',
+    backgroundColor: 'rgba(128, 0, 128, 0.5)',
   },
   generateButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+    marginLeft: 8,
   },
-  playerCard: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 20,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+  progressContainer: {
+    marginTop: 30,
+    alignItems: 'center',
   },
-  trackInfoRow: {
-    flexDirection: 'row',
+  loader: {
     marginBottom: 20,
   },
-  albumArt: {
-    width: 70,
-    height: 70,
-    borderRadius: 12,
+  progressText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  progressSubtext: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 14,
+  },
+  resultContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 15,
+    marginTop: 20,
   },
-  albumEmoji: {
-    fontSize: 40,
-  },
-  trackInfo: {
-    justifyContent: 'center',
-  },
-  trackTitle: {
+  successText: {
+    color: COLORS.success,
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#334155',
-    marginBottom: 4,
+    marginBottom: 20,
+  },
+  trackCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 10,
+    padding: 20,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  trackImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 5,
+    marginRight: 15,
+  },
+  trackInfo: {
+    flex: 1,
+  },
+  trackTitle: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
   },
   trackSubtitle: {
+    color: 'rgba(255,255,255,0.7)',
     fontSize: 14,
-    color: '#64748B',
   },
   playButton: {
-    backgroundColor: '#800080',
-    borderRadius: 30,
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    alignSelf: 'center',
-    marginBottom: 20,
+    backgroundColor: COLORS.primary,
+    borderRadius: 10,
+    padding: 16,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+    marginBottom: 15,
   },
   playButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+    marginLeft: 8,
   },
-  instrumentsText: {
-    fontSize: 14,
-    color: '#64748B',
+  generateAgainButton: {
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+    borderRadius: 10,
+    padding: 16,
+    alignItems: 'center',
+    width: '100%',
+  },
+  generateAgainText: {
+    color: COLORS.primary,
+    fontSize: 16,
   }
 });
 

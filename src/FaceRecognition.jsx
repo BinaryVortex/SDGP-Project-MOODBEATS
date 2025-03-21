@@ -13,14 +13,18 @@ import {
 import { Camera } from 'expo-camera';
 import * as FaceDetector from 'expo-face-detector';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-const FaceRecognition = ({ navigation, onMoodDetected }) => {
-  const [step, setStep] = useState('options'); // 'options', 'camera', 'scanning', 'success', 'moodSelection', 'moodSuccess'
+const FaceRecognition = ({ route }) => {
+  const navigation = useNavigation();
+  const { onMoodDetected } = route.params || {};
+  
+  const [step, setStep] = useState('options');
   const [hasPermission, setHasPermission] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [detectedMood, setDetectedMood] = useState(null);
   const [selectedMood, setSelectedMood] = useState(null);
-  const [type, setType] = useState(null);
+  const [type, setType] = useState(1); // Default to front camera (1)
   const [facesDetected, setFacesDetected] = useState(0);
   const [cameraReady, setCameraReady] = useState(false);
   const cameraRef = useRef(null);
@@ -41,7 +45,7 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
         setHasPermission(status === 'granted');
         
         // Set camera type safely
-        if (Camera.Constants && Camera.Constants.Type) {
+        if (Camera.Constants && Camera.Constants.Type && typeof Camera.Constants.Type.front === 'number') {
           setType(Camera.Constants.Type.front);
         } else {
           console.log("Camera.Constants.Type is undefined, using fallback");
@@ -161,9 +165,7 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
     if (onMoodDetected) {
       onMoodDetected(finalMood);
     }
-    if (navigation) {
-      navigation.navigate('Playlist', { mood: finalMood });
-    }
+    navigation.navigate('Playlist', { screen: 'PlaylistScreen', params: { mood: finalMood } });
   };
 
   const handleBack = () => {
@@ -173,7 +175,7 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
       setStep('camera');
     } else if (step === 'moodSelection' || step === 'moodSuccess') {
       setStep('options');
-    } else if (navigation) {
+    } else {
       navigation.goBack();
     }
   };
@@ -316,17 +318,7 @@ const FaceRecognition = ({ navigation, onMoodDetected }) => {
   }
 
   // Check if camera type is defined before showing camera screen
-  if (step === 'camera' && type === null) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#FF6600" />
-        <Text style={styles.loadingText}>Initializing camera...</Text>
-      </View>
-    );
-  }
-
-  // Render camera screen - IMPROVED VERSION
-  if (step === 'camera' && type !== null) {
+  if (step === 'camera' && typeof type === 'number') {
     // Improved error handling for Camera component
     try {
       return (

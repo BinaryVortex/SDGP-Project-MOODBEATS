@@ -9,11 +9,16 @@ import {
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { COLORS } from './constants/theme';
 
 const { width } = Dimensions.get('window');
 
-const LyricsPlayer = ({ route, navigation }) => {
+const LyricsPlayer = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
   const { position: initialPosition, isPlaying: initialIsPlaying, song } = route.params;
+  
   const [position, setPosition] = useState(initialPosition);
   const [isPlaying, setIsPlaying] = useState(initialIsPlaying);
 
@@ -59,8 +64,24 @@ const LyricsPlayer = ({ route, navigation }) => {
     return position >= lyric.startTime && position <= lyric.endTime;
   };
 
+  const handleBackToPlayer = () => {
+    // Pass back the current position and playing state
+    navigation.navigate('MusicPlayer', {
+      updatedPosition: position,
+      updatedIsPlaying: isPlaying
+    });
+  };
+
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={handleBackToPlayer}>
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Lyrics</Text>
+        <View style={{ width: 24 }} /> {/* Placeholder for alignment */}
+      </View>
+
       <View style={styles.playerControls}>
         <View style={styles.timeContainer}>
           <Text style={styles.timeText}>{formatTime(position)}</Text>
@@ -73,9 +94,9 @@ const LyricsPlayer = ({ route, navigation }) => {
           maximumValue={song.duration}
           value={position}
           onValueChange={handleSliderChange}
-          minimumTrackTintColor="#800000"
+          minimumTrackTintColor={COLORS.primary}
           maximumTrackTintColor="#777"
-          thumbTintColor="#800000"
+          thumbTintColor={COLORS.primaryLight}
         />
 
         <View style={styles.buttonsContainer}>
@@ -111,7 +132,6 @@ const LyricsPlayer = ({ route, navigation }) => {
       </View>
 
       <View style={styles.lyricsContainer}>
-        <Text style={styles.lyricsHeader}>Lyrics</Text>
         <ScrollView style={styles.scrollView}>
           {song.lyrics.map((lyric, index) => (
             <Text
@@ -133,8 +153,19 @@ const LyricsPlayer = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: COLORS.backgroundLight,
     padding: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   playerControls: {
     marginTop: 30,
@@ -161,7 +192,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#800080',
+    backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -173,11 +204,6 @@ const styles = StyleSheet.create({
   lyricsContainer: {
     flex: 1,
     marginTop: 20,
-  },
-  lyricsHeader: {
-    color: 'white',
-    fontSize: 20,
-    marginBottom: 10,
   },
   scrollView: {
     flex: 1,
@@ -191,7 +217,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   activeLyric: {
-    color: '#800000',
+    color: COLORS.primaryLight,
     fontWeight: 'bold',
   },
 });
