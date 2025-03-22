@@ -1,20 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
-  TextInput,
   ScrollView,
   ActivityIndicator,
   Platform,
-  Alert
+  Alert,
+  Animated,
+  Easing,
 } from 'react-native';
 import { Audio } from 'expo-av';
 import Slider from '@react-native-community/slider';
 
 // API URL - Change this to match your backend URL
-const API_URL = 'http://192.168.1.6:8000/generate-music/';
+const API_URL = 'http://172.20.10.4:8000/generate-music/';
+
+// Mood emoji mapping
+const moodEmojis = {
+  happy: '😊',
+  sad: '😢',
+  relaxed: '😌',
+  energetic: '⚡',
+};
+
+// Mood colors 
+const moodColors = {
+  happy: '#bf13bf',
+  sad: '#bf13bf',
+  relaxed: '#bf13bf',
+  energetic: '#bf13bf',
+};
 
 const MusicGen = () => {
   const [mood, setMood] = useState('happy');
@@ -24,6 +41,50 @@ const MusicGen = () => {
   const [sound, setSound] = useState();
   const [playingTrackId, setPlayingTrackId] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  
+  // Animation values
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.95)).current;
+  const spinValue = useRef(new Animated.Value(0)).current;
+
+  // Create animated rotation for loading
+  const spin = spinValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg']
+  });
+
+  // Start rotation animation for loading
+  useEffect(() => {
+    if (loading) {
+      Animated.loop(
+        Animated.timing(spinValue, {
+          toValue: 1,
+          duration: 2000,
+          easing: Easing.linear,
+          useNativeDriver: true
+        })
+      ).start();
+    } else {
+      spinValue.setValue(0);
+    }
+  }, [loading]);
+
+  // Fade in animation when component mounts
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
 
   // Clean up sound when component unmounts
   useEffect(() => {
@@ -34,11 +95,31 @@ const MusicGen = () => {
       : undefined;
   }, [sound]);
 
+  // Function to handle progress updates for playing tracks
+  const onPlaybackStatusUpdate = (status) => {
+    if (status.isLoaded && status.durationMillis > 0) {
+      const newProgress = status.positionMillis / status.durationMillis;
+      setProgress(newProgress);
+    }
+    
+    if (status.didJustFinish) {
+      setIsPlaying(false);
+      setPlayingTrackId(null);
+      setProgress(0);
+    }
+  };
+
   // Function to generate music
   const generateMusic = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://192.168.1.6:8000/generate-music/", {
+      
+      // Haptic feedback if available
+      if (Platform.OS === 'ios' && typeof Haptics !== 'undefined') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
+      
+      const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +137,7 @@ const MusicGen = () => {
   
       const data = await response.json();
       
-      // Add new track to the list
+      // Add new track to the list with animation
       const newTrack = {
         id: Date.now().toString(),
         filePath: data.file_path,
@@ -67,11 +148,8 @@ const MusicGen = () => {
       
       setGeneratedTracks(prevTracks => [newTrack, ...prevTracks]);
       
-      Alert.alert(
-        'Success',
-        `Generated ${data.mood} music for ${data.duration} seconds!`,
-        [{ text: 'OK' }]
-      );
+      // Use custom success notification
+      showSuccessToast(`Generated ${data.mood} music for ${data.duration}s!`);
     } catch (error) {
       Alert.alert('Error', error.message);
       console.error('Error generating music:', error);
@@ -80,12 +158,28 @@ const MusicGen = () => {
     }
   };
 
+  // Custom toast implementation
+  const showSuccessToast = (message) => {
+    // You could implement a custom toast here
+    // For now, we'll use Alert
+    Alert.alert(
+      '🎵 Success!',
+      message,
+      [{ text: 'Listen Now', onPress: () => {
+        if (generatedTracks.length > 0) {
+          playSound(generatedTracks[0].id, generatedTracks[0].filePath);
+        }
+      }}]
+    );
+  };
+
   // Function to play the audio
   const playSound = async (trackId, filePath) => {
     if (sound) {
       await sound.unloadAsync();
       setSound(null);
       setIsPlaying(false);
+      setProgress(0);
       
       if (playingTrackId === trackId) {
         setPlayingTrackId(null);
@@ -95,7 +189,7 @@ const MusicGen = () => {
   
     try {
       const { sound: newSound } = await Audio.Sound.createAsync(
-        { uri: `http://192.168.1.6:8000/audio/${filePath}` }, // Adjust the URL if needed
+        { uri: `http://172.20.10.4:8000/audio/${filePath}` },
         { shouldPlay: true }
       );
       
@@ -103,262 +197,484 @@ const MusicGen = () => {
       setPlayingTrackId(trackId);
       setIsPlaying(true);
   
-      newSound.setOnPlaybackStatusUpdate((status) => {
-        if (status.didJustFinish) {
-          setIsPlaying(false);
-          setPlayingTrackId(null);
-        }
-      });
+      newSound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
     } catch (error) {
       Alert.alert('Error', 'Failed to play the audio file');
       console.error('Error playing sound:', error);
     }
   };
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>MusicGen</Text>
-      <Text style={styles.subtitle}>Generate mood-based music</Text>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Select Mood:</Text>
-        <View style={styles.moodContainer}>
-          {['happy', 'sad', 'relaxed', 'energetic'].map((moodOption) => (
-            <TouchableOpacity
-              key={moodOption}
-              style={[
-                styles.moodButton,
-                mood === moodOption && styles.selectedMoodButton,
-              ]}
-              onPress={() => setMood(moodOption)}
-            >
-              <Text
-                style={[
-                  styles.moodButtonText,
-                  mood === moodOption && styles.selectedMoodButtonText,
-                ]}
-              >
-                {moodOption.charAt(0).toUpperCase() + moodOption.slice(1)}
-              </Text>
-            </TouchableOpacity>
-          ))}
+  // Creates a play/pause icon text for the track
+  const renderPlayIcon = () => {
+    return isPlaying ? '■' : '▶';
+  };
+
+  // Get available moods
+  const availableMoods = Object.keys(moodEmojis);
+
+  return (
+    <Animated.View 
+      style={[
+        styles.container, 
+        { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }
+      ]}
+    >
+      <View style={styles.background}>
+        <View style={styles.header}>
+          <Text style={styles.title}>MOODBEATS</Text>
+          <Text style={styles.subtitle}>Mood-based Music Generator</Text>
         </View>
 
-        <Text style={styles.label}>
-          Duration: {duration} seconds
-        </Text>
-        <Slider
-          style={styles.slider}
-          minimumValue={5}
-          maximumValue={60}
-          step={1}
-          value={duration}
-          onValueChange={setDuration}
-          minimumTrackTintColor="#4A90E2"
-          maximumTrackTintColor="#D3D3D3"
-          thumbTintColor="#4A90E2"
-        />
-
-        <TouchableOpacity
-          style={styles.generateButton}
-          onPress={generateMusic}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="#FFFFFF" />
-          ) : (
-            <Text style={styles.generateButtonText}>Generate Music</Text>
-          )}
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.historyContainer}>
-        <Text style={styles.historyTitle}>Generated Tracks</Text>
-        {generatedTracks.length === 0 ? (
-          <Text style={styles.noTracksText}>No tracks generated yet</Text>
-        ) : (
-          <ScrollView style={styles.tracksList}>
-            {generatedTracks.map((track) => (
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Select Your Mood:</Text>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.moodScrollContainer}
+          >
+            {availableMoods.map((moodOption) => (
               <TouchableOpacity
-                key={track.id}
+                key={moodOption}
                 style={[
-                  styles.trackItem,
-                  playingTrackId === track.id && styles.playingTrackItem,
+                  styles.moodButton,
+                  mood === moodOption && [
+                    styles.selectedMoodButton,
+                    { borderColor: moodColors[moodOption] }
+                  ],
                 ]}
-                onPress={() => playSound(track.id, track.filePath)}
+                onPress={() => setMood(moodOption)}
+                activeOpacity={0.7}
               >
-                <View style={styles.trackDetails}>
-                  <Text style={styles.trackMood}>
-                    {track.mood.charAt(0).toUpperCase() + track.mood.slice(1)}
-                  </Text>
-                  <Text style={styles.trackDuration}>{track.duration}s</Text>
-                </View>
-                <View style={styles.trackMetadata}>
-                  <Text style={styles.trackTimestamp}>{track.timestamp}</Text>
-                  <View style={styles.playIconContainer}>
-                    <Text style={styles.playIcon}>
-                      {playingTrackId === track.id && isPlaying ? '■' : '▶'}
-                    </Text>
-                  </View>
-                </View>
+                <Text style={styles.moodEmoji}>{moodEmojis[moodOption]}</Text>
+                <Text
+                  style={[
+                    styles.moodButtonText,
+                    mood === moodOption && [
+                      styles.selectedMoodButtonText,
+                      { color: moodColors[moodOption] }
+                    ],
+                  ]}
+                >
+                  {moodOption.charAt(0).toUpperCase() + moodOption.slice(1)}
+                </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
-        )}
+
+          <View style={styles.durationContainer}>
+            <Text style={styles.label}>
+              Duration: <Text style={[styles.durationValue, { color: moodColors[mood] }]}>
+                {duration} seconds
+              </Text>
+            </Text>
+            <Slider
+              style={styles.slider}
+              minimumValue={5}
+              maximumValue={60}
+              step={5}
+              value={duration}
+              onValueChange={setDuration}
+              minimumTrackTintColor={moodColors[mood]}
+              maximumTrackTintColor="#D3D3D3"
+              thumbTintColor={moodColors[mood]}
+            />
+            <View style={styles.sliderLabels}>
+              <Text style={styles.sliderLabel}>5s</Text>
+              <Text style={styles.sliderLabel}>60s</Text>
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={[
+              styles.generateButton, 
+              { backgroundColor: moodColors[mood], opacity: loading ? 0.8 : 1 }
+            ]}
+            onPress={generateMusic}
+            disabled={loading}
+            activeOpacity={0.7}
+          >
+            {loading ? (
+              <Animated.View style={{ transform: [{ rotate: spin }] }}>
+                <Text style={styles.loadingText}>🎵</Text>
+              </Animated.View>
+            ) : (
+              <>
+                <Text style={styles.buttonIcon}>🎵</Text>
+                <Text style={styles.generateButtonText}>Generate Music</Text>
+              </>
+            )}
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.historyContainer}>
+          <View style={styles.historyHeader}>
+            <Text style={styles.historyTitle}>Your Music Library</Text>
+            {generatedTracks.length > 0 && (
+              <TouchableOpacity 
+                style={styles.clearButton}
+                onPress={() => setGeneratedTracks([])}
+              >
+                <Text style={styles.clearButtonText}>Clear All</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+          
+          {generatedTracks.length === 0 ? (
+            <View style={styles.emptyStateContainer}>
+              <Text style={styles.emptyStateIcon}>🎧</Text>
+              <Text style={styles.noTracksText}>No tracks generated yet</Text>
+              <Text style={styles.emptyStateInstructions}>
+                Select a mood and duration, then tap "Generate Music" to create your first track!
+              </Text>
+            </View>
+          ) : (
+            <ScrollView 
+              style={styles.tracksList}
+              showsVerticalScrollIndicator={false}
+            >
+              {generatedTracks.map((track) => (
+                <TouchableOpacity
+                  key={track.id}
+                  style={[
+                    styles.trackItem,
+                    playingTrackId === track.id && [
+                      styles.playingTrackItem,
+                      { borderLeftColor: moodColors[track.mood] }
+                    ],
+                  ]}
+                  onPress={() => playSound(track.id, track.filePath)}
+                  activeOpacity={0.7}
+                >
+                  <View style={[
+                    styles.trackContentContainer,
+                    playingTrackId === track.id && { backgroundColor: '#F0F0FF' }
+                  ]}>
+                    <View style={styles.trackIconSection}>
+                      <View style={[
+                        styles.moodEmojiContainer,
+                        { backgroundColor: moodColors[track.mood] + '40' }
+                      ]}>
+                        <Text style={styles.trackMoodEmoji}>
+                          {moodEmojis[track.mood]}
+                        </Text>
+                      </View>
+                    </View>
+                    
+                    <View style={styles.trackDetails}>
+                      <Text style={styles.trackMood}>
+                        {track.mood.charAt(0).toUpperCase() + track.mood.slice(1)} Music
+                      </Text>
+                      <View style={styles.trackMetadata}>
+                        <View style={[
+                          styles.durationBadge,
+                          { backgroundColor: moodColors[track.mood] + '30' }
+                        ]}>
+                          <Text style={styles.trackDuration}>
+                            {track.duration}s
+                          </Text>
+                        </View>
+                        <Text style={styles.trackTimestamp}>
+                          {track.timestamp}
+                        </Text>
+                      </View>
+                    </View>
+                    
+                    <View style={[
+                      styles.playIconContainer, 
+                      { backgroundColor: moodColors[track.mood] }
+                    ]}>
+                      <Text style={styles.playIcon}>
+                        {playingTrackId === track.id ? '■' : '▶'}
+                      </Text>
+                    </View>
+                  </View>
+                  
+                  {playingTrackId === track.id && (
+                    <View style={styles.progressBarContainer}>
+                      <View style={[
+                        styles.progressFill, 
+                        { 
+                          width: `${progress * 100}%`,
+                          backgroundColor: moodColors[track.mood]
+                        }
+                      ]} />
+                    </View>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          )}
+        </View>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
+  },
+  background: {
+    flex: 1,
     padding: 20,
+    backgroundColor: '#F0F6FF',
+  },
+  header: {
+    marginTop: Platform.OS === 'ios' ? 50 : 30,
+    marginBottom: 20,
+    alignItems: 'center',
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#333',
-    marginTop: 40,
+    letterSpacing: 2,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 20,
+    marginTop: 5,
+    fontStyle: 'italic',
   },
   inputContainer: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
+    borderRadius: 20,
     padding: 20,
     marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowRadius: 8,
+    elevation: 5,
   },
   label: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
     color: '#333',
-    marginBottom: 10,
+    marginBottom: 12,
   },
-  moodContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
+  moodScrollContainer: {
+    paddingVertical: 5,
+    paddingHorizontal: 5,
   },
   moodButton: {
-    backgroundColor: '#F0F2F5',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    minWidth: 80,
+    backgroundColor: '#F7F9FC',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginRight: 10,
     alignItems: 'center',
+    minWidth: 100,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#EFEFEF',
   },
   selectedMoodButton: {
-    backgroundColor: '#4A90E2',
+    borderWidth: 2,
+    transform: [{scale: 1.05}],
+  },
+  moodEmoji: {
+    fontSize: 24,
+    marginBottom: 5,
   },
   moodButtonText: {
     color: '#333',
     fontWeight: '500',
+    fontSize: 14,
   },
   selectedMoodButtonText: {
-    color: '#FFFFFF',
+    fontWeight: '700',
+  },
+  durationContainer: {
+    marginTop: 15,
+    marginBottom: 10,
+  },
+  durationValue: {
+    fontWeight: '700',
   },
   slider: {
     width: '100%',
     height: 40,
-    marginBottom: 20,
+  },
+  sliderLabels: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 5,
+    marginTop: -10,
+  },
+  sliderLabel: {
+    color: '#999',
+    fontSize: 12,
   },
   generateButton: {
-    backgroundColor: '#4A90E2',
-    borderRadius: 8,
-    paddingVertical: 15,
+    borderRadius: 15,
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 16,
+    marginTop: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 4,
+  },
+  buttonIcon: {
+    marginRight: 8,
+    fontSize: 18,
+  },
+  loadingText: {
+    fontSize: 24,
+    color: '#FFFFFF',
   },
   generateButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   historyContainer: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
+    borderRadius: 20,
     padding: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  historyHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
   },
   historyTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '700',
     color: '#333',
-    marginBottom: 15,
+  },
+  clearButton: {
+    padding: 5,
+  },
+  clearButtonText: {
+    color: '#999',
+    fontSize: 14,
+  },
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyStateIcon: {
+    fontSize: 64,
+    marginBottom: 10,
+    color: '#CCCCCC',
   },
   noTracksText: {
     color: '#999',
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 10,
+    marginBottom: 5,
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  emptyStateInstructions: {
+    color: '#AAAAAA',
+    textAlign: 'center',
+    paddingHorizontal: 20,
+    lineHeight: 20,
   },
   tracksList: {
     flex: 1,
   },
   trackItem: {
-    backgroundColor: '#F9F9F9',
-    borderRadius: 8,
-    padding: 15,
-    marginBottom: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    marginBottom: 12,
+    borderRadius: 15,
+    overflow: 'hidden',
+    borderLeftWidth: 0,
   },
   playingTrackItem: {
-    backgroundColor: '#E6F0FB',
+    transform: [{scale: 1.02}],
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
     borderLeftWidth: 4,
-    borderLeftColor: '#4A90E2',
   },
-  trackDetails: {
+  trackContentContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    padding: 15,
+    backgroundColor: '#FFFFFF',
+  },
+  trackIconSection: {
+    marginRight: 15,
+  },
+  moodEmojiContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  trackMoodEmoji: {
+    fontSize: 20,
+  },
+  trackDetails: {
+    flex: 1,
   },
   trackMood: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
     color: '#333',
-    marginRight: 10,
-  },
-  trackDuration: {
-    fontSize: 14,
-    color: '#666',
-    backgroundColor: '#EFEFEF',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
+    marginBottom: 4,
   },
   trackMetadata: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  durationBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  trackDuration: {
+    fontSize: 14,
+    color: '#333',
+  },
   trackTimestamp: {
     fontSize: 12,
     color: '#999',
-    marginRight: 10,
   },
   playIconContainer: {
-    backgroundColor: '#4A90E2',
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
   },
   playIcon: {
     color: '#FFFFFF',
     fontSize: 14,
+    fontWeight: 'bold',
+  },
+  progressBarContainer: {
+    height: 4,
+    backgroundColor: '#F0F0F0',
+    width: '100%',
+  },
+  progressFill: {
+    height: '100%',
   },
 });
 
