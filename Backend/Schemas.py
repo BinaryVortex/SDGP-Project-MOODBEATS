@@ -1,9 +1,13 @@
 # SDGP-Project-MOODBEATS/Database/schemas.py
+import datetime
 from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional
 from bson import ObjectId
 from pydantic import BaseModel, ConfigDict
 from bson import ObjectId
+from datetime import date
+import datetime
+
 
 # For MongoDB ObjectId handling
 class PyObjectId(ObjectId):
@@ -71,3 +75,29 @@ class History(BaseModel):
     moodAtPlay: str
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
+
+
+class Profile(BaseModel):
+
+    firstname: str = Field(..., description="User's first name")
+    surname: str = Field(..., description="User's surname")
+    email: EmailStr = Field(..., description="User's email address")
+    phone: str = Field(..., description="User's phone number")
+    birthday: date = Field(..., description="User's date of birth")
+    created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow, description="Timestamp when profile was created")
+    updated_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow, description="Timestamp when profile was last updated")
+
+    class Config:
+        json_encoders = {datetime.datetime: lambda v: v.isoformat()}
+        json_schema_extra = {
+            "example": {
+                "_id": "60c72b2f9b1d4b3d4c8a9e9a",
+                "firstname": "John",
+                "surname": "Doe",
+                "email": "john.doe@example.com",
+                "phone": "1234567890",
+                "birthday": "1995-06-15",
+                "created_at": "2025-03-21T12:00:00Z",
+                "updated_at": "2025-03-21T12:30:00Z"
+            }
+        }
