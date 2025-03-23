@@ -15,7 +15,7 @@ import { Audio } from 'expo-av';
 import Slider from '@react-native-community/slider';
 
 // API URL - Change this to match your backend URL
-const API_URL = 'http://172.20.10.4:8000/generate-music/';
+const API_URL = 'http://192.168.1.6:8000/generate-music/';
 
 // Mood emoji mapping
 const moodEmojis = {
@@ -189,7 +189,7 @@ const MusicGen = () => {
   
     try {
       const { sound: newSound } = await Audio.Sound.createAsync(
-        { uri: `http://172.20.10.4:8000/audio/${filePath}` },
+        { uri: `http://192.168.1.6:8000/audio/${filePath}` },
         { shouldPlay: true }
       );
       
