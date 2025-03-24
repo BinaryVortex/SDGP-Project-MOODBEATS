@@ -8,6 +8,7 @@ import cv2
 from deepface import DeepFace
 import numpy as np
 
+
 class EmotionDetectionApp(App):
     def build(self):
         self.layout = BoxLayout(orientation='vertical')
